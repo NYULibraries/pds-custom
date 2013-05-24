@@ -14,4 +14,4 @@ my $controller = NYU::Libraries::PDS::SessionsController->new();
 # Verify that this a Class::Accessor
 isa_ok($controller, qw(Class::Accessor));
 
-can_ok($controller, (qw(pds_handle institute)));
+can_ok($controller, (qw(pds_handle institute calling_system)));
