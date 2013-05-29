@@ -17,4 +17,7 @@ my $controller = NYU::Libraries::PDS::SessionsController->new();
 # Verify that this a Class::Accessor
 isa_ok($controller, qw(Class::Accessor));
 
+# Verify that this a PDS::SessionController
+isa_ok($controller, qw(NYU::Libraries::PDS::SessionsController));
+
 can_ok($controller, (qw(pds_handle institute calling_system target_url)));

@@ -17,5 +17,7 @@ my $session = NYU::Libraries::PDS::Session->new();
 # Verify that this a Class::Accessor
 isa_ok($session, qw(Class::Accessor));
 
-can_ok($session, (qw(pds_handle)));
+# Verify that this a PDS::Session
+isa_ok($session, qw(NYU::Libraries::PDS::Session));
 
+can_ok($session, (qw(pds_handle)));
