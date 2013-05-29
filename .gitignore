@@ -16,3 +16,5 @@ nytprof.out
 pm_to_blib
 # Ignore TAP results
 results
+# Ignore pds-core libraries
+lib/pds-core
