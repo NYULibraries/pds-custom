@@ -17,4 +17,5 @@ isa_ok($session, qw(Class::Accessor));
 # Verify that this a PDS::Session
 isa_ok($session, qw(NYU::Libraries::PDS::Session));
 
+# Verify methods
 can_ok($session, (qw(pds_handle)));

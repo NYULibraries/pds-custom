@@ -17,4 +17,5 @@ isa_ok($controller, qw(Class::Accessor));
 # Verify that this a Shibboleth::SessionController
 isa_ok($controller, qw(NYU::Libraries::Shibboleth::SessionsController));
 
+# Verify methods
 can_ok($controller, (qw(mode session idp_url target_url)));

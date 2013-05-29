@@ -17,4 +17,5 @@ isa_ok($controller, qw(Class::Accessor));
 # Verify that this a PDS::SessionController
 isa_ok($controller, qw(NYU::Libraries::PDS::SessionsController));
 
+# Verify methods
 can_ok($controller, (qw(pds_handle institute calling_system target_url)));
