@@ -14,7 +14,8 @@ my $builder = Module::Build->new(
       'Test::Harness' => '3.28',
       # PDS Prereqs
       'XML::Simple' => '2.20',
-      'CGI::Session' => '4.48'
+      'CGI::Session' => '4.48',
+      'DBI' => '1.627'
     }
 );
 
