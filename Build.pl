@@ -12,6 +12,7 @@ my $builder = Module::Build->new(
       'Test::More' => '0.98',
       'Devel::Cover' => '1.03',
       'Test::Harness' => '3.28',
+      'TAP::Harness::Archive' => '0.15',
       # PDS Prereqs
       'XML::Simple' => '2.20',
       'CGI::Session' => '4.48',
