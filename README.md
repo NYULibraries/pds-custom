@@ -48,6 +48,7 @@ Some of these are out of date.
 We use the latest version (as of the time of writing) and cross our fingers.
 
 The direct dependencies, with their versions are listed below.
+This list is **incomplete**.
 
 | Dependency         | PDS Version | Testing Version |
 |:------------------ | -----------:| ---------------:|
