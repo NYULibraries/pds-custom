@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 # Use our bundled Perl modules, e.g. Class::Accessor
-use lib "vendor/lib"
+use lib "vendor/lib";
 
 use CGI;
 use XML::Simple;
