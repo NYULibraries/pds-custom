@@ -24,7 +24,7 @@ Maybe [vagrant](http://www.vagrantup.com/) and
 [the Jenkin's VirtualBox plugin](https://wiki.jenkins-ci.org/display/JENKINS/VirtualBox+Plugin) can help at some point.
 
 #### Build Dependencies
-There are two dependencies for building our testing framework:
+There are two dependencies for building our testing environment:
 
 1. `Module::Build (v0.4005)`
 2. `YAML(v0.84)`
