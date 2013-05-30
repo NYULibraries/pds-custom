@@ -1,9 +1,16 @@
-Dummy directory for loading PDS core libraries into.
+# `vendor`
+Directory for including bundled Perl modules
 
-To use with prove
+    vendor/lib
 
-    $ prove -l -Ivendor/pds-core/program
+and for cloning testing instance of PDS core libraries
 
-To use with Build.PL
+    vendor/pds-core
+
+To test with prove
+
+    $ prove -l -Ivendor/pds-core/program t
+
+To test with Build.PL
 
     $ perl -Ivendor/pds-core/program Build.pl
