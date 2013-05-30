@@ -3,6 +3,9 @@ package NYU::Libraries::Aleph::Patron;
 use strict;
 use warnings;
 
+# Use our bundled Perl modules, e.g. Class::Accessor
+use lib "vendor/lib"
+
 use CGI;
 use XML::Simple;
 # use Net::SFTP;

@@ -2,6 +2,9 @@ package NYU::Libraries::PDS;
 use strict;
 use warnings;
 
+# Use our bundled Perl modules, e.g. Class::Accessor
+use lib "vendor/lib"
+
 use NYU::Libraries::PDS::SessionsController
 
 our $VERSION = '0.1'; # VERSION

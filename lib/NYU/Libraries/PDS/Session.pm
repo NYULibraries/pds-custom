@@ -2,6 +2,9 @@ package NYU::Libraries::PDS::Session;
 use strict;
 use warnings;
 
+# Use our bundled Perl modules, e.g. Class::Accessor
+use lib "vendor/lib"
+
 # Use PDS core libraries
 use IOZ311_file;
 use IOZ312_file;
