@@ -3,10 +3,11 @@
 The NYU PDS Perl Modules are a set of libraries, written in Perl, that facilitate customized functionality for NYU's PDS implementation.
 
 ## Testing
-This library uses the [Test Anything Protocol](http://testanything.org/) as the testing framework for its continuous integration implementation.
-Since Ex Libris bundles its perl version with PDS, we use [perlbrew](http://perlbrew.pl/) to simulate the PDS environment.
+NYU PDS Perl Modules uses the [Test Anything Protocol](http://testanything.org/) as the testing framework for its 
+continuous integration implementation.
 
-We use `perl v5.8.9` since this is the same version that PDS reports using.
+Since Ex Libris bundles its perl version with PDS, we use [perlbrew](http://perlbrew.pl/) to simulate the PDS environment.
+We use `perl v5.8.9` because that's what PDS reports using.
 
     primo@primo1(p3_1):~/p3_1/primom$perl -v
     This is perl, v5.8.9 built for i686-linux
@@ -17,6 +18,10 @@ our libraries have many dependencies which cause the testing environment and the
 
 These dependencies, have dependencies of there own, which introduces yet more variation between the environments,
 but that is a rabbit hole left to braver souls.
+
+[This sucks](http://en.wikipedia.org/wiki/Dependency_hell), but we can't think of a cleaner way of doing it.
+Maybe [vagrant](http://www.vagrantup.com/) and 
+[the Jenkin's VirtualBox plugin](https://wiki.jenkins-ci.org/display/JENKINS/VirtualBox+Plugin) can help at some point.
 
 #### Build Dependencies
 There are two dependencies for building our testing framework:
@@ -41,8 +46,6 @@ In order to run our tests, we use four testing modules
 PDS' Perl comes bundled with several perl module dependencies.
 Some of these are out of date.
 We use the latest version (as of the time of writing) and cross our fingers.
-Unfortunately, we can't think of a cleaner way of doing this, so we
-[get toasty](http://en.wikipedia.org/wiki/Dependency_hell).
 
 The direct dependencies, with their versions are listed below.
 
