@@ -16,7 +16,8 @@ my $builder = Module::Build->new(
       'XML::Simple' => '2.20',
       'CGI::Session' => '4.48',
       'DBI' => '1.627',
-      'Unicode::MapUTF8' => '1.11'
+      'Unicode::MapUTF8' => '1.11',
+      'HTML::TagFilter' => '1.03'
     }
 );
 
