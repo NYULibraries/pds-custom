@@ -2,7 +2,7 @@ package NYU::Libraries::PDS;
 use strict;
 use warnings;
 
-use NYU::Libraries::PDS::SessionsController;
+use NYU::Libraries::PDS::Controllers::SessionsController;
 
 our $VERSION = '0.1'; # VERSION
 
@@ -12,7 +12,7 @@ sub controller {
   my %params = ('pds_handle' => $_[0], 'institute' => $_[1], 
     'calling_system' => $_[2], 'conf_file' => $_[3], 'target_url' => $_[4]);
   # Return an instance of the controller based on the given params
-  return NYU::Libraries::PDS::SessionsController->new(\%params);
+  return NYU::Libraries::PDS::Controllers::SessionsController->new(\%params);
 }
 
 1;

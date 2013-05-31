@@ -1,4 +1,4 @@
-package NYU::Libraries::PDS::SessionsController;
+package NYU::Libraries::PDS::Controllers::SessionsController;
 use strict;
 use warnings;
 

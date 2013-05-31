@@ -1,4 +1,4 @@
-package NYU::Libraries::PDS::Session;
+package NYU::Libraries::PDS::Models::Session;
 use strict;
 use warnings;
 

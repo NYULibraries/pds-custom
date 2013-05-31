@@ -1,4 +1,4 @@
-package NYU::Libraries::Aleph::Patron;
+package NYU::Libraries::PDS::Models::AlephPatron;
 
 use strict;
 use warnings;
