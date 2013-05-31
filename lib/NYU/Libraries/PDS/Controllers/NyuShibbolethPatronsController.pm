@@ -1,4 +1,4 @@
-package NYU::Libraries::PDS::Controllers::ShibbolethSessionsController;
+package NYU::Libraries::PDS::Controllers::NyuShibbolethPatronsController;
 use strict;
 use warnings;
 
