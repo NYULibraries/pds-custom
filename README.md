@@ -34,7 +34,9 @@ Since we use PDS' bundled perl and want to keep it in its original state,
 we bundle `Class::Accessor` with this package in the `vendor/lib` directory.
 
 #### Testing Modules
-In order to run our tests, we use four testing modules
+In order to run our tests, we use the four testing modules listed below.
+[Assertions](http://perldoc.perl.org/Test/More.html#I'm-ok%2c-you're-not-ok.)
+are available through [`Test::More`](http://perldoc.perl.org/Test/More.html).
 
 1. `Test::More (v0.98)`
 2. `Devel::Cover (v1.03)`
