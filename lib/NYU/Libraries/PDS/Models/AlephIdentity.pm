@@ -17,7 +17,7 @@ use constant LOADED_FROM_PLIF => "PLIF LOADED";
 use constant FAMILY_MEMBER_BOR_STATUS => "65";
 
 use base qw(Class::Accessor);
-__PACKAGE__->mk_ro_accessors(qw(conf error id is_encrypt barcode verification expiry_date birthplace bor_status 
+__PACKAGE__->mk_ro_accessors(qw(conf error id encrypt barcode verification expiry_date birthplace bor_status
   bor_type bor_name mail ill_permission birthplace college_code college_name dept_code dept_name major_code major));
 
 my $patron_from_flat_file = sub {
@@ -109,7 +109,7 @@ my $loaded_from_plif = sub {
 
 # Returns an new AlephIdentity
 # Usage:
-#   NYU::Libraries::PDS::Models::AlephIdentity->new(id, configurations)
+#   NYU::Libraries::PDS::Models::AlephIdentity->new(id, configurations, encrypt_flag)
 sub new {
   my($proto, @args) = @_;
   my($class) = ref $proto || $proto;
@@ -118,10 +118,12 @@ sub new {
 }
 
 sub _init {
-  my($self, $id, $conf) = @_;
+  my($self, $id, $conf, $encrypt) = @_;
   # Set configurations
   $self->set('conf', $conf);
-  # Set the attributes from LDAP.
+  # Set encryption flag
+  $self->set('encrypt', $encrypt);
+  # Set the attributes from Aleph.
   $self->$set_attributes_from_aleph($id);
   # Return self
   return $self;
@@ -149,7 +151,7 @@ sub encrypt_verification {
 sub is_encrypt_verification {
   my $self = shift;
   # If no NetID and the record wasn't loaded from plif, don't encrypt.
-  return ($self->is_encrypt && ($self->$loaded_from_plif))
+  return ($self->encrypt && ($self->$loaded_from_plif))
 }
 
 1;
