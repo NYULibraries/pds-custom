@@ -18,7 +18,9 @@ my $builder = Module::Build->new(
       'CGI::Session' => '4.48',
       'DBI' => '1.627',
       'Unicode::MapUTF8' => '1.11',
-      'HTML::TagFilter' => '1.03'
+      'HTML::TagFilter' => '1.03',
+      # LDAP Prereqs
+      'Net::LDAP' => '0.56'
     }
 );
 

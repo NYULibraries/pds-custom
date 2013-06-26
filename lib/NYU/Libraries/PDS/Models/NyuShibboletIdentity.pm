@@ -12,7 +12,8 @@ use NYU::Libraries::Util qw(trim);
 use Data::Dumper;
 
 use base qw(Class::Accessor);
-__PACKAGE__->mk_accessors(qw(conf id index authentication_instance authentication_method context_class identity_provider aleph_identifier uid givenname mail cn sn edupersonentitlement));
+__PACKAGE__->mk_ro_accessors(qw(conf error id index authentication_instance authentication_method 
+  context_class identity_provider aleph_identifier uid givenname mail cn sn edupersonentitlement));
 
 # Private sub that sets the attributes from Shibboleth
 my $set_attributes_from_shibboleth = sub {

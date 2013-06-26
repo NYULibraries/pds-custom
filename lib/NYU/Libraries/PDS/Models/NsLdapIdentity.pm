@@ -19,7 +19,7 @@ use NYU::Libraries::Util qw(trim);
 use Data::Dumper;
 
 use base qw(Class::Accessor);
-__PACKAGE__->mk_ro_accessors(qw(id cn givenname sn mail role aleph_identifer error conf));
+__PACKAGE__->mk_ro_accessors(qw(conf error id cn givenname sn mail role aleph_identifer));
 
 # Private sub returns a new LDAP object based on the objects configuration
 my $ldap_object = sub {
