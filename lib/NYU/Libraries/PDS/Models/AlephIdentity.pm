@@ -111,6 +111,11 @@ my $encrypt_verification = sub {
   return $encrypted_verification;
 };
 
+my $plif_exception = sub {
+  my $self = shift;
+  return ($self->bor_status eq FAMILY_MEMBER_BOR_STATUS);
+};
+
 # Private sub makes a call to Aleph and sets the attributes
 my $set_attributes_from_aleph = sub {
   my($self, $id) = @_;

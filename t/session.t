@@ -18,4 +18,4 @@ isa_ok($session, qw(Class::Accessor));
 isa_ok($session, qw(NYU::Libraries::PDS::Models::Session));
 
 # Verify methods
-can_ok($session, (qw(pds_handle)));
+can_ok($session, (qw(id)));
