@@ -5,23 +5,23 @@ use warnings;
 use URI::URL;
 use LWP::UserAgent;
 
+# Export these methods
+require Exporter;
+@ISA = qw(Exporter);
+@EXPORT_OK = qw(trim xml_encode parse_conf save_permanent_eshelf_records);
+
 # global lookup hash
-my %ESCAPES = (
-  '&' => '&amp;',
-  '"' => '&quot;',
-);
+my %ESCAPES = ('&' => '&amp;', '"' => '&quot;');
 
 sub xml_encode {
-  my ($self, $string) = @_;
+  my ($string) = @_;
   $string =~ s/([&"])/$ESCAPES{$1}/ge;
   return $string;
 }
 
 sub parse_conf {
-  my ($self, $file_name, $defaults) = @_;
-  if (!(open(OPEN_FILE, $file_name))) {
-      return undef;
-  }
+  my ($file_name, $defaults) = @_;
+  return undef if (!(open(OPEN_FILE, $file_name)))
   $defaults = {} unless $defaults;
   my $conf = {};
   my $line;
@@ -51,14 +51,14 @@ sub parse_conf {
 }
 
 sub trim {
-  my ($self, $string) = @_;
+  my ($string) = @_;
   $string =~ s/^\s+//;
   $string =~ s/\s+$//;
   return $string;
 }
 
 sub save_permanent_eshelf_records {
-  my ($self, $conf, $pds_handle, $tsetse_handle, $tsetse_credentials) = @_;
+  my ($conf, $pds_handle, $tsetse_handle, $tsetse_credentials) = @_;
   return 0 if !defined $conf;
   if ($tsetse_handle && $pds_handle) {
     my $tsetse_url = $conf->{'tsetse_url'};
