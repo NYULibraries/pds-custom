@@ -5,6 +5,9 @@ use Test::More qw(no_plan);
 # Verify module can be included via "use" pragma
 BEGIN { use_ok('NYU::Libraries::PDS::Models::NsLdapIdentity') };
 
+# Verify module can be included via "require" pragma
+require_ok( 'NYU::Libraries::PDS::Models::NsLdapIdentity' );
+
 # Get an instance of NsLdapIdentity
 my $identity = NYU::Libraries::PDS::Models::NsLdapIdentity->new();
 

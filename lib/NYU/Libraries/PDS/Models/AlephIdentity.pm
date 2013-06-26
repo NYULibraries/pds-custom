@@ -20,13 +20,21 @@ use constant FAMILY_MEMBER_BOR_STATUS => "65";
 use base qw(Class::Accessor);
 __PACKAGE__->mk_accessors(qw(data exists ssh_host ssh_port ssh_user ssh_password save_cmd xserver_host xserver_port xserver_user xserver_password adm plif_file_path plif_file_name pds_root flat_file error error_msg patron_id patron_uid patron_verification patron_birthplace patron_bor_status shared_secret force_encryption __z303 __z304s __z305s __z308s));
 
-sub init {
+# Returns an new AlephIdentity
+# Usage:
+#   NYU::Libraries::PDS::Models::AlephIdentity->new(id, configurations)
+sub new {
+  my($proto, @args) = @_;
+  my($class) = ref $proto || $proto;
+  my($self) = bless(Class::Accessor->new(), $class);
+  return $self->_init(@args);
+}
+
+sub _init {
   my $self = shift;
   $self->data($self->__get());
   $self->exists($self->__exists());
-  if($self->exists) {
-    $self->patron_verification($self->__get_verification($self->data->{"sn"}));
-  }
+  $self->patron_verification($self->__get_verification($self->data->{"sn"})) if($self->exists);
 }
 
 sub save {
@@ -82,8 +90,7 @@ sub __exists {
 }
 
 sub add_z303 {
-  my $self = shift;
-  my ($name, $field1, $field2, $field3, $note1, $note2, $home_library, $export_consent, $send_all_letters, $plain_html) = @_;
+  my ($self, $name, $field1, $field2, $field3, $note1, $note2, $home_library, $export_consent, $send_all_letters, $plain_html) = @_;
   my $z303 = {
     'match-id-type' => "00", 
     'match-id' => $self->{patron_id},
@@ -104,8 +111,7 @@ sub add_z303 {
 }
 
 sub add_z304 {
-  my $self = shift;
-  my ($sequence, $type, $a0, $a1, $a2, $a3, $email, $date_from, $date_to, $telephone) = @_;
+  my ($self, $sequence, $type, $a0, $a1, $a2, $a3, $email, $date_from, $date_to, $telephone) = @_;
   my $z304 = {
     'record-action' => "A",
     'z304-id' => $self->{patron_id},

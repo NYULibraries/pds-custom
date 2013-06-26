@@ -7,8 +7,8 @@ use LWP::UserAgent;
 
 # Export these methods
 require Exporter;
-@ISA = qw(Exporter);
-@EXPORT_OK = qw(trim xml_encode parse_conf save_permanent_eshelf_records);
+our @ISA = qw(Exporter);
+our @EXPORT_OK = qw(trim xml_encode parse_conf save_permanent_eshelf_records);
 
 # global lookup hash
 my %ESCAPES = ('&' => '&amp;', '"' => '&quot;');
@@ -21,7 +21,7 @@ sub xml_encode {
 
 sub parse_conf {
   my ($file_name, $defaults) = @_;
-  return undef if (!(open(OPEN_FILE, $file_name)))
+  return undef if (!(open(OPEN_FILE, $file_name)));
   $defaults = {} unless $defaults;
   my $conf = {};
   my $line;
@@ -32,10 +32,10 @@ sub parse_conf {
     next if ($line =~/^\s*$/) || 
       ($line =~ /^\s*(#|!)/) || 
         ($line =~/^\[[A-Z]/i);
-    $line = $self->trim($line);
+    $line = trim($line);
     if ($line =~ /=/) {
-      my $key = $self->trim($`);
-      my $value = $self->trim($');
+      my $key = trim($`);
+      my $value = trim($');
       if (defined $conf->{"$key"}) {
         $conf->{"$key"} .= ";$value";
       } else {
