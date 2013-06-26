@@ -6,10 +6,11 @@ use warnings;
 # Use our bundled Perl modules, e.g. Class::Accessor
 use lib "vendor/lib";
 
-use XML::Simple;
-# use Net::SFTP;
-# use Net::SSH::Perl;
+# Encryption module
 use Digest::MD5 qw(md5_hex md5);
+
+# NYU Libraries modules
+use NYU::Libraries::Util qw(trim);
 use NYU::Libraries::XService::Aleph::BorByKey;
 use NYU::Libraries::XService::Aleph::BorInfo;
 
@@ -55,8 +56,8 @@ my $patron_from_xserver = sub {
     "Host" => $conf->{ xserver_host }, "Port" => $conf->{ xserver_port },
       "BorID" => $id, "Library" => $conf->{ adm },
       "Loans" => "N", "Cash" => "N", "Holds" => "N", "Translate" => "N",
-        "UserName" => $conf->{xserver_user}, 
-          "UserPassword" => $conf->{xserver_password});
+        "UserName" => $conf->{ xserver_user }, 
+          "UserPassword" => $conf->{ xserver_password });
   # Stop unless the xservice call was successful
   return unless ($bor_info->success);
   # Stop if any errors in the xservice call
@@ -76,35 +77,63 @@ my $patron_from_xserver = sub {
   return $patron if $patron->{"id"};
 };
 
+# Private sub returns a surnamed scrubbed of special chars
+my $clean_surname = sub {
+  my($self, $sn) = @_;
+  $sn =~ s/\s//g;
+  $sn =~ s/-//g;
+  $sn =~ s/\.//g;
+  $sn =~ s/,//g;
+  return $sn;
+};
+
+# Private sub returns whether this record was loaded from the PLIF
+my $loaded_from_plif = sub {
+  my $self = shift;
+  return ($self->patron_birthplace eq LOADED_FROM_PLIF);
+};
+
+# Private sub returns whether to encrypt based on some business logic
+my $is_encrypt_verification = sub {
+  my $self = shift;
+  # If no NetID and the record wasn't loaded from plif, don't encrypt.
+  return ($self->encrypt && ($self->$loaded_from_plif))
+};
+
+# Private sub returns an encrypted verification based on a shared secret
+my $encrypt_verification = sub {
+  my($self, $unencrypted_verification) = @_;
+  my $conf = $self->conf;
+  # Return unencrypted unless shared secret provided
+  return $unencrypted_verification unless $conf->{shared_secret};
+  my $encrypted_verification = 
+    md5_hex($conf->{shared_secret}, $unencrypted_verification);
+  return $encrypted_verification;
+};
+
 # Private sub makes a call to Aleph and sets the attributes
 my $set_attributes_from_aleph = sub {
   my($self, $id) = @_;
   # Set error and return if we don't have a configuration
   $self->set('error', "No configuration set.") and return unless $self->conf;
-  my($conf) = $self->conf;
+  # Get the patron from the flat file or xserver
   my $patron = ($patron_from_flat_file || $patron_from_xserver);
   $self->set('error', "Couldn't find identity in Aleph.") and return unless $patron;
   # Add the attributes from the patron call
-  foreach my $key (keys %$patron) { set($key, $patron->{$key}); }
-  # Add birthplace and bor_status to self for verification check
-  $self->birthplace($patron->{"birthplace"});
-  $self->bor_status($patron->{"bor_status"});
+  foreach my $key (keys %$patron) {
+    set($key, $patron->{$key}); 
+  }
   # Since verification isn't necessary for this call, add it based on info from Aleph
   my @name_array = split(/,/, $patron->{"bor_name"});
-  my $sn = $name_array[0];
+  my $surname = $name_array[0];
   # Set verification as first four characters of the cleaned last name 
-  my $verification = uc(substr($self->clean_surname($sn), 0, 4));
+  my $verification = uc(substr($self->$clean_surname($surname), 0, 4));
   # Don't encrypt if this is an exception.
-  unless ($self->plif_exception()) {
+  unless ($self->$plif_exception()) {
     # Don't encrypt unless we it meets the encryption business logic.
-    $verification = $self->encrypt_verification($verification) if $self->is_encrypt_verification();
+    $verification = $self->$encrypt_verification($verification) if $self->is_encrypt_verification();
   };
-  $self->verification($verification);
-};
-
-my $loaded_from_plif = sub {
-  my $self = shift;
-  return ($self->patron_birthplace eq LOADED_FROM_PLIF);
+  $self->set('verification', $verification);
 };
 
 # Returns an new AlephIdentity
@@ -127,31 +156,6 @@ sub _init {
   $self->$set_attributes_from_aleph($id);
   # Return self
   return $self;
-}
-
-sub clean_surname {
-  my($self, $sn) = @_;
-  $sn =~ s/\s//g;
-  $sn =~ s/-//g;
-  $sn =~ s/\.//g;
-  $sn =~ s/,//g;
-  return $sn;
-}
-
-sub encrypt_verification {
-  my($self, $unencrypted_verification) = @_;
-  my $conf = $self->conf;
-  # Return unencrypted unless shared secret provided
-  return $unencrypted_verification unless $conf->{shared_secret};
-  my $encrypted_verification = 
-    md5_hex($conf->{shared_secret}, $unencrypted_verification);
-  return $encrypted_verification;
-}
-
-sub is_encrypt_verification {
-  my $self = shift;
-  # If no NetID and the record wasn't loaded from plif, don't encrypt.
-  return ($self->encrypt && ($self->$loaded_from_plif))
 }
 
 1;
