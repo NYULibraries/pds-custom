@@ -1,4 +1,4 @@
-package NYU::Libraries::PDS::Models::NyuShibbolethPatron;
+package NYU::Libraries::PDS::Models::NyuShibbolethIdentity;
 use strict;
 use warnings;
 

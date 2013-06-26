@@ -1,4 +1,4 @@
-package NYU::Libraries::PDS::Authorizers::NsLdapPatronAuthorizer;
+package NYU::Libraries::PDS::Authorizers::NyuShibbolethIdentityAuthorizer;
 use strict;
 use warnings;
 

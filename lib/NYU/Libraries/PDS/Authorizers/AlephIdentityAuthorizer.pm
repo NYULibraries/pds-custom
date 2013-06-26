@@ -1,4 +1,4 @@
-package NYU::Libraries::PDS::Controllers::AlephPatronsController;
+package NYU::Libraries::PDS::Authorizers::AlephIdentityAuthorizer;
 use strict;
 use warnings;
 

@@ -1,4 +1,4 @@
-package NYU::Libraries::PDS::Models::AlephPatron;
+package NYU::Libraries::PDS::Models::AlephIdentity;
 
 use strict;
 use warnings;
@@ -50,11 +50,11 @@ sub save {
   #  my $ssh = Net::SSH::Perl->new($self->{ssh_host});
   #  $ssh->login($self->{ssh_user}, $self->{ssh_password});
   #  my($stdout, $stderr, $exit) = $ssh->cmd($self->{save_cmd});
-  #  $self->__log_error("003", "SSH Call Failed.", "NYU:Libraries::Aleph::Patron::get") if $exit;
+  #  $self->__log_error("003", "SSH Call Failed.", "NYU:Libraries::Aleph::Identity::get") if $exit;
   #  return undef if $exit;
   #  return 1;
   #} else {
-  #  $self->__log_error("002", "SFTP Failed.", "NYU:Libraries::Aleph::Patron::save");
+  #  $self->__log_error("002", "SFTP Failed.", "NYU:Libraries::Aleph::Identity::save");
   #  return undef;
   #}
 }
@@ -62,7 +62,7 @@ sub save {
 sub __get {
   my $self = shift;
   return $self->data if defined($self->data);
-  $self->__log_error("001", "Patron ID not set.", "NYU:Libraries::Aleph::Patron::get") unless ($self->{patron_id});
+  $self->__log_error("001", "Identity ID not set.", "NYU:Libraries::Aleph::Identity::get") unless ($self->{patron_id});
   return undef unless ($self->{patron_id});
   # First try flat file.
   my $patron = $self->__get_from_flat_file;
@@ -161,11 +161,11 @@ sub __get_from_flat_file {
   # Open the flat file.
   my $flat_file_open = open(FF, "<", $self->{flat_file});
   # Log warning and return undef if flat file doesn't exist.
-  $self->__log_warning(sprintf('File does not exist:  %s', $self->{flat_file}), "NYU:Libraries::Aleph::Patron::__get_from_flat_file") unless ($flat_file_open);
+  $self->__log_warning(sprintf('File does not exist:  %s', $self->{flat_file}), "NYU:Libraries::Aleph::Identity::__get_from_flat_file") unless ($flat_file_open);
   return undef unless ($flat_file_open);
   my $patron_id = $self->{patron_id};
   # Log error and return undef if patron ID not set.
-  $self->__log_error("001", "Patron ID not set.", "NYU:Libraries::Aleph::Patron::__get_from_flat_file") unless ($patron_id);
+  $self->__log_error("001", "Identity ID not set.", "NYU:Libraries::Aleph::Identity::__get_from_flat_file") unless ($patron_id);
   return undef unless ($patron_id);
   #Check each line of flat file for user and load into patron hash reference.
   my $patron;
@@ -217,10 +217,10 @@ sub __get_from_xserver {
     "UserPassword" => $self->{xserver_password}  
   );
   # Check if call was successful.
-  $self->__log_warning("XService call failed.", "NYU:Libraries::Aleph::Patron::__get_from_xserver") unless ($bor_info->success);
+  $self->__log_warning("XService call failed.", "NYU:Libraries::Aleph::Identity::__get_from_xserver") unless ($bor_info->success);
   return undef unless ($bor_info->success);
   # Checking if any errors in xservice.
-  $self->__log_warning(sprintf('XService error:  %s', $bor_info->get_error), "NYU:Libraries::Aleph::Patron::__get_from_xserver") if ($bor_info->get_error);
+  $self->__log_warning(sprintf('XService error:  %s', $bor_info->get_error), "NYU:Libraries::Aleph::Identity::__get_from_xserver") if ($bor_info->get_error);
   return undef if ($bor_info->get_error);
   # Set patron hash reference from xservice.
   my $patron;
@@ -269,10 +269,10 @@ sub __exists_in_aleph {
     "UserPassword" => $self->{xserver_password}
   );
   # Check if call was successful.
-  $self->__log_warning("XService call failed.", "NYU:Libraries::Aleph::Patron::__exists_in_aleph") unless ($bor_by_key->success);
+  $self->__log_warning("XService call failed.", "NYU:Libraries::Aleph::Identity::__exists_in_aleph") unless ($bor_by_key->success);
   return undef unless ($bor_by_key->success);
   # Check if any errors in xservice.
-  $self->__log_warning(sprintf('XService error:  %s', $bor_by_key->get_error), "NYU:Libraries::Aleph::Patron::__exists_in_aleph") if ($bor_by_key->get_error);
+  $self->__log_warning(sprintf('XService error:  %s', $bor_by_key->get_error), "NYU:Libraries::Aleph::Identity::__exists_in_aleph") if ($bor_by_key->get_error);
   return undef if ($bor_by_key->get_error);
   # If internal id exist, patron exists.
   my $exists = ($bor_by_key->get_internal_id) ? 1:undef;
