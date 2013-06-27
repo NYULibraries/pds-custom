@@ -195,7 +195,7 @@ sub set_attributes {
   my($self, $force) = @_;
   $self->SUPER::set_attributes();
   unless ($self->verification && !$force) {
-    # Since verification isn't necessary for this call, add it based on info from Aleph
+    # Since verification isn't necessary for this call, add it based on the Aleph attributes
     return undef unless $self->bor_name;
     my @name_array = split(/,/, $self->bor_name);
     my $surname = $name_array[0];

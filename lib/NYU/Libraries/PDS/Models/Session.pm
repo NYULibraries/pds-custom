@@ -10,6 +10,7 @@ use IOZ311_file;
 use IOZ312_file;
 use PDSSession;
 use PDSSessionUserAttrs;
+use PDSUtil qw(isUsingOracle);
 
 use base qw(Class::Accessor);
 __PACKAGE__->mk_ro_accessors(qw(id institute barcode bor-status bor-type name uid email cn 

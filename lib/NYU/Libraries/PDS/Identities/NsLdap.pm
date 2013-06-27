@@ -19,9 +19,9 @@ __PACKAGE__->mk_ro_accessors(@attributes);
 my $ldap_object = sub {
   my $self = shift;
   my $conf = $self->{'conf'};
-  return Net::LDAPS->new($conf->{'ldap_host'}, port => $conf->{'ldap_port'},
-    timeout => $conf->{'ldap_timeout'}, version => $conf->{'ldap_version'}, 
-      capath => $conf->{'ssl_cert_path'});
+  return Net::LDAPS->new($conf->{ldap_host}, port => $conf->{ldap_port},
+    timeout => $conf->{ldap_timeout}, version => $conf->{ldap_version}, 
+      capath => $conf->{ssl_cert_path});
 };
 
 # Private method returns a user given an ID
@@ -31,12 +31,12 @@ my $ldap_user_search = sub {
   my($self, $id) = @_;
   my $conf = $self->{'conf'};
   # Set up the LDAP object for admin binding
-  my $admin_ldap_object = $self->ldap_object();
+  my $admin_ldap_object = $self->$ldap_object();
   $self->set('error', "Could not create new admin LDAP object.") and return undef unless defined($admin_ldap_object);
   # Bind as admin user
-  my $admin_bind_message = $admin_ldap_object->bind($conf->{'ldap_admin_dn'}, password => $conf->{'ldap_admin_password'});
+  my $admin_bind_message = $admin_ldap_object->bind($conf->{ldap_admin_dn}, password => $conf->{ldap_admin_password});
   # Set error and return if the user bind failed
-  $self->set('error', "Admin bind failed. ".$self->Dumper($admin_bind_message)) and return undef if $admin_bind_message->is_error();
+  $self->set('error', "Admin bind failed. ".$admin_bind_message->error) and return undef if $admin_bind_message->is_error();
   # Search for user based on the given id
   my $user_search = 
     $admin_ldap_object->search(base => "ou=people,o=newschool.edu,o=cp",
@@ -59,14 +59,14 @@ my $ldap_user_search = sub {
 my $ldap_user_authenticate = sub {
   my($self, $uid, $password) = @_;
   # Get the LDAP object for user binding
-  my $user_ldap_object = $self->ldap_object();
+  my $user_ldap_object = $self->$ldap_object();
   $self->set('error', "Could not create new user LDAP object.") and return undef unless defined($user_ldap_object);
   # Set the user dn for binding
   my $user_dn = "uid=$uid,ou=people,o=newschool.edu,o=cp";
   # Bind to user dn with password to authenticate
   my $user_bind_message = $user_ldap_object->bind($user_dn, password=>$password);
   # Set error and return if the user bind failed
-  $self->set('error', "User bind failed. ".$self->Dumper($user_bind_message)) and return undef if $user_bind_message->is_error();
+  $self->set('error', "User bind failed. ".$user_bind_message->error) and return undef if $user_bind_message->is_error();
   # Close the user connection.
   $user_ldap_object->disconnect();
   # Return true
@@ -83,9 +83,11 @@ sub authenticate {
   # Get the identity
   my $identity = $self->$ldap_user_search($id);
   # Get uid from the identity
-  my $uid = $identity->get_value("uid");
-  # Set the identity instance variable if we've authenticated
-  $self->set('identity', $identity) if $self->$ldap_user_authenticate($uid, $password);
+  my $uid = $identity->get_value("uid") if defined($identity);
+  if ($uid) {
+    # Set the identity instance variable if we've authenticated
+    $self->set('identity', $identity) if $self->$ldap_user_authenticate($uid, $password);
+  }
 };
 
 # Method sets the attributes from the NS LDAP identity

@@ -19,3 +19,6 @@ isa_ok($session, qw(NYU::Libraries::PDS::Models::Session));
 
 # Verify methods
 can_ok($session, (qw(id)));
+
+# my $existing_session = NYU::Libraries::PDS::Models::Session->find('27620139407145177581349399004532');
+# print $existing_session;
