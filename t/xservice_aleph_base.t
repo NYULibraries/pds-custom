@@ -9,7 +9,7 @@ BEGIN { use_ok('NYU::Libraries::XService::Aleph::Base') };
 require_ok( 'NYU::Libraries::XService::Aleph::Base' );
 
 # Get an instance of XService::Aleph::Base
-my $base = NYU::Libraries::XService::Aleph::Base->new();
+my $base = NYU::Libraries::XService::Aleph::Base->new("OP" => "bor-info");
 
 # Verify that this a XService::Base
 isa_ok($base, qw(NYU::Libraries::XService::Base));

@@ -45,7 +45,7 @@ sub new {
   my $xparams = $params{"XParams"};
   my $query_string = handle_query_string($op, $xparams);
 
-  my $url = $host.":".$port."/".$path."?".$query_string;
+  my $url = "$host:$port/$path?$query_string";
 
   my $ua = LWP::UserAgent->new;
   my $request = HTTP::Request->new('GET' => $url);
@@ -75,11 +75,10 @@ sub new {
 #convenience method for handling query string;
 #not for public consumption!
 sub handle_query_string {
-  my $op = shift;
-  my $xparams = shift;
-  my $query_string = "op=".$op;
+  my($op, $xparams) = @_;
+  my $query_string = "op=$op";
   while (my ($xparam_name, $xparam_value) = each (%$xparams)) {
-    $query_string .= "&".$xparam_name."=".$xparam_value;
+    $query_string .= "&$xparam_name=$xparam_value" if defined($xparam_value);
   }
   return $query_string;
 }

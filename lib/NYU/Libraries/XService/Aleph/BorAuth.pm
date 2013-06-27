@@ -69,6 +69,14 @@ sub get_z303_name {
   return $content;
 }
 
+sub get_z303_birthplace {
+  #Z303Name
+  my $self = shift;
+  my $xml = $self->get_xml();
+  my $content = $self->get_content($xml->{"z303"}->[0]->{"z303-birthplace"}->[0]);
+  return $content;
+}
+
 sub get_z303_proxy_for_id {
   #Z303ProxyForID
 }
@@ -265,10 +273,26 @@ sub get_z305_sublibrary {
 
 sub get_z305_bortype {
   #Z305BorType
+  my $self = shift;
+  my $xml = $self->get_xml();
+  my $content = $self->get_content($xml->{"z305"}->[0]->{"z305-bor-type"}->[0]);
+  return $content;
 }
 
 sub get_z305_borstatus {
   #Z305BorStatus
+  my $self = shift;
+  my $xml = $self->get_xml();
+  my $content = $self->get_content($xml->{"z305"}->[0]->{"z305-bor-status"}->[0]);
+  return $content;
+}
+
+sub get_z305_expiry_date {
+  #Z305ExpirtyDate
+  my $self = shift;
+  my $xml = $self->get_xml();
+  my $content = $self->get_content($xml->{"z305"}->[0]->{"z305-expiry-date"}->[0]);
+  return $content;
 }
 
 sub get_z305_loan_permission {
@@ -277,6 +301,10 @@ sub get_z305_loan_permission {
 
 sub get_z305_photo_permission {
   #Z305PhotoPermission
+  my $self = shift;
+  my $xml = $self->get_xml();
+  my $content = $self->get_content($xml->{"z305"}->[0]->{"z305-photo-permission"}->[0]);
+  return $content;
 }
 
 sub get_z305_over_permission {
