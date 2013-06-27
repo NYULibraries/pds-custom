@@ -11,7 +11,7 @@ my @attributes = qw(index authentication_instance authentication_method
     edupersonentitlement);
 __PACKAGE__->mk_ro_accessors(@attributes);
 
-use constant SHIBBOLETH_ATTRIBUTE_MAPPINGS => {
+my $shibboleth_attribute_mappings = {
   'id' => 'Shib_Application_ID',
   'index' => '',
   'authentication_instance' => '',
@@ -30,8 +30,8 @@ use constant SHIBBOLETH_ATTRIBUTE_MAPPINGS => {
 # Private sub that gets the identity from the ShibbolethSP
 my $shibboleth_identity = sub {
   my $identity;
-  foreach my $attribute (keys SHIBBOLETH_ATTRIBUTE_MAPPINGS) {
-    my $shibboleth_env_var = SHIBBOLETH_ATTRIBUTE_MAPPINGS->{$attribute};
+  foreach my $attribute (keys %$shibboleth_attribute_mappings) {
+    my $shibboleth_env_var = $shibboleth_attribute_mappings->{$attribute};
     $identity->{$attribute} = $ENV{$shibboleth_env_var} if defined($ENV{$shibboleth_env_var});
   }
   # Return identity if we found one
