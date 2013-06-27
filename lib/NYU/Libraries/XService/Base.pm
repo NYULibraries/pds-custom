@@ -31,44 +31,28 @@ sub new {
   my $class  = shift;
   my(%params) = @_;
   my $cgi = $params{"CGI"};
-
   #URI Elements for XService HTTP Response
   my $host = $params{"Host"};
   my $port = $params{"Port"};
   my $path = $params{"Path"};
-
   #X-Service Application (Metalib,Aleph)
   my $xapp = $params{"XApp"};
-
   #Handle Query String for XService HTTP Response
   my $op = $params{"OP"};
   my $xparams = $params{"XParams"};
   my $query_string = handle_query_string($op, $xparams);
-
   my $url = "$host:$port/$path?$query_string";
-
   my $ua = LWP::UserAgent->new;
   my $request = HTTP::Request->new('GET' => $url);
   my $response = $ua->request($request);
   my $success = $response->is_success;
-
   my $header = $response->headers_as_string();
   my $body = $response->content();
-
   my $self = {
-    "CGI" => $cgi,
-    "Host" => $host,
-    "Port" => $port,
-    "Path" => $path,
-    "QueryString" => $query_string,
-    "Response" => $response,
-    "URL" => $url,
-    "Header" => $header,
-    "Body" => $body,
-    "OP" => $op,
-    "Success" => $success
-  };
-
+    "CGI" => $cgi, "Host" => $host, "Port" => $port,
+    "Path" => $path, "QueryString" => $query_string,
+    "Response" => $response, "URL" => $url, "Header" => $header,
+    "Body" => $body, "OP" => $op, "Success" => $success };
   return bless($self, $class);
 }
 

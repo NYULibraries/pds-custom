@@ -16,15 +16,11 @@ BEGIN {
 sub new {
   my($class) = shift;
   my(%params) = @_;
-  my $host = (length($params{"Host"})) ? $params{"Host"} : DEFAULT_HOST;
-  my $port = (length($params{"Port"})) ? $params{"Port"} : DEFAULT_PORT;
-  my $path = (length($params{"Path"})) ? $params{"Path"} : DEFAULT_PATH;
+  my $host = (defined($params{"Host"})) ? $params{"Host"} : DEFAULT_HOST;
+  my $port = (defined($params{"Port"})) ? $params{"Port"} : DEFAULT_PORT;
+  my $path = (defined($params{"Path"})) ? $params{"Path"} : DEFAULT_PATH;
   my ($self) = NYU::Libraries::XService::Base->new(
-    @_,
-    "Host" => $host,
-    "Port" => $port,
-    "Path" => $path
-  );
+    @_, "Host" => $host, "Port" => $port, "Path" => $path);
   return(bless($self, $class));
 }
 

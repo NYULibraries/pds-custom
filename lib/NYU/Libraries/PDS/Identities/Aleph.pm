@@ -14,10 +14,12 @@ use constant LOADED_FROM_PLIF => "PLIF LOADED";
 use constant FAMILY_MEMBER_BOR_STATUS => "65";
 
 use base qw(NYU::Libraries::PDS::Identities::Base);
-my @attributes = qw(encrypt barcode verification expiry_date birthplace bor_status
+my @attributes = qw(barcode verification expiry_date birthplace bor_status
   bor_type bor_name mail ill_permission birthplace college_code college_name dept_code 
     dept_name major_code major);
 __PACKAGE__->mk_ro_accessors(@attributes);
+__PACKAGE__->mk_accessors(qw(encrypt));
+
 
 # Private method returns an identity from the flat file for the given id
 # Usage:
@@ -131,7 +133,7 @@ my $clean_surname = sub {
 # Private method returns whether this record was loaded from the PLIF
 my $loaded_from_plif = sub {
   my $self = shift;
-  return ($self->patron_birthplace eq LOADED_FROM_PLIF);
+  return ($self->birthplace eq LOADED_FROM_PLIF);
 };
 
 # Private method returns a boolean indicating whether to encrypt the verification
@@ -198,7 +200,7 @@ sub set_attributes {
   # Don't encrypt if this is an exception.
   unless ($self->$encryption_exception()) {
     # Don't encrypt unless the patron meets the encryption business logic.
-    $verification = $self->$encrypt_verification($verification) if $self->is_encrypt_verification();
+    $verification = $self->$encrypt_verification($verification) if $self->$is_encrypt_verification();
   };
   $self->set('verification', $verification);
 }

@@ -15,9 +15,7 @@ BEGIN {
 sub new {
   my($class) = shift;
   my(%params) = @_;
-
   my $op = OP;
-
   #XParams
   my $library = (length($params{"Library"})) ? $params{"Library"} : DEFAULT_LIBRARY;
   my $sublibrary = $params{"SubLibrary"};
@@ -26,24 +24,14 @@ sub new {
   my $user_name = $params{"UserName"};
   my $user_password = $params{"UserPassword"};
   my $xparams = {
-    "library" => $library,
-    "sub_library" => $sublibrary,
-    "bor_id" => $borid,
-    "verification" => $verification,
-    "user_name" => $user_name,
-    "user_password" => $user_password
-  };
+    "library" => $library, "sub_library" => $sublibrary, "bor_id" => $borid,
+    "verification" => $verification, "user_name" => $user_name,
+    "user_password" => $user_password };
   my $self = NYU::Libraries::XService::Aleph::Base->new(
-    @_,
-    "OP" => $op,
-    "Library" => $library,
-    "SubLibrary" => $sublibrary,
-    "BorID" => $borid,
-    "Verification" => $verification,
-    "UserName" => $user_name,
-    "UserPassword" => $user_password,
-    "XParams" => $xparams
-  );
+    @_, "OP" => $op, "Library" => $library,
+    "SubLibrary" => $sublibrary, "BorID" => $borid,
+    "Verification" => $verification, "UserName" => $user_name,
+    "UserPassword" => $user_password, "XParams" => $xparams);
   return(bless($self, $class));
 }
 

@@ -32,34 +32,17 @@ sub new {
   my $user_name = $params{"UserName"};
   my $user_password = $params{"UserPassword"};
   my $xparams = {
-    "library" => $library,
-    "sub_library" => $sublibrary,
-    "loans" => $loans,
-    "cash" => $cash,
-    "filter_cash" => $filter_cash,
-    "hold" => $hold,
-    "translate" => $translate,
-    "bor_id" => $borid,
-    "verification" => $verification,
-    "user_name" => $user_name,
-    "user_password" => $user_password
-  };
+    "library" => $library, "sub_library" => $sublibrary, "loans" => $loans, 
+    "cash" => $cash, "filter_cash" => $filter_cash, "hold" => $hold,
+    "translate" => $translate, "bor_id" => $borid,
+    "verification" => $verification, "user_name" => $user_name,
+    "user_password" => $user_password };
   my $self = NYU::Libraries::XService::Aleph::Base->new(
-    @_,
-    "OP" => $op,
-    "Library" => $library,
-    "SubLibrary" => $sublibrary,
-    "Loans" => $loans,
-    "Cash" => $cash,
-    "FilterCash" => $filter_cash,
-    "Hold" => $hold,
-    "Translate" => $translate,
-    "BorID" => $borid,
-    "Verification" => $verification,
-    "UserName" => $user_name,
-    "UserPassword" => $user_password,
-    "XParams" => $xparams
-  );
+    @_, "OP" => $op, "Library" => $library, "SubLibrary" => $sublibrary,
+    "Loans" => $loans, "Cash" => $cash, "FilterCash" => $filter_cash,
+    "Hold" => $hold, "Translate" => $translate, "BorID" => $borid,
+    "Verification" => $verification, "UserName" => $user_name,
+    "UserPassword" => $user_password, "XParams" => $xparams);
   return(bless($self, $class));
 }
 
