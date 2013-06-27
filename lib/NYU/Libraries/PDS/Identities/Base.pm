@@ -9,6 +9,9 @@ use lib "vendor/lib";
 # NYU Libraries modules
 use NYU::Libraries::Util qw(trim);
 
+# Data Dumper for error reporting
+use Data::Dumper;
+
 use base qw(Class::Accessor);
 __PACKAGE__->mk_ro_accessors(qw(error id));
 my @attributes;
@@ -48,9 +51,9 @@ sub authenticate {
 sub to_h {
   my $self = shift;
   # Return nothing set if we have an error
-  return if $self->error;
+  return undef if $self->error;
   # Set error and return if there is no identity
-  $self->set('error', 'No identity set.') and return unless $self->{'identity'};
+  $self->set('error', 'No identity set.') and return undef unless $self->{'identity'};
   # Set the attributes if it hasn't been done yet
   $self->set_attributes() unless $self->id();
   # Loop through the attributes and return them in a hash
@@ -66,10 +69,10 @@ sub to_h {
 sub set_attributes {
   my $self = shift;
   # Set error and return if there is no identity
-  $self->set('error', 'No identity set.') and return unless $self->{'identity'};
+  $self->set('error', 'No identity set.') and return undef unless $self->{'identity'};
   my $identity = $self->{'identity'};
   # Add the attributes from the patron call
   foreach my $key (keys %$identity) {
-    $self->set($key, trim($identity->{$key})); 
+    $self->set($key, trim($identity->{$key})) if $identity->{$key}; 
   }
 }

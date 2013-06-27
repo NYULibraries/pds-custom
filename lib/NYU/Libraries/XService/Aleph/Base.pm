@@ -28,14 +28,14 @@ sub get_session_id {
   my $self = shift;
   my $xml = $self->get_xml();
   my $content = $self->get_content($xml->{"session-id"}->[0]);
-  return $content;
+  return (ref $content) ? '' : $content;
 }
 
 sub get_error {
   my $self = shift;
   my $xml = $self->get_xml();
   my $content = $self->get_content($xml->{"error"}->[0]);
-  return $content;
+  return (ref $content) ? '' : $content;
 }
 
 1;

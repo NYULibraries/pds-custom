@@ -30,9 +30,9 @@ my $lookup_from_flat_file = sub {
   # Open the flat file.
   my $flat_file = open(FF, "<", $conf->{flat_file});
   # Stop if we don't have a flat file to look at
-  return unless $flat_file;
+  return undef unless $flat_file;
   #Check each line of flat file for user and load into identity hash reference.
-  my $identity;
+  my($identity, $verification);
   $identity->{"birthplace"} = "";
   while (my $line = <FF>) {
     # Next if empty line
@@ -42,10 +42,10 @@ my $lookup_from_flat_file = sub {
       # Remove new line character
       $line =~ s/\n$//;
       # Set identity hash reference from flat file.
-      ($identity->{"id"}, $identity->{"barcode"}, $identity->{"verification"}, 
-        $identity->{"expiry_date"}, $identity->{"bor_status"}, $identity->{"bor_type"}, 
-          $identity->{"bor_name"}, $identity->{"mail"}, $identity->{"ill_permission"}, 
-            $identity->{"birthplace"}, $identity->{"college_code"}, $identity->{"college_name"}, 
+      ($identity->{"id"}, $identity->{"barcode"}, $verification, $identity->{"expiry_date"}, 
+        $identity->{"bor_status"}, $identity->{"bor_type"}, $identity->{"bor_name"}, 
+          $identity->{"mail"}, $identity->{"ill_permission"}, $identity->{"birthplace"},
+            $identity->{"college_code"}, $identity->{"college_name"}, 
               $identity->{"dept_code"}, $identity->{"dept_name"}, $identity->{"major_code"}, 
                 $identity->{"major"}) = split(/\t/, $line);
       last;
@@ -53,7 +53,7 @@ my $lookup_from_flat_file = sub {
   }
   close (FF);
   # Return identity if we found one
-  return $identity if $identity->{"id"};
+  return ($identity->{"id"}) ? $identity : undef;
 };
 
 # Private method returns an identity from the bor-info xservice for the given id
@@ -70,7 +70,7 @@ my $lookup_from_xserver = sub {
           "UserName" => $conf->{ xserver_user }, 
             "UserPassword" => $conf->{ xserver_password });
   # Return empty if the xservice call was unsuccessful or if it returned errors
-  return if (!($bor_info->success) || $bor_info->get_error);
+  return undef if (!($bor_info->success) || $bor_info->get_error);
   # Set identity hash reference from xservice.
   my $identity;
   $identity->{"id"} = $bor_info->get_z303_id();
@@ -83,7 +83,7 @@ my $lookup_from_xserver = sub {
   $identity->{"ill_permission"} = $bor_info->get_z305_photo_permission();
   $identity->{"birthplace"} = $bor_info->get_z303_birthplace();
   # Return identity if we found one
-  return $identity if $identity->{"id"};
+  return ($identity->{"id"}) ? $identity : undef;
 };
 
 # Private method returns an aleph identity
@@ -98,15 +98,17 @@ my $lookup_aleph_identity = sub {
 my $aleph_authenticate = sub {
   my($self, $id, $password) = @_;
   my $conf = $self->{'conf'};
-  my $bor_auth = NYU::Libraries::XService::Aleph::BorInfo->new(
+  my $bor_auth = NYU::Libraries::XService::Aleph::BorAuth->new(
     "Host" => $conf->{xserver_host}, "Port" => $conf->{xserver_port},
       "BorID" => $id, "Verification" => $password, "Library" => $conf->{ adm },
         "Translate" => "N", "UserName" => $conf->{ xserver_user }, 
             "UserPassword" => $conf->{ xserver_password });
-  # Return empty if the xservice call was unsuccessful or if it returned errors
-  return if (!($bor_auth->success) || $bor_auth->get_error);
+  # Set error and return undef if the xservice call was unsuccessful or if it returned errors
+  $self->set('error', "BorAuth was unsuccessful.") and return undef unless $bor_auth->success();
+  $self->set('error', "BorAuth errored: ".$bor_auth->get_error()) and return undef if $bor_auth->get_error();
   # Set identity hash reference from xservice.
   my $identity;
+  $identity->{"verification"} = $password;
   $identity->{"id"} = $bor_auth->get_z303_id();
   $identity->{"barcode"} =  "";
   $identity->{"expiry_date"} = $bor_auth->get_z305_expiry_date();
@@ -117,7 +119,7 @@ my $aleph_authenticate = sub {
   $identity->{"ill_permission"} = $bor_auth->get_z305_photo_permission();
   $identity->{"birthplace"} = $bor_auth->get_z303_birthplace();
   # Return identity if we found one
-  return $identity if $identity->{"id"};
+  return ($identity->{"id"}) ? $identity : undef;
 };
 
 # Private method returns a surnamed scrubbed of special chars
@@ -173,7 +175,7 @@ my $encryption_exception = sub {
 sub authenticate {
   my($self, $id, $password) = @_;
   # Set error and return if we don't have a configuration
-  $self->set('error', "No configuration set.") and return unless $self->{'conf'};
+  $self->set('error', "No configuration set.") and return undef unless $self->{'conf'};
   my $identity;
   if($password) {
     # If we have a password, we are actually authenticating
@@ -190,19 +192,23 @@ sub authenticate {
 # Usage:
 #   $self->set_attributes()
 sub set_attributes {
-  my $self = shift;
+  my($self, $force) = @_;
   $self->SUPER::set_attributes();
-  # Since verification isn't necessary for this call, add it based on info from Aleph
-  my @name_array = split(/,/, $self->{"identity"}->{"bor_name"});
-  my $surname = $name_array[0];
-  # Set verification as first four characters of the cleaned last name 
-  my $verification = uc(substr($self->$clean_surname($surname), 0, 4));
-  # Don't encrypt if this is an exception.
-  unless ($self->$encryption_exception()) {
-    # Don't encrypt unless the patron meets the encryption business logic.
-    $verification = $self->$encrypt_verification($verification) if $self->$is_encrypt_verification();
-  };
-  $self->set('verification', $verification);
+  unless ($self->verification && !$force) {
+    # Since verification isn't necessary for this call, add it based on info from Aleph
+    return undef unless $self->bor_name;
+    my @name_array = split(/,/, $self->bor_name);
+    my $surname = $name_array[0];
+    return undef unless $surname;
+    # Set verification as first four characters of the cleaned last name 
+    my $verification = uc(substr($self->$clean_surname($surname), 0, 4));
+    # Don't encrypt if this is an exception.
+    unless ($self->$encryption_exception()) {
+      # Don't encrypt unless the patron meets the encryption business logic.
+      $verification = $self->$encrypt_verification($verification) if $self->$is_encrypt_verification();
+    }
+    $self->set('verification', $verification);
+  }
 }
 
 1;

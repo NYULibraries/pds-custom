@@ -9,9 +9,6 @@ use Net::LDAP;
 use Net::LDAP::Util qw(ldap_error_text ldap_error_name ldap_error_desc);
 use Net::LDAP::Constant;
 
-# Data Dumper for error reporting
-use Data::Dumper;
-
 use base qw(NYU::Libraries::PDS::Identities::Base);
 my @attributes = qw(cn givenname sn mail role aleph_identifer);
 __PACKAGE__->mk_ro_accessors(@attributes);
@@ -35,11 +32,11 @@ my $ldap_user_search = sub {
   my $conf = $self->{'conf'};
   # Set up the LDAP object for admin binding
   my $admin_ldap_object = $self->ldap_object();
-  $self->set('error', "Could not create new admin LDAP object.") and return unless defined($admin_ldap_object);
+  $self->set('error', "Could not create new admin LDAP object.") and return undef unless defined($admin_ldap_object);
   # Bind as admin user
   my $admin_bind_message = $admin_ldap_object->bind($conf->{'ldap_admin_dn'}, password => $conf->{'ldap_admin_password'});
   # Set error and return if the user bind failed
-  $self->set('error', "Admin bind failed. ".Dumper($admin_bind_message)) and return if $admin_bind_message->is_error();
+  $self->set('error', "Admin bind failed. ".$self->Dumper($admin_bind_message)) and return undef if $admin_bind_message->is_error();
   # Search for user based on the given id
   my $user_search = 
     $admin_ldap_object->search(base => "ou=people,o=newschool.edu,o=cp",
@@ -47,9 +44,9 @@ my $ldap_user_search = sub {
   # Close the admin connection
   $admin_ldap_object->disconnect();
   # Set error and return if more than one record exists for the user
-  $self->set('error', "Non unique records for given id exist.") and return if $user_search->count > 1;
+  $self->set('error', "Non unique records for given id exist.") and return undef if $user_search->count > 1;
   # Set error and return if less than one record exists for the user
-  $self->set('error', "No record returned for given id.") and return if $user_search->count < 1;
+  $self->set('error', "No record returned for given id.") and return undef if $user_search->count < 1;
   # Return the user from the search
   return $user_search->entry(0);
 };
@@ -63,13 +60,13 @@ my $ldap_user_authenticate = sub {
   my($self, $uid, $password) = @_;
   # Get the LDAP object for user binding
   my $user_ldap_object = $self->ldap_object();
-  $self->set('error', "Could not create new user LDAP object.") and return unless defined($user_ldap_object);
+  $self->set('error', "Could not create new user LDAP object.") and return undef unless defined($user_ldap_object);
   # Set the user dn for binding
   my $user_dn = "uid=$uid,ou=people,o=newschool.edu,o=cp";
   # Bind to user dn with password to authenticate
   my $user_bind_message = $user_ldap_object->bind($user_dn, password=>$password);
   # Set error and return if the user bind failed
-  $self->set('error', "User bind failed. ".Dumper($user_bind_message)) and return if $user_bind_message->is_error();
+  $self->set('error', "User bind failed. ".$self->Dumper($user_bind_message)) and return undef if $user_bind_message->is_error();
   # Close the user connection.
   $user_ldap_object->disconnect();
   # Return true
@@ -82,7 +79,7 @@ my $ldap_user_authenticate = sub {
 sub authenticate {
   my($self, $id, $password) = @_;
   # Set error and return if we don't have a configuration
-  $self->set('error', "No configuration set.") and return unless $self->{'conf'};
+  $self->set('error', "No configuration set.") and return undef unless $self->{'conf'};
   # Get the identity
   my $identity = $self->$ldap_user_search($id);
   # Get uid from the identity
@@ -97,7 +94,7 @@ sub authenticate {
 sub set_attributes {
   my $self = shift;
   # Set error and return if there is no user
-  $self->set('error', 'No user set.') and return unless $self->{'identity'};
+  $self->set('error', 'No user set.') and return undef unless $self->{'identity'};
   my $identity = $self->{'identity'};
   # Set the attributes
   # Set the id

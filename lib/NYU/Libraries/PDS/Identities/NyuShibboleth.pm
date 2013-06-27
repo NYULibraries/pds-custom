@@ -2,9 +2,6 @@ package NYU::Libraries::PDS::Identities::NyuShibboleth;
 use strict;
 use warnings;
 
-# Data Dumper for error reporting
-use Data::Dumper;
-
 use base qw(NYU::Libraries::PDS::Identities::Base);
 my @attributes = qw(index authentication_instance authentication_method
   context_class identity_provider aleph_identifier uid givenname mail cn sn
@@ -44,7 +41,7 @@ my $shibboleth_identity = sub {
 sub authenticate {
   my($self) = @_;
   # Set error and return if we don't have a configuration
-  $self->set('error', "No configuration set.") and return unless $self->{'conf'};
+  $self->set('error', "No configuration set.") and return undef unless $self->{'conf'};
   # Get the identity
   my $identity = $self->$shibboleth_identity();
   # Set the identity instance variable if we have one

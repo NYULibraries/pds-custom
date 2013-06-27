@@ -41,7 +41,7 @@ sub get_internal_id {
   my $self = shift;
   my $xml = $self->get_xml();
   my $content = $self->get_content($xml->{"internal-id"}->[0]);
-  return $content;
+  return (ref $content) ? '' : $content;
 }
 
 1;

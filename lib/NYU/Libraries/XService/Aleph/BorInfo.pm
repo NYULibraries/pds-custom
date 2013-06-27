@@ -53,7 +53,7 @@ sub get_z303_id {
   my $self = shift;
   my $xml = $self->get_xml();
   my $content = $self->get_content($xml->{"z303"}->[0]->{"z303-id"}->[0]);
-  return $content;
+  return (ref $content) ? '' : $content;
 }
 
 sub get_z303_name {
@@ -61,7 +61,7 @@ sub get_z303_name {
   my $self = shift;
   my $xml = $self->get_xml();
   my $content = $self->get_content($xml->{"z303"}->[0]->{"z303-name"}->[0]);
-  return $content;
+  return (ref $content) ? '' : $content;
 }
 
 sub get_z303_birthplace {
@@ -69,7 +69,7 @@ sub get_z303_birthplace {
   my $self = shift;
   my $xml = $self->get_xml();
   my $content = $self->get_content($xml->{"z303"}->[0]->{"z303-birthplace"}->[0]);
-  return $content;
+  return (ref $content) ? '' : $content;
 }
 
 sub get_z303_proxy_for_id {
@@ -218,7 +218,7 @@ sub get_z304_email_address {
   my $self = shift;
   my $xml = $self->get_xml();
   my $content = $self->get_content($xml->{"z304"}->[0]->{"z304-email-address"}->[0]);
-  return $content;
+  return (ref $content) ? '' : $content;
 }
 
 sub get_z304_telephone {
@@ -271,7 +271,7 @@ sub get_z305_bortype {
   my $self = shift;
   my $xml = $self->get_xml();
   my $content = $self->get_content($xml->{"z305"}->[0]->{"z305-bor-type"}->[0]);
-  return $content;
+  return (ref $content) ? '' : $content;
 }
 
 sub get_z305_borstatus {
@@ -279,7 +279,7 @@ sub get_z305_borstatus {
   my $self = shift;
   my $xml = $self->get_xml();
   my $content = $self->get_content($xml->{"z305"}->[0]->{"z305-bor-status"}->[0]);
-  return $content;
+  return (ref $content) ? '' : $content;
 }
 
 sub get_z305_expiry_date {
@@ -287,7 +287,7 @@ sub get_z305_expiry_date {
   my $self = shift;
   my $xml = $self->get_xml();
   my $content = $self->get_content($xml->{"z305"}->[0]->{"z305-expiry-date"}->[0]);
-  return $content;
+  return (ref $content) ? '' : $content;
 }
 
 sub get_z305_loan_permission {
@@ -299,7 +299,7 @@ sub get_z305_photo_permission {
   my $self = shift;
   my $xml = $self->get_xml();
   my $content = $self->get_content($xml->{"z305"}->[0]->{"z305-photo-permission"}->[0]);
-  return $content;
+  return (ref $content) ? '' : $content;
 }
 
 sub get_z305_over_permission {
