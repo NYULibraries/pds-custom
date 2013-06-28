@@ -14,9 +14,9 @@ use constant LOADED_FROM_PLIF => "PLIF LOADED";
 use constant FAMILY_MEMBER_BOR_STATUS => "65";
 
 use base qw(NYU::Libraries::PDS::Identities::Base);
-my @attributes = qw(barcode verification expiry_date birthplace bor_status
-  bor_type bor_name mail ill_permission birthplace college_code college_name dept_code 
-    dept_name major_code major);
+my @attributes = qw(bor_name verification barcode expiry_date bor_status
+  bor_type ill_permission college_code college_name dept_code dept_name
+    major_code major plif_status);
 __PACKAGE__->mk_ro_accessors(@attributes);
 __PACKAGE__->mk_accessors(qw(encrypt));
 
@@ -33,7 +33,7 @@ my $lookup_from_flat_file = sub {
   return undef unless $flat_file;
   #Check each line of flat file for user and load into identity hash reference.
   my($identity, $verification);
-  $identity->{"birthplace"} = "";
+  $identity->{"plif_status"} = "";
   while (my $line = <FF>) {
     # Next if empty line
     next if ($line =~/^\s*$/);
@@ -44,7 +44,7 @@ my $lookup_from_flat_file = sub {
       # Set identity hash reference from flat file.
       ($identity->{"id"}, $identity->{"barcode"}, $verification, $identity->{"expiry_date"}, 
         $identity->{"bor_status"}, $identity->{"bor_type"}, $identity->{"bor_name"}, 
-          $identity->{"mail"}, $identity->{"ill_permission"}, $identity->{"birthplace"},
+          $identity->{"email"}, $identity->{"ill_permission"}, $identity->{"plif_status"},
             $identity->{"college_code"}, $identity->{"college_name"}, 
               $identity->{"dept_code"}, $identity->{"dept_name"}, $identity->{"major_code"}, 
                 $identity->{"major"}) = split(/\t/, $line);
@@ -79,9 +79,10 @@ my $lookup_from_xserver = sub {
   $identity->{"bor_status"} = $bor_info->get_z305_borstatus();
   $identity->{"bor_type"} = $bor_info->get_z305_bortype();
   $identity->{"bor_name"} = $bor_info->get_z303_name();
-  $identity->{"mail"} = $bor_info->get_z304_email_address();
+  $identity->{"email"} = $bor_info->get_z304_email_address();
   $identity->{"ill_permission"} = $bor_info->get_z305_photo_permission();
-  $identity->{"birthplace"} = $bor_info->get_z303_birthplace();
+  # We're overridden the birthplace with a PLIF (Patron Load something something) status
+  $identity->{"plif_status"} = $bor_info->get_z303_birthplace();
   # Return identity if we found one
   return ($identity->{"id"}) ? $identity : undef;
 };
@@ -115,9 +116,10 @@ my $aleph_authenticate = sub {
   $identity->{"bor_status"} = $bor_auth->get_z305_borstatus();
   $identity->{"bor_type"} = $bor_auth->get_z305_bortype();
   $identity->{"bor_name"} = $bor_auth->get_z303_name();
-  $identity->{"mail"} = $bor_auth->get_z304_email_address();
+  $identity->{"email"} = $bor_auth->get_z304_email_address();
   $identity->{"ill_permission"} = $bor_auth->get_z305_photo_permission();
-  $identity->{"birthplace"} = $bor_auth->get_z303_birthplace();
+  # We're overridden the birthplace with a PLIF (Patron Load something something) status
+  $identity->{"plif_status"} = $bor_auth->get_z303_birthplace();
   # Return identity if we found one
   return ($identity->{"id"}) ? $identity : undef;
 };
@@ -135,7 +137,7 @@ my $clean_surname = sub {
 # Private method returns whether this record was loaded from the PLIF
 my $loaded_from_plif = sub {
   my $self = shift;
-  return ($self->birthplace eq LOADED_FROM_PLIF);
+  return ($self->plif_status eq LOADED_FROM_PLIF);
 };
 
 # Private method returns a boolean indicating whether to encrypt the verification
@@ -187,6 +189,13 @@ sub authenticate {
   }
   $self->set('identity', $identity) if $identity;
 };
+
+# Method that gets the attributes from the Aleph identity
+# Usage:
+#   $self->get_attributes()
+sub get_attributes {
+  return @attributes;
+}
 
 # Method that sets the attributes from the Aleph identity
 # Usage:

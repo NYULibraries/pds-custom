@@ -18,5 +18,7 @@ isa_ok($identity, qw(Class::Accessor));
 isa_ok($identity, qw(NYU::Libraries::PDS::Identities::NyuShibboleth));
 
 # Verify methods
-can_ok($identity, (qw(error id index authentication_instance authentication_method 
-  context_class identity_provider aleph_identifier uid givenname mail cn sn edupersonentitlement)));
+can_ok($identity, (qw(error id email givenname cn sn aleph_identifier edupersonentitlement
+  index authentication_instance authentication_method context_class identity_provider)));
+
+$identity->set_attributes();

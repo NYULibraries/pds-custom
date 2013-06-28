@@ -3,25 +3,23 @@ use strict;
 use warnings;
 
 use base qw(NYU::Libraries::PDS::Identities::Base);
-my @attributes = qw(index authentication_instance authentication_method
-  context_class identity_provider aleph_identifier uid givenname mail cn sn
-    edupersonentitlement);
+my @attributes = qw(givenname cn sn aleph_identifier edupersonentitlement index
+  authentication_instance authentication_method context_class identity_provider);
 __PACKAGE__->mk_ro_accessors(@attributes);
 
 my $shibboleth_attribute_mappings = {
   'id' => 'Shib_Application_ID',
+  'email' => '',
+  'givenname' => '',
+  'cn' => '',
+  'sn' => '',
+  'aleph_identifier' => '',
+  'edupersonentitlement' => '',
   'index' => '',
   'authentication_instance' => '',
   'authentication_method' => '',
   'context_class' => '',
-  'identity_provider' => '',
-  'aleph_identifier' => '',
-  'uid' => '',
-  'givenname' => '',
-  'mail' => '',
-  'cn' => '',
-  'sn' => '',
-  'edupersonentitlement' => ''
+  'identity_provider' => ''
 };
 
 # Private sub that gets the identity from the ShibbolethSP
@@ -47,5 +45,12 @@ sub authenticate {
   # Set the identity instance variable if we have one
   $self->set('identity', $identity) if $identity;
 };
+
+# Method that gets the attributes from the NYU Shibboleth identity
+# Usage:
+#   $self->get_attributes()
+sub get_attributes {
+  return @attributes;
+}
 
 1;
