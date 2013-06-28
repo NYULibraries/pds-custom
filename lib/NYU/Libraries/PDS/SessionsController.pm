@@ -5,19 +5,25 @@ use warnings;
 # Use our bundled Perl modules, e.g. Class::Accessor
 use lib "vendor/lib";
 
+# CGI module for dealing with redirects
+use CGI qw/:standard/;
+
 # NYU Libraries modules
 use NYU::Libraries::Util qw(trim);
 use NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethController;
 use NYU::Libraries::PDS::IdentitiesControllers::NsLdapController;
 use NYU::Libraries::PDS::IdentitiesControllers::AlephController;
 use NYU::Libraries::PDS::Session;
+use NYU::Libraries::PDS::Views::Login;
 
 # Use PDS core libraries
 use PDSUtil;
 use PDSParamUtil;
 
+use Data::Dumper;
+
 use base qw(Class::Accessor);
-__PACKAGE__->mk_accessors(qw(institute calling_system target_url session_id));
+__PACKAGE__->mk_accessors(qw(institute calling_system target_url session_id error));
 
 # Default constants
 use constant DEFAULT_INSTITUTE => "NYU";
@@ -42,7 +48,7 @@ use constant DEFAULT_CALLING_SYSTEM => "primo";
 #   $self->$create_session($identity1, $identity2)
 my $create_session = sub {
   my($self, @identities) = @_;
-  
+  return NYU::Libraries::PDS::Session->new(@identities);
 };
 
 # Private method to get a new Aleph Controller
@@ -97,7 +103,7 @@ my $initialize = sub {
   # Set target_url
   $self->set('target_url', $target_url) if $target_url;
   # Set session_id
-  $self->set('target_url', $session_id) if $session_id;
+  $self->set('session_id', $session_id) if $session_id;
 };
 
 # Returns an new SessionsController
@@ -123,16 +129,24 @@ sub login {
   my $self = shift;
   my $nyu_shibboleth_controller = $self->$nyu_shibboleth_controller();
   my $nyu_shibboleth_identity = $nyu_shibboleth_controller->create();
-  if ($nyu_shibboleth_identity->exists) {
+  if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
     my $aleph_controller = $self->$aleph_controller();
     my $aleph_identity = $aleph_controller->create($nyu_shibboleth_identity->aleph_identifier);
+    # Check if the Aleph identity exists
     if ($aleph_identity->exists) {
       $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
+      # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
+      # or just got it from me.
+      $nyu_shibboleth_controller->redirect_to_target();
     } else {
-      # Return Unauthorized Error
+      # Exit with Unauthorized Error
+      set('error', "Unauthorized");
+      return undef;
     }
   } else {
     # Present Login Screen
+    my $template = NYU::Libraries::PDS::Views::Login->new();
+    print $template->render();
   }
 }
 
@@ -149,26 +163,55 @@ sub sso {
   if ($nyu_shibboleth_identity->exists) {
     my $aleph_controller = $self->$aleph_controller();
     my $aleph_identity = $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
+    # Check if the Aleph identity exists
     if ($aleph_identity->exists) {
       $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
     }
   }
-  # Redirect to target
+  # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
+  # or just got it from me.
+  $nyu_shibboleth_controller->redirect_to_target();
 }
 
 # Depending on 
 sub authenticate {
   my($self, $type, $id, $password) = @_;
-  my $controller = undef;
+  my $controller;
   if ($type eq "aleph") {
     $controller = $self->$aleph_controller();
   } elsif ($type eq "ns_ldap") {
     $controller = $self->$ns_ldap_controller();
   } else {
-    # Return error.
+    # Exit with WTF? Error
+    set('error', 'WTF?');
     return undef;
   }
+  my @identities;
   my $identity = $controller->create($id, $password);
+  # Check if the identity exists
+  if($identity->exists) {
+    push($identity, @identities) if($identity->exists);
+  } else {
+    # Exit with Login Error
+    my $error = $controller->error;
+    set('error', "There seems to have been a problem logging in. $error");
+    return undef;
+  }
+  unless($identity->isa("NYU::Libraries::PDS::Models::Aleph")) {
+    my $aleph_controller = $self->$aleph_controller();
+    my $aleph_identity = $aleph_controller->get($identity->aleph_identifier);
+    push($aleph_identity, @identities) if($aleph_identity->exists);
+    # Check if the Aleph identity exists
+    if($aleph_identity->exists) {
+      push($aleph_identity, @identities);
+    } else {
+      # Exit with Unauthorized Error
+      set('error', "Unauthorized");
+      return undef;
+    }
+  }
+  # If all went well, we authenticate
+  $self->$create_session(@identities);
 }
 
 sub bor_info {

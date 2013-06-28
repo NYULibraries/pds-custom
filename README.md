@@ -1,5 +1,5 @@
 # NYU PDS Perl Modules
-[![Build Status](http://jenkins1.bobst.nyu.edu/buildStatus/icon?job=PDS Custom)](http://jenkins1.bobst.nyu.edu/job/PDS%20Custom/)
+[![Build Status](http://jenkins1.bobst.nyu.edu/buildStatus/icon?job=PDS Custom)](http://jenkins1.bobst.nyu.edu:8080/job/PDS%20Custom/)
 
 The NYU PDS Perl Modules are a set of libraries, written in Perl, that facilitate customized functionality for NYU's PDS implementation.
 

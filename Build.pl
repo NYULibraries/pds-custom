@@ -20,7 +20,9 @@ my $builder = Module::Build->new(
       'Unicode::MapUTF8' => '1.11',
       'HTML::TagFilter' => '1.03',
       # LDAP Prereqs
-      'Net::LDAP' => '0.56'
+      'Net::LDAP' => '0.56',
+      # Mustache Templates
+      'Template::Mustache' => '0.5.1'
     }
 );
 
