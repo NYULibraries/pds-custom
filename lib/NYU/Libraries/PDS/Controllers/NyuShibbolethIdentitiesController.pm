@@ -2,14 +2,16 @@ package NYU::Libraries::PDS::Controllers::NyuShibbolethIdentitiesController;
 use strict;
 use warnings;
 
-# Use our bundled Perl modules, e.g. Class::Accessor
-use lib "vendor/lib";
-
-# Use PDS core libraries
-use PDSUtil;
-use PDSParamUtil;
+use base qw(NYU::Libraries::PDS::Controllers::BaseIdentitiesController);
 
 use base qw(Class::Accessor);
-__PACKAGE__->mk_accessors(qw(mode session idp_url target_url));
+__PACKAGE__->mk_accessors(qw(target_url));
+
+# Checks for passive cookie
+#   If exists, returns false
+#   otherwise redirects to Idp
+sub create {
+  
+}
 
 1;
