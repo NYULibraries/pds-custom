@@ -178,8 +178,9 @@ sub authenticate {
   my($self, $id, $password) = @_;
   # Set error and return if we don't have a configuration
   $self->set('error', "No configuration set.") and return undef unless $self->{'conf'};
+  my $lookup_only = $self->{'conf'}->{lookup_only};
   my $identity;
-  if($password) {
+  unless($lookup_only) {
     # If we have a password, we are actually authenticating
     $identity = $self->$aleph_authenticate($id, $password);
   } else {
@@ -187,7 +188,11 @@ sub authenticate {
     # an authentication via another identity.
     $identity = $self->$lookup_aleph_identity($id);
   }
-  $self->set('identity', $identity) if $identity;
+  # Set the identity if we've found one
+  if ($identity) {
+    $self->set('exists', 1);
+    $self->set('identity', $identity);
+  }
 };
 
 # Method that gets the attributes from the Aleph identity

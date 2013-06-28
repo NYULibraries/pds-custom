@@ -1,4 +1,4 @@
-package NYU::Libraries::PDS::Models::Session;
+package NYU::Libraries::PDS::Session;
 use strict;
 use warnings;
 
@@ -179,7 +179,8 @@ sub find {
 #     </identities>
 #   </session>
 sub to_xml {
-  
+  my($self, $root) = @_;
+  $root = ($root || "session");
 }
 
 1;

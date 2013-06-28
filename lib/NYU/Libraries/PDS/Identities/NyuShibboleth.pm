@@ -42,8 +42,11 @@ sub authenticate {
   $self->set('error', "No configuration set.") and return undef unless $self->{'conf'};
   # Get the identity
   my $identity = $self->$shibboleth_identity();
-  # Set the identity instance variable if we have one
-  $self->set('identity', $identity) if $identity;
+  # Set the identity if we've found one
+  if ($identity) {
+    $self->set('exists', 1);
+    $self->set('identity', $identity);
+  }
 };
 
 # Method that gets the attributes from the NYU Shibboleth identity

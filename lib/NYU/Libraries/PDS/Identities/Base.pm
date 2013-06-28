@@ -13,7 +13,7 @@ use NYU::Libraries::Util qw(trim);
 use Data::Dumper;
 
 use base qw(Class::Accessor);
-__PACKAGE__->mk_ro_accessors(qw(error id email));
+__PACKAGE__->mk_ro_accessors(qw(error exists id email));
 my @attributes;
 
 

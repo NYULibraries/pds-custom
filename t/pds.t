@@ -12,4 +12,4 @@ require_ok( 'NYU::Libraries::PDS' );
 my $controller = NYU::Libraries::PDS::controller();
 
 # Verify that this a SessionController
-isa_ok($controller, qw(NYU::Libraries::PDS::Controllers::SessionsController));
+isa_ok($controller, qw(NYU::Libraries::PDS::SessionsController));

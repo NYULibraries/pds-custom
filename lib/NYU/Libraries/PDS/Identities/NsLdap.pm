@@ -86,7 +86,10 @@ sub authenticate {
   my $uid = $identity->get_value("uid") if defined($identity);
   if ($uid) {
     # Set the identity instance variable if we've authenticated
-    $self->set('identity', $identity) if $self->$ldap_user_authenticate($uid, $password);
+    if ($self->$ldap_user_authenticate($uid, $password)) {
+      $self->set('exists', 1);
+      $self->set('identity', $identity);
+    }
   }
 };
 

@@ -9,7 +9,7 @@ BEGIN { use_ok('NYU::Libraries::PDS::Identities::Aleph') };
 require_ok( 'NYU::Libraries::PDS::Identities::Aleph' );
 
 # Get an instance of Aleph identity
-my $identity = NYU::Libraries::PDS::Identities::Aleph->new({shared_secret => 'EncryptThis'}, "N12162279");
+my $identity = NYU::Libraries::PDS::Identities::Aleph->new({shared_secret => 'EncryptThis', lookup_only => 1}, "N12162279");
 
 # Verify that this a Class::Accessor
 isa_ok($identity, qw(Class::Accessor));
@@ -43,7 +43,7 @@ is($identity->plif_status, "PLIF LOADED", "Should have plif status attribute");
 is($identity->verification, "85db3f2529a3e4e9a28135491006ce3f", "Should have encrypted verification");
 
 # Get a new instance of Aleph identity
-$identity = NYU::Libraries::PDS::Identities::Aleph->new({shared_secret => 'EncryptThis'}, "N12162279");
+$identity = NYU::Libraries::PDS::Identities::Aleph->new({shared_secret => 'EncryptThis', lookup_only => 1}, "N12162279");
 
 # Verify identity is defined
 ok(defined($identity->{'identity'}));
@@ -77,7 +77,7 @@ is($identity->to_xml(),
 
 # Get a new instance of Aleph identity
 $identity = NYU::Libraries::PDS::Identities::Aleph->new(
-  {shared_secret => 'EncryptThis', flat_file => "./t/support/patrons.dat"}, "N18158418");
+  {shared_secret => 'EncryptThis', flat_file => "./t/support/patrons.dat", lookup_only => 1}, "N18158418");
 
 # Verify identity is defined
 ok(defined($identity->{'identity'}));
