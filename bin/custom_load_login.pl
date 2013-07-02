@@ -1,6 +1,9 @@
 use strict;
 use warning;
 
+use lib "/exlibris/primo/p3_1/pds/custom";
+use lib "/exlibris/primo/p3_1/pds/program";
+
 # NYU Libraries modules
 use NYU::Libraries::Util qw(parse_conf);
 use NYU::Libraries::PDS;
@@ -17,5 +20,5 @@ sub custom_load_login {
   my $target_url = queryUrl();
   my $session_controller = NYU::Libraries::PDS->controller($conf, $institute, 
     $calling_system, $target_url, $session_id);
-  $session_controller->login();
+  print $session_controller->login();
 }
