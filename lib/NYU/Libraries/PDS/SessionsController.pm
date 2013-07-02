@@ -192,9 +192,10 @@ sub authenticate_ns_ldap {
   my($self, $id, $password) = @_;
   my $ns_ldap_identity = 
     $self->$ns_ldap_controller()->create($id, $password);
+  my $aleph_identity;
   # Check if the identity exists
   if($ns_ldap_identity->exists) {
-    my $aleph_identity =
+    $aleph_identity =
       $self->$aleph_controller()->get($ns_ldap_identity->aleph_identifier);
     # Unless the Aleph identity exists, exit with Unauthorized Error
     unless($aleph_identity->exists) {
