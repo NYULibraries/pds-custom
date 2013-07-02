@@ -16,12 +16,6 @@ use NYU::Libraries::PDS::IdentitiesControllers::AlephController;
 use NYU::Libraries::PDS::Session;
 use NYU::Libraries::PDS::Views::Login;
 
-# Use PDS core libraries
-use PDSUtil;
-use PDSParamUtil;
-
-use Data::Dumper;
-
 use base qw(Class::Accessor);
 __PACKAGE__->mk_accessors(qw(institute calling_system target_url session_id error));
 
@@ -145,8 +139,11 @@ sub login {
     }
   } else {
     # Present Login Screen
-    my $template = NYU::Libraries::PDS::Views::Login->new();
-    print $template->render();
+    my $template = 
+      NYU::Libraries::PDS::Views::Login->new(
+        $self->{'conf'}, $self->institute, $self->calling_system, 
+          $self->target_url, $self->session_id);
+    return $template->render();
   }
 }
 
@@ -162,7 +159,8 @@ sub sso {
   my $nyu_shibboleth_identity = $nyu_shibboleth_controller->create();
   if ($nyu_shibboleth_identity->exists) {
     my $aleph_controller = $self->$aleph_controller();
-    my $aleph_identity = $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
+    my $aleph_identity = 
+      $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
     # Check if the Aleph identity exists
     if ($aleph_identity->exists) {
       $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
@@ -174,33 +172,35 @@ sub sso {
 }
 
 # Depending on 
-sub authenticate {
-  my($self, $type, $id, $password) = @_;
-  my $controller;
-  if ($type eq "aleph") {
-    $controller = $self->$aleph_controller();
-  } elsif ($type eq "ns_ldap") {
-    $controller = $self->$ns_ldap_controller();
-  } else {
-    # Exit with WTF? Error
-    set('error', 'WTF?');
-    return undef;
-  }
+sub authenticate_aleph {
+  my($self, $id, $password) = @_;
   my @identities;
-  my $identity = $controller->create($id, $password);
+  my $aleph_identity = 
+    $self->$aleph_controller()->create($id, $password);
   # Check if the identity exists
-  if($identity->exists) {
-    push($identity, @identities) if($identity->exists);
+  if($aleph_identity->exists) {
+    push($aleph_identity, @identities);
   } else {
     # Exit with Login Error
-    my $error = $controller->error;
+    my $error = $self->$aleph_controller()->error;
     set('error', "There seems to have been a problem logging in. $error");
     return undef;
   }
-  unless($identity->isa("NYU::Libraries::PDS::Models::Aleph")) {
-    my $aleph_controller = $self->$aleph_controller();
-    my $aleph_identity = $aleph_controller->get($identity->aleph_identifier);
-    push($aleph_identity, @identities) if($aleph_identity->exists);
+  # If all went well, we authenticate
+  $self->$create_session(@identities);
+}
+
+# Depending on 
+sub authenticate_ns_ldap {
+  my($self, $id, $password) = @_;
+  my @identities;
+  my $ns_ldap_identity = 
+    $self->$ns_ldap_controller()->create($id, $password);
+  # Check if the identity exists
+  if($ns_ldap_identity->exists) {
+    push($ns_ldap_identity, @identities);
+    my $aleph_identity =
+      $self->$aleph_controller()->get($ns_ldap_identity->aleph_identifier);
     # Check if the Aleph identity exists
     if($aleph_identity->exists) {
       push($aleph_identity, @identities);
@@ -209,6 +209,11 @@ sub authenticate {
       set('error', "Unauthorized");
       return undef;
     }
+  } else {
+    # Exit with Login Error
+    my $error = $self->$ns_ldap_controller()->error;
+    set('error', "There seems to have been a problem logging in. $error");
+    return undef;
   }
   # If all went well, we authenticate
   $self->$create_session(@identities);
