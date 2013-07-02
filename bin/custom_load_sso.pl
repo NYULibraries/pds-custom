@@ -9,7 +9,7 @@ use NYU::Libraries::PDS;
 use PDSUtil qw(getEnvironmentParams);
 use PDSParamUtil qw(getAndFilterParam queryUrl);
 
-sub authenticate_ns_ldap {
+sub custom_load_sso {
   my ($session_id, $id, $password, $institute, $user_ip, $params) = @_;
   my $pds_directory = getEnvironmentParams('pds_directory');
   my $conf = parse_conf("$pds_directory/config/nyu.conf");
@@ -17,5 +17,5 @@ sub authenticate_ns_ldap {
   my $target_url = queryUrl();
   my $session_controller = NYU::Libraries::PDS->controller($conf, $institute, 
     $calling_system, $target_url, $session_id);
-  $session_controller->authenticate_ns_ldap($id, $password);
+  $session_controller->sso();
 }

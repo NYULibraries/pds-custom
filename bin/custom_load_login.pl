@@ -9,7 +9,7 @@ use NYU::Libraries::PDS;
 use PDSUtil qw(getEnvironmentParams);
 use PDSParamUtil qw(getAndFilterParam queryUrl);
 
-sub login {
+sub custom_load_login {
   my ($session_id, $id, $password, $institute, $user_ip, $params) = @_;
   my $pds_directory = getEnvironmentParams('pds_directory');
   my $conf = parse_conf("$pds_directory/config/nyu.conf");
