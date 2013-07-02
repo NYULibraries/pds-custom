@@ -174,37 +174,30 @@ sub sso {
 # Depending on 
 sub authenticate_aleph {
   my($self, $id, $password) = @_;
-  my @identities;
   my $aleph_identity = 
     $self->$aleph_controller()->create($id, $password);
-  # Check if the identity exists
-  if($aleph_identity->exists) {
-    push($aleph_identity, @identities);
-  } else {
+  # Unless the Aleph identity exists exit with Login Error
+  unless($aleph_identity->exists) {
     # Exit with Login Error
     my $error = $self->$aleph_controller()->error;
     set('error', "There seems to have been a problem logging in. $error");
     return undef;
   }
   # If all went well, we authenticate
-  $self->$create_session(@identities);
+  $self->$create_session($aleph_identity);
 }
 
 # Depending on 
 sub authenticate_ns_ldap {
   my($self, $id, $password) = @_;
-  my @identities;
   my $ns_ldap_identity = 
     $self->$ns_ldap_controller()->create($id, $password);
   # Check if the identity exists
   if($ns_ldap_identity->exists) {
-    push($ns_ldap_identity, @identities);
     my $aleph_identity =
       $self->$aleph_controller()->get($ns_ldap_identity->aleph_identifier);
-    # Check if the Aleph identity exists
-    if($aleph_identity->exists) {
-      push($aleph_identity, @identities);
-    } else {
+    # Unless the Aleph identity exists, exit with Unauthorized Error
+    unless($aleph_identity->exists) {
       # Exit with Unauthorized Error
       set('error', "Unauthorized");
       return undef;
@@ -216,7 +209,7 @@ sub authenticate_ns_ldap {
     return undef;
   }
   # If all went well, we authenticate
-  $self->$create_session(@identities);
+  $self->$create_session($ns_ldap_identity, $aleph_identity);
 }
 
 sub bor_info {
