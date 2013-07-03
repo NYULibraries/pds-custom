@@ -28,7 +28,7 @@ is($controller->login(), "<!DOCTYPE html>
     <meta http-equiv=\"Cache-Control\" content=\"no-cache\" />
     <meta http-equiv=\"Pragma\" content=\"no-cache\" />
     <meta http-equiv=\"Expires\" content=\"Sun, 06 Nov 1994 08:49:37 GMT\" />
-    <link rel=\"stylesheet\" type=\"text/css\" href=\"/assets/stylesheets/nyu.css\" />
+    <link rel=\"stylesheet\" type=\"text/css\" href=\"/assets/css/nyu.css\" />
   </head>
   <body>
     <header id=\"header\" class=\"header\">
