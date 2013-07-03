@@ -13,5 +13,6 @@ label {
     @include background-image(linear-gradient(color-stops(darken(#886EAE, 5%), #886EAE)));
     background-color: #886EAE;
     border-color: #886EAE;
+    color: white;
   }
 }
