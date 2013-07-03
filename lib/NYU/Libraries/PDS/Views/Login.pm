@@ -6,7 +6,16 @@ use warnings;
 use lib "vendor/lib";
 
 use base qw(Template::Mustache);
-$Template::Mustache::template_path = './templates';
+
+# Override Template::Mustache methods with our configurations
+sub template_path {
+  my $self = shift;
+  my $institute = $self->{'institute'};
+  my $template_path = "templates/$institute";
+  return ($ENV{'CI'}) ? "./$template_path" : 
+    "/exlibris/primo/p3_1/pds/custom/$template_path";
+}
+
 sub template_namespace { 'NYU::Libraries::PDS::Views'; };
 
 use constant DEFAULT_FOOTER => "BobCat.  Powered by Ex Libris Primo";
