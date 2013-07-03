@@ -21,6 +21,7 @@ my $builder = Module::Build->new(
       'HTML::TagFilter' => '1.03',
       # LDAP Prereqs
       'Net::LDAP' => '0.56',
+      'IO::Socket::SSL' => '1.951',
       # Mustache Templates
       'Template::Mustache' => '0.5.1'
     }
