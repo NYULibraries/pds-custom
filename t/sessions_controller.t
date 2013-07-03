@@ -9,7 +9,7 @@ BEGIN { use_ok('NYU::Libraries::PDS::SessionsController') };
 require_ok( 'NYU::Libraries::PDS::SessionsController' );
 
 # Get an instance of SessionController
-my $controller = NYU::Libraries::PDS::SessionsController->new({}, "nyu");
+my $controller = NYU::Libraries::PDS::SessionsController->new({}, "nyu", "primo", "http://example.com");
 
 # Verify that this a Class::Accessor
 isa_ok($controller, qw(Class::Accessor));
@@ -50,7 +50,7 @@ is($controller->login(), "<!DOCTYPE html>
             <h1>Please login to access library services.</h1>
           </div>
           SHIBBOLETH!
-          <form id=\"nyu_pds_login_form\" class=\"loginBox\" action=\"&server_pds\" method=\"post\">
+          <form id=\"nyu_pds_login_form\" class=\"loginBox\" action=\"/pds\" method=\"post\">
             <fieldset>
               <h2>Consortium &amp; NYU Users <br />without a NetID
                 <a href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" class=\"help nyulibrary_icons_information nyulibrary_help\" target=\"_blank\">&nbsp;<span>info</span></a></h2>
@@ -60,7 +60,7 @@ is($controller->login(), "<!DOCTYPE html>
               <input type=\"hidden\" name=\"institute\" value=\"nyu\" />
               <input type=\"hidden\" name=\"term1\" value=\"short\" />
               <input type=\"hidden\" name=\"selfreg\" value=\"\" />
-              <input type=\"hidden\" name=\"url\" value=\"\" />
+              <input type=\"hidden\" name=\"url\" value=\"http://example.com\" />
               <input type=\"hidden\" name=\"pds_handle\" value=\"\" />
               <label for=\"bor_id\">Enter your ID Number</label>
               <input id=\"bor_id\" type=\"text\" name=\"bor_id\" value=\"\" /><br />

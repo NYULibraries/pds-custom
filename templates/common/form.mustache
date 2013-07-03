@@ -1,11 +1,11 @@
-<form id="nyu_pds_login_form" class="loginBox" action="&server_pds" method="post">
+<form id="nyu_pds_login_form" class="loginBox" action="/pds" method="post">
   <fieldset>
     <h2>Consortium &amp; NYU Users <br />without a NetID
       <a href="https://library.nyu.edu/info/bobcat/no_netid.html" class="help nyulibrary_icons_information nyulibrary_help" target="_blank">&nbsp;<span>info</span></a></h2>
     <p class="error">{{error}}</p>
     <input type="hidden" name="func" value="login" />
     <input type="hidden" name="calling_system" value="{{calling_system}}" />
-    <input type="hidden" name="institute" value="{{institute}}" />
+    <input type="hidden" name="institute" value="{{institute_key}}" />
     <input type="hidden" name="term1" value="short" />
     <input type="hidden" name="selfreg" value="{{self_url}}" />
     <input type="hidden" name="url" value="{{target_url}}" />

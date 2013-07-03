@@ -10,7 +10,7 @@ use base qw(Template::Mustache);
 # Override Template::Mustache methods with our configurations
 sub template_path {
   my $self = shift;
-  my $institute = $self->{'institute'};
+  my $institute = $self->institute_key;
   my $template_path = "templates/$institute";
   return ($ENV{'CI'}) ? "./$template_path" : 
     "/exlibris/primo/p3_1/pds/custom/$template_path";
@@ -20,7 +20,7 @@ sub template_namespace { 'NYU::Libraries::PDS::Views'; };
 
 use constant DEFAULT_FOOTER => "BobCat.  Powered by Ex Libris Primo";
 
-my $INSTITUTES = {
+my %INSTITUTES = (
   'nyu' => {
     'footer' => 'NYU Division of Libraries.  BobCat.  Powered by Ex Libris Primo',
     'breadcrumbs' => {
@@ -63,7 +63,7 @@ my $INSTITUTES = {
       'bobcat' => {
         'display' => "BobCat",
         'url' => "http://bobcat.library.nyu.edu/nysid" }}}
-};
+);
 
 # Private initialization method
 # Usage:
@@ -95,9 +95,18 @@ sub new {
   return $self;
 }
 
+sub institute_key {
+  my $self = shift;
+  return lc($self->{'institute'});
+}
+
+sub institutes {
+  return \%INSTITUTES;
+}
+
 sub institute {
   my $self = shift;
-  return $self->{'institute'};
+  return $self->institutes->{$self->institute_key};
 }
 
 sub calling_system {
@@ -105,14 +114,25 @@ sub calling_system {
   return $self->{'calling_system'};
 }
 
+sub self_url {
+  my $self = shift;
+  return ($self->{'self_url'} || "");
+}
+
 sub target_url {
   my $self = shift;
-  return $self->{'target_url'};
+  return ($self->{'target_url'} || "");
 }
 
 sub session_id {
   my $self = shift;
-  return $self->{'session_id'};
+  return ($self->{'session_id'} || "");
+}
+
+sub institutional_stylesheet {
+  my $self = shift;
+  my $institute_key = $self->institute_key;
+  return "/assets/stylesheets/$institute_key.css";
 }
 
 sub parent {
@@ -137,8 +157,7 @@ sub bobcat_url {
 
 sub breadcrumbs {
   my $self = shift;
-  my $institute = $self->{'institute'};
-  return $INSTITUTES->{$institute}->{'breadcrumbs'};
+  return $self->institute->{'breadcrumbs'};
 }
 
 sub application_title {
@@ -150,17 +169,9 @@ sub bobcat_title {
   return $self->bobcat;
 }
 
-sub institutional_stylesheet {
-  my $self = shift;
-  my $institute = $self->{'institute'};
-  return "/assets/stylesheets/$institute.css";
-}
-
 sub footer {
   my $self = shift;
-  my $institute = $self->{'institute'};
-  return ($INSTITUTES->{$institute}->{'footer'} || DEFAULT_FOOTER);
-  
+  return ($self->institute->{'footer'} || DEFAULT_FOOTER);
 }
 
 1;
