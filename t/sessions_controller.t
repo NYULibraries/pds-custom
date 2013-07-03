@@ -46,28 +46,30 @@ is($controller->login(), "<!DOCTYPE html>
     <div class=\"nyu-container\">
       <div class=\"container-fluid\">
         <div class=\"row-fluid\">
-          <div class=\"span12\">
-            <h1>Please login to access library services.</h1>
+          <h1>Please login to access library services.</h1>
+          <div class=\"span4 offset1\">
+            SHIBBOLETH!
           </div>
-          SHIBBOLETH!
-          <form id=\"nyu_pds_login_form\" class=\"loginBox\" action=\"/pds\" method=\"post\">
-            <fieldset>
-              <h2>Consortium &amp; NYU Users <br />without a NetID
-                <a href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" class=\"help nyulibrary_icons_information nyulibrary_help\" target=\"_blank\">&nbsp;<span>info</span></a></h2>
-              <p class=\"error\"></p>
-              <input type=\"hidden\" name=\"func\" value=\"login\" />
-              <input type=\"hidden\" name=\"calling_system\" value=\"primo\" />
-              <input type=\"hidden\" name=\"institute\" value=\"nyu\" />
-              <input type=\"hidden\" name=\"term1\" value=\"short\" />
-              <input type=\"hidden\" name=\"selfreg\" value=\"\" />
-              <input type=\"hidden\" name=\"url\" value=\"http://example.com\" />
-              <input type=\"hidden\" name=\"pds_handle\" value=\"\" />
-              <label for=\"bor_id\">Enter your ID Number</label>
-              <input id=\"bor_id\" type=\"text\" name=\"bor_id\" value=\"\" /><br />
-              <label for=\"bor_verification\">Password or first four letters of your last name</label>
-              <input id=\"bor_verification\" type=\"password\" name=\"bor_verification\" /><br />
-              <input type=\"submit\" value=\"Login\" />
-            </fieldset>
+          <div class=\"span4\">
+            <form id=\"nyu_pds_login_form\" class=\"loginBox\" action=\"/pds\" method=\"post\">
+              <fieldset>
+                <h2>Consortium &amp; NYU Users <br />without a NetID
+                  <a href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" class=\"help nyulibrary_icons_information nyulibrary_help\" target=\"_blank\">&nbsp;<span>info</span></a></h2>
+                <p class=\"error\"></p>
+                <input type=\"hidden\" name=\"func\" value=\"login\" />
+                <input type=\"hidden\" name=\"calling_system\" value=\"primo\" />
+                <input type=\"hidden\" name=\"institute\" value=\"nyu\" />
+                <input type=\"hidden\" name=\"term1\" value=\"short\" />
+                <input type=\"hidden\" name=\"selfreg\" value=\"\" />
+                <input type=\"hidden\" name=\"url\" value=\"http://example.com\" />
+                <input type=\"hidden\" name=\"pds_handle\" value=\"\" />
+                <label for=\"bor_id\">Enter your ID Number</label>
+                <input id=\"bor_id\" type=\"text\" name=\"bor_id\" value=\"\" /><br />
+                <label for=\"bor_verification\">Password or first four letters of your last name</label>
+                <input id=\"bor_verification\" type=\"password\" name=\"bor_verification\" /><br />
+                <input type=\"submit\" value=\"Login\" />
+              </fieldset>
+            </form>
             <div class=\"login_help\">
               <a href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">Login help without an NYU NetID</a>
             </div>
@@ -79,7 +81,7 @@ is($controller->login(), "<!DOCTYPE html>
                 <li><a href=\"http://nysidlibrary.org/logging-into-bobcat\" target=\"_blank\">NYSID</a></li>
               </ul>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
