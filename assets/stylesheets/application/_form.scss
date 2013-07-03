@@ -1,0 +1,10 @@
+label {
+  margin-left: 0px;
+}
+
+.shibboleth {
+  @include background-image(linear-gradient(color-stops(#886EAE, lighten(#886EAE, 5%))));
+  background-color: #886EAE;
+  border-color: #886EAE;
+  color: white;
+}
