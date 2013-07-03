@@ -135,7 +135,7 @@ sub session_id {
 sub institutional_stylesheet {
   my $self = shift;
   my $institute_key = $self->institute_key;
-  return "/assets/stylesheets/$institute_key.css";
+  return "/assets/css/$institute_key.css";
 }
 
 sub parent {

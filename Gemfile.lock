@@ -1,0 +1,44 @@
+GIT
+  remote: git://github.com/NYULibraries/nyulibraries_assets.git
+  revision: facf6009e2bab3b76e1f92b47882519d596b8d28
+  tag: v1.1.7
+  specs:
+    nyulibraries_assets (1.1.7)
+      bootstrap-sass (>= 2.2.0, < 2.3.1.1)
+      compass (~> 0.12.2)
+      institutions (~> 0.0.5)
+      rake (~> 10.0.2)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    bootstrap-sass (2.3.1.0)
+      sass (~> 3.2)
+    chunky_png (1.2.8)
+    compass (0.12.2)
+      chunky_png (~> 1.2)
+      fssm (>= 0.2.7)
+      sass (~> 3.1)
+    fssm (0.2.10)
+    git (1.2.5)
+    institutions (0.0.5)
+      git (~> 1.2.5)
+      ipaddr_range_set (~> 0.10.0)
+      rake
+      rdoc
+      require_all (~> 1.2.1)
+    ipaddr_range_set (0.10.0)
+    json (1.8.0)
+    rake (10.0.4)
+    rdoc (4.0.1)
+      json (~> 1.4)
+    require_all (1.2.1)
+    sass (3.2.9)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  compass (~> 0.12.2)
+  nyulibraries_assets!
+  rake (~> 10.0.4)
