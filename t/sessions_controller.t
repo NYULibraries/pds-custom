@@ -51,37 +51,28 @@ is($controller->login(), "<!DOCTYPE html>
             SHIBBOLETH!
           </div>
           <div class=\"span4 well\">
-          <form id=\"nyu_pds_login_form\" class=\"form-horizontal\" action=\"/pds\" method=\"post\">
-            <fieldset>
-              <legend>
-                Consortium &amp; NYU Users without a NetID
-                <a href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
-                  &nbsp;<i class=\"icons-famfamfam-help\"></i>
-                </a>
-              </legend>
-              <div class=\"alert alert-error\">{{error}}</div>
-              <input type=\"hidden\" name=\"func\" value=\"login\" />
-              <input type=\"hidden\" name=\"calling_system\" value=\"{{calling_system}}\" />
-              <input type=\"hidden\" name=\"institute\" value=\"{{institute_key}}\" />
-              <input type=\"hidden\" name=\"term1\" value=\"short\" />
-              <input type=\"hidden\" name=\"selfreg\" value=\"{{self_url}}\" />
-              <input type=\"hidden\" name=\"url\" value=\"{{target_url}}\" />
-              <input type=\"hidden\" name=\"pds_handle\" value=\"{{session_id}}\" />
-              <div class=\"control-group\">
-                <label class=\"control-label\" for=\"bor_id\">Enter your ID Number</label>
-                <div class=\"controls\">
-                  <input id=\"bor_id\" type=\"text\" name=\"bor_id\" value=\"{{id}}\" placeholder=\"e.g. N12345678\" /><br />
-                </div>
-              </div>    
-              <div class=\"control-group\">
-                <label class=\"control-label\" for=\"bor_verification\">Password or first four letters of your last name</label>
-                <div class=\"controls\">
-                  <input id=\"bor_verification\" type=\"password\" name=\"bor_verification\" placeholder=\"e.g. SMIT\" /><br />
-                </div>
-              </div>    
-              <input type=\"submit\" value=\"Login\" />
-            </fieldset>
-          </form>
+            <form id=\"nyu_pds_login_form\" action=\"/pds\" method=\"post\">
+              <fieldset>
+                <legend>
+                  Consortium &amp; NYU Users without a NetID
+                  <a href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
+                    &nbsp;<i class=\"icons-famfamfam-help\"></i>
+                  </a>
+                </legend>
+                <input type=\"hidden\" name=\"func\" value=\"login\" />
+                <input type=\"hidden\" name=\"calling_system\" value=\"primo\" />
+                <input type=\"hidden\" name=\"institute\" value=\"nyu\" />
+                <input type=\"hidden\" name=\"term1\" value=\"short\" />
+                <input type=\"hidden\" name=\"selfreg\" value=\"\" />
+                <input type=\"hidden\" name=\"url\" value=\"http://example.com\" />
+                <input type=\"hidden\" name=\"pds_handle\" value=\"\" />
+                <label for=\"bor_id\">Enter your ID Number</label>
+                <input id=\"bor_id\" type=\"text\" name=\"bor_id\" value=\"\" placeholder=\"e.g. N12345678\" />
+                <label for=\"bor_verification\">Password or first four letters of your last name</label>
+                <input id=\"bor_verification\" type=\"password\" name=\"bor_verification\" placeholder=\"e.g. SMIT\" />
+                <input type=\"submit\" value=\"Login\" />
+              </fieldset>
+            </form>
             <div class=\"login_help\">
               <a href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">Login help without an NYU NetID</a>
             </div>
