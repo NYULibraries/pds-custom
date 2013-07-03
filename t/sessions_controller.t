@@ -69,7 +69,7 @@ is($controller->login(), "<!DOCTYPE html>
                 <label for=\"bor_id\">Enter your ID Number</label>
                 <input id=\"bor_id\" type=\"text\" name=\"bor_id\" value=\"\" placeholder=\"e.g. N12345678\" />
                 <label for=\"bor_verification\">Password or first four letters of your last name</label>
-                <input id=\"bor_verification\" type=\"password\" name=\"bor_verification\" placeholder=\"e.g. SMIT\" />
+                <input id=\"bor_verification\" type=\"password\" name=\"bor_verification\" placeholder=\"e.g. SMIT\" /><br/ >
                 <button type=\"submit\" class=\"btn\">Submit</button>
               </fieldset>
             </form>
