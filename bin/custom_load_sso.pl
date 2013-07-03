@@ -1,5 +1,11 @@
 use strict;
-use warning;
+# use warning;
+
+# Custom modules
+use lib "/exlibris/primo/p3_1/pds/custom/lib";
+use lib "/exlibris/primo/p3_1/pds/custom/vendor/lib";
+# PDS program modules
+use lib "/exlibris/primo/p3_1/pds/program";
 
 # NYU Libraries modules
 use NYU::Libraries::Util qw(parse_conf);
