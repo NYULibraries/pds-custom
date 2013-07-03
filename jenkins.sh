@@ -13,7 +13,7 @@ cd pds-core && git checkout sp-3.1.4-120726-development;
 cd ../../;
 
 # Use perlbrew version of perl-5.8.9
-source /home/wsops/perl5/perlbrew/etc/bashrc && perlbrew use perl-5.8.9;
+source ~/perl5/perlbrew/etc/bashrc && perlbrew use perl-5.8.9;
 # Make sure dependencies are installed
 perl -Ivendor/pds-core/program Build.pl && ./Build installdeps
 # TAP results to results directory
