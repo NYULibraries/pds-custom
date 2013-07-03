@@ -48,7 +48,7 @@ is($controller->login(), "<!DOCTYPE html>
         <div class=\"row-fluid\">
           <h1>Please login to access library services.</h1>
           <div class=\"span4 offset1 well\">
-            SHIBBOLETH!
+            <a href=\"\" class=\"btn shibboleth\">SHIBBOLETH!</a>
           </div>
           <div class=\"span4 well\">
             <form id=\"nyu_pds_login_form\" action=\"/pds\" method=\"post\">
