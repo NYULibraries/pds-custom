@@ -22,3 +22,7 @@ vendor/pds-core
 wiki
 # Ignore SASS cache
 .sass-cache
+# Ignore image/icons
+assets/image/icons-*.png
+# Ignore compass css files
+assets/css
