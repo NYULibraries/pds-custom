@@ -1,0 +1,3 @@
+[submodule "assets/javascripts/lib"]
+	path = assets/javascripts/lib
+	url = https://github.com/NYULibraries/nyu-libraries-javascripts

@@ -20,3 +20,5 @@ results
 vendor/pds-core
 # Ignore wiki repo
 wiki
+# Ignore SASS cache
+.sass-cache
