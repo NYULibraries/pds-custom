@@ -3,7 +3,7 @@ require 'nyulibraries_assets'
 
 
 # Set this to the root of your project when deployed:
-http_path = "/pds"
+# http_path = "/pds"
 css_dir = "assets/css"
 sass_dir = "assets/stylesheets"
 images_dir = "assets/images"
