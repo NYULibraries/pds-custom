@@ -4,9 +4,9 @@ require 'nyulibraries_assets'
 
 # Set this to the root of your project when deployed:
 # http_path = "/pds"
-css_dir = "assets/css"
+css_dir = "dist/css"
 sass_dir = "assets/stylesheets"
-images_dir = "assets/images"
+images_dir = "dist/images"
 javascripts_dir = "assets/javascripts"
 
 # You can select your preferred output style here (can be overridden via the command line):

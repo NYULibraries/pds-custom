@@ -29,6 +29,7 @@ is($controller->login(), "<!DOCTYPE html>
     <meta http-equiv=\"Pragma\" content=\"no-cache\" />
     <meta http-equiv=\"Expires\" content=\"Sun, 06 Nov 1994 08:49:37 GMT\" />
     <link rel=\"stylesheet\" type=\"text/css\" href=\"/assets/css/nyu.css\" />
+    <script src=\"/assets/application.js\" type=\"text/javascript\"></script>
   </head>
   <body>
     <header id=\"header\" class=\"header\">
@@ -56,7 +57,7 @@ is($controller->login(), "<!DOCTYPE html>
                 <legend>
                   Consortium &amp; NYU Users without a NetID
                   <a href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
-                    &nbsp;<i class=\"icons-famfamfam-help\"></i>
+                    <i class=\"icons-famfamfam-help\"></i>
                   </a>
                 </legend>
                 <input type=\"hidden\" name=\"func\" value=\"login\" />
