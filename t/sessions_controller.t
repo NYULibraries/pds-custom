@@ -29,7 +29,7 @@ is($controller->login(), "<!DOCTYPE html>
     <meta http-equiv=\"Pragma\" content=\"no-cache\" />
     <meta http-equiv=\"Expires\" content=\"Sun, 06 Nov 1994 08:49:37 GMT\" />
     <link rel=\"stylesheet\" type=\"text/css\" href=\"/assets/css/nyu.css\" />
-    <script src=\"/assets/application.js\" type=\"text/javascript\"></script>
+    <script src=\"/assets/javascripts/application.js\" type=\"text/javascript\"></script>
   </head>
   <body>
     <header id=\"header\" class=\"header\">

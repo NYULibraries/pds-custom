@@ -7,4 +7,4 @@
 #= require bootstrap-alert
 #= require bootstrap-dropdown
 $ ->
-  alert "help"
+  console.log "HELLO!"
