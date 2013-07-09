@@ -110,17 +110,17 @@ is($controller->login(), "<!DOCTYPE html>
   </head>
   <body>
     <header id=\"header\" class=\"header\">
-      <div class=\"parent\"><a href=\"http://library.nyu.edu\"><span>NYU Libraries</span></a></div>
+      <div class=\"parent\"><a href=\"http://library.newschool.edu/\"><span>New School University Libraries</span></a></div>
       <div class=\"suite\"><span>BobCat</span></div>
       <div class=\"application\"><span>Login</span></div>
     </header>
     <nav id=\"nav1\" class=\"breadcrumb\">
       <ul class=\"nyu-breadcrumbs\">
-        <li><a href=\"http://library.nyu.edu\">NYU Libraries</a></li>
-        <li><a href=\"http://bobcat.library.nyu.edu\">BobCat</a></li>
+        <li><a href=\"http://library.newschool.edu/\">New School University Libraries</a></li>
+        <li><a href=\"http://bobcat.library.nyu.edu/newschool\">BobCat</a></li>
         <li>Login</li>
       </ul>
-    </nav>
+    </nav>    
     <div class=\"nyu-container\">
       <div class=\"container-fluid\">
         <div class=\"row-fluid\">
