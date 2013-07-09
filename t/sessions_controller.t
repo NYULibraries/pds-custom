@@ -48,7 +48,7 @@ is($controller->login(), "<!DOCTYPE html>
       <div class=\"container-fluid\">
         <div class=\"row-fluid\">
           <h1>Please login to access library services.</h1>
-          <div class=\"span5 offset1 well\">
+          <div class=\"span5 well\">
             <a href=\"\" class=\"btn shibboleth\">SHIBBOLETH!</a>
           </div>
           <div class=\"span5 well\">
@@ -160,7 +160,7 @@ is($controller->login(), "<!DOCTYPE html>
 #               </ul>
 #             </div>
 #           </div>
-#           <div class=\"span5 offset1 well\">
+#           <div class=\"span5 well\">
 #             <a href=\"\" class=\"btn shibboleth\">SHIBBOLETH!</a>
 #           </div>
 #         </div>
