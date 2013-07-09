@@ -22,7 +22,7 @@ ASSETS.each do |asset|
   FileUtils.mkdir_p "./dist/#{asset}"
 end
 # Copy the bootstrap glyphicons to dist
-FileUtils.cp_r "#{bootstrap_images_path}", "./dist"
+FileUtils.cp_r "#{bootstrap_images_path}", "./assets"
 pds_javascripts_path = "./assets/javascripts"
 precompiler = MicroservicePrecompiler::Builder.new
 precompiler.compass_build
