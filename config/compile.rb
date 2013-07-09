@@ -1,4 +1,3 @@
-require 'pry'
 require 'compass'
 # Need to require bootstrap before sprockets loads
 require 'bootstrap-sass'
@@ -12,8 +11,11 @@ precompiler.compass_build
   FileUtils.cp_r "./assets/#{asset}", "./dist"
 end
 precompiler.build_path = "./dist"
+nyulibraries_assets_javascripts_path = 
+  "#{Compass::Frameworks['nyulibraries_assets'].stylesheets_directory}/../javascripts"
 bootstrap_javascripts_path = 
   "#{Compass::Frameworks['bootstrap'].stylesheets_directory}/../javascripts"
 precompiler.send(:sprockets_env).append_path bootstrap_javascripts_path
+precompiler.send(:sprockets_env).append_path nyulibraries_assets_javascripts_path
 precompiler.project_root = "./assets"
 precompiler.sprockets_build [:javascripts]
