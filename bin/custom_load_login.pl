@@ -16,10 +16,10 @@ use PDSUtil qw(getEnvironmentParams);
 use PDSParamUtil;
 
 sub custom_load_login {
-  my ($session_id, $id, $password, $institute, $user_ip, $params) = @_;
+  my ($session_id, $institute, $calling_system, $params) = @_;
   my $pds_directory = getEnvironmentParams('pds_directory');
   my $conf = parse_conf("$pds_directory/config/nyu.conf");
-  my $calling_system = PDSParamUtil::getAndFilterParam('calling_system');
+  $calling_system ||= PDSParamUtil::getAndFilterParam('calling_system');
   my $target_url = PDSParamUtil::queryUrl();
   my $session_controller = NYU::Libraries::PDS->controller($conf, $institute, 
     $calling_system, $target_url, $session_id);
