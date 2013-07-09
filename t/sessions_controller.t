@@ -94,79 +94,79 @@ is($controller->login(), "<!DOCTYPE html>
 </html>
 ", "Unexpected login html");
 
-# # Get another instance of SessionController
-# $controller = NYU::Libraries::PDS::SessionsController->new({}, "ns", "primo", "http://example.com");
-# 
-# is($controller->login(), "<!DOCTYPE html>
-# <html>
-#   <head>
-#     <title>BobCat</title>
-#     <meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />
-#     <meta http-equiv=\"Cache-Control\" content=\"no-cache\" />
-#     <meta http-equiv=\"Pragma\" content=\"no-cache\" />
-#     <meta http-equiv=\"Expires\" content=\"Sun, 06 Nov 1994 08:49:37 GMT\" />
-#     <link rel=\"stylesheet\" type=\"text/css\" href=\"/assets/css/ns.css\" />
-#     <script src=\"/assets/javascripts/application.js\" type=\"text/javascript\"></script>
-#   </head>
-#   <body>
-#     <header id=\"header\" class=\"header\">
-#       <div class=\"parent\"><a href=\"http://library.nyu.edu\"><span>NYU Libraries</span></a></div>
-#       <div class=\"suite\"><span>BobCat</span></div>
-#       <div class=\"application\"><span>Login</span></div>
-#     </header>
-#     <nav id=\"nav1\" class=\"breadcrumb\">
-#       <ul class=\"nyu-breadcrumbs\">
-#         <li><a href=\"http://library.nyu.edu\">NYU Libraries</a></li>
-#         <li><a href=\"http://bobcat.library.nyu.edu\">BobCat</a></li>
-#         <li>Login</li>
-#       </ul>
-#     </nav>
-#     <div class=\"nyu-container\">
-#       <div class=\"container-fluid\">
-#         <div class=\"row-fluid\">
-#           <h1>Please login to access library services.</h1>
-#           <div class=\"span5 well\">
-#             <form id=\"nyu_pds_login_form\" action=\"/pds\" method=\"post\">
-#               <fieldset>
-#                 <legend>
-#                   Consortium &amp; NYU Users without a NetID
-#                   <a class=\"nyulibraries-snippet\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
-#                     <i class=\"icons-famfamfam-help\"></i>
-#                   </a>
-#                 </legend>
-#                 <input type=\"hidden\" name=\"func\" value=\"login\" />
-#                 <input type=\"hidden\" name=\"calling_system\" value=\"primo\" />
-#                 <input type=\"hidden\" name=\"institute\" value=\"nyu\" />
-#                 <input type=\"hidden\" name=\"term1\" value=\"short\" />
-#                 <input type=\"hidden\" name=\"selfreg\" value=\"\" />
-#                 <input type=\"hidden\" name=\"url\" value=\"http://example.com\" />
-#                 <input type=\"hidden\" name=\"pds_handle\" value=\"\" />
-#                 <label for=\"bor_id\">Enter your ID Number</label>
-#                 <input id=\"bor_id\" type=\"text\" name=\"bor_id\" value=\"\" placeholder=\"e.g. N12345678\" />
-#                 <label for=\"bor_verification\">Password or first four letters of your last name</label>
-#                 <input id=\"bor_verification\" type=\"password\" name=\"bor_verification\" placeholder=\"e.g. SMIT\" /><br/ >
-#                 <button type=\"submit\" class=\"btn\">Login</button>
-#               </fieldset>
-#             </form>
-#             <div class=\"login_help\">
-#               <a href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">Login help without an NYU NetID</a>
-#             </div>
-#             <div id=\"nyu_pds_nonetid_note\" class=\"login_note\">
-#               <h3>Additional information:</h3>
-#               <ul>
-#                 <li><a href=\"http://library.cooper.edu/\" target=\"_blank\">Cooper Union</a></li>
-#                 <li><a href=\"http://library.newschool.edu/login/ns\" target=\"_blank\">New School</a></li>
-#                 <li><a href=\"http://nysidlibrary.org/logging-into-bobcat\" target=\"_blank\">NYSID</a></li>
-#               </ul>
-#             </div>
-#           </div>
-#           <div class=\"span5 well\">
-#             <a href=\"\" class=\"btn shibboleth\">SHIBBOLETH!</a>
-#           </div>
-#         </div>
-#       </div>
-#     </div>
-#     <footer>BobCat.  Powered by Ex Libris Primo</footer>
-#   </body>
-# </html>
-# ", "Unexpected login NS html");
+# Get another instance of SessionController
+$controller = NYU::Libraries::PDS::SessionsController->new({}, "ns", "primo", "http://example.com");
+
+is($controller->login(), "<!DOCTYPE html>
+<html>
+  <head>
+    <title>BobCat</title>
+    <meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />
+    <meta http-equiv=\"Cache-Control\" content=\"no-cache\" />
+    <meta http-equiv=\"Pragma\" content=\"no-cache\" />
+    <meta http-equiv=\"Expires\" content=\"Sun, 06 Nov 1994 08:49:37 GMT\" />
+    <link rel=\"stylesheet\" type=\"text/css\" href=\"/assets/css/ns.css\" />
+    <script src=\"/assets/javascripts/application.js\" type=\"text/javascript\"></script>
+  </head>
+  <body>
+    <header id=\"header\" class=\"header\">
+      <div class=\"parent\"><a href=\"http://library.nyu.edu\"><span>NYU Libraries</span></a></div>
+      <div class=\"suite\"><span>BobCat</span></div>
+      <div class=\"application\"><span>Login</span></div>
+    </header>
+    <nav id=\"nav1\" class=\"breadcrumb\">
+      <ul class=\"nyu-breadcrumbs\">
+        <li><a href=\"http://library.nyu.edu\">NYU Libraries</a></li>
+        <li><a href=\"http://bobcat.library.nyu.edu\">BobCat</a></li>
+        <li>Login</li>
+      </ul>
+    </nav>
+    <div class=\"nyu-container\">
+      <div class=\"container-fluid\">
+        <div class=\"row-fluid\">
+          <h1>Please login to access library services.</h1>
+          <div class=\"span5 well\">
+            <form id=\"nyu_pds_login_form\" action=\"/pds\" method=\"post\">
+              <fieldset>
+                <legend>
+                  Consortium &amp; NYU Users without a NetID
+                  <a class=\"nyulibraries-snippet\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
+                    <i class=\"icons-famfamfam-help\"></i>
+                  </a>
+                </legend>
+                <input type=\"hidden\" name=\"func\" value=\"login\" />
+                <input type=\"hidden\" name=\"calling_system\" value=\"primo\" />
+                <input type=\"hidden\" name=\"institute\" value=\"nyu\" />
+                <input type=\"hidden\" name=\"term1\" value=\"short\" />
+                <input type=\"hidden\" name=\"selfreg\" value=\"\" />
+                <input type=\"hidden\" name=\"url\" value=\"http://example.com\" />
+                <input type=\"hidden\" name=\"pds_handle\" value=\"\" />
+                <label for=\"bor_id\">Enter your ID Number</label>
+                <input id=\"bor_id\" type=\"text\" name=\"bor_id\" value=\"\" placeholder=\"e.g. N12345678\" />
+                <label for=\"bor_verification\">Password or first four letters of your last name</label>
+                <input id=\"bor_verification\" type=\"password\" name=\"bor_verification\" placeholder=\"e.g. SMIT\" /><br/ >
+                <button type=\"submit\" class=\"btn\">Login</button>
+              </fieldset>
+            </form>
+            <div class=\"login_help\">
+              <a href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">Login help without an NYU NetID</a>
+            </div>
+            <div id=\"nyu_pds_nonetid_note\" class=\"login_note\">
+              <h3>Additional information:</h3>
+              <ul>
+                <li><a href=\"http://library.cooper.edu/\" target=\"_blank\">Cooper Union</a></li>
+                <li><a href=\"http://library.newschool.edu/login/ns\" target=\"_blank\">New School</a></li>
+                <li><a href=\"http://nysidlibrary.org/logging-into-bobcat\" target=\"_blank\">NYSID</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class=\"span5 well\">
+            <a href=\"\" class=\"btn shibboleth\">SHIBBOLETH!</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer>BobCat.  Powered by Ex Libris Primo</footer>
+  </body>
+</html>
+", "Unexpected login NS html");
