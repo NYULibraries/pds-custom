@@ -1,5 +1,5 @@
 # Require all js files inside the 'nyulibraries' subdir next to this file.
-#= require jquery
+#= require application/jquery
 #= require bootstrap-tooltip
 #= require bootstrap-popover
 #= require bootstrap-transition

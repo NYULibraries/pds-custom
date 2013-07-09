@@ -26,3 +26,5 @@ wiki
 assets/image/icons-*.png
 # Ignore compass css files
 assets/css
+# Ignore dist
+dist
