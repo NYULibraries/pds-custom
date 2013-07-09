@@ -120,7 +120,7 @@ is($controller->login(), "<!DOCTYPE html>
         <li><a href=\"http://bobcat.library.nyu.edu/newschool\">BobCat</a></li>
         <li>Login</li>
       </ul>
-    </nav>    
+    </nav>
     <div class=\"nyu-container\">
       <div class=\"container-fluid\">
         <div class=\"row-fluid\">
