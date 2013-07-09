@@ -21,7 +21,7 @@ sub custom_load_login {
   my $conf = parse_conf("$pds_directory/config/nyu.conf");
   $calling_system ||= PDSParamUtil::getAndFilterParam('calling_system');
   my $target_url = PDSParamUtil::queryUrl();
-  my $session_controller = NYU::Libraries::PDS->controller($conf, $institute, 
+  my $session_controller = NYU::Libraries::PDS::controller($conf, $institute, 
     $calling_system, $target_url, $session_id);
   print $session_controller->login();
 }
