@@ -61,8 +61,7 @@ my %INSTITUTES = (
         'placeholder' => "e.g. ParsJ123"
       },
       'password' => {
-        'label' => "Enter your NetID Password",
-        'placeholder' => ""
+        'label' => "Enter your NetID Password"
       }
     },
     'breadcrumbs' => {
