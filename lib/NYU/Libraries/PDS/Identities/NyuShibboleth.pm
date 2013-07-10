@@ -8,13 +8,13 @@ my @attributes = qw(givenname cn sn aleph_identifier edupersonentitlement index
 __PACKAGE__->mk_ro_accessors(@attributes);
 
 my $shibboleth_attribute_mappings = {
-  'id' => 'Shib_Application_ID',
-  'email' => '',
-  'givenname' => '',
-  'cn' => '',
-  'sn' => '',
-  'aleph_identifier' => '',
-  'edupersonentitlement' => '',
+  'id' => 'uid',
+  'email' => 'mail',
+  'givenname' => 'givenName',
+  'cn' => 'displayName',
+  'sn' => 'sn',
+  'aleph_identifier' => 'NYUIdn',
+  'edupersonentitlement' => 'eduPersonEntitlement',
   'index' => '',
   'authentication_instance' => '',
   'authentication_method' => '',

@@ -9,5 +9,6 @@
 #= require nyulibraries/popover
 $ ->
   console.log "HELLO!"
-  # My Workspace Help Popover
+  # Help Popover
+  new window.nyulibraries.HoverPopover("a.nyulibraries-help").init()
   new window.nyulibraries.PartialHoverPopover("a.nyulibraries-help-snippet").init()
