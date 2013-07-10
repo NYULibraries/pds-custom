@@ -9,7 +9,7 @@ use lib "vendor/lib";
 use CGI qw/:standard/;
 
 # NYU Libraries modules
-use NYU::Libraries::Util qw(trim);
+use NYU::Libraries::Util qw(trim whitelist_institution);
 use NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethController;
 use NYU::Libraries::PDS::IdentitiesControllers::NsLdapController;
 use NYU::Libraries::PDS::IdentitiesControllers::AlephController;
@@ -91,7 +91,7 @@ my $initialize = sub {
   # Set configurations
   $self->set('conf', $conf);
   # Set institute
-  $self->set('institute', ($institute || DEFAULT_INSTITUTE));
+  $self->set('institute', (whitelist_institution($institute) || DEFAULT_INSTITUTE));
   # Set calling_system
   $self->set('calling_system', ($calling_system || DEFAULT_CALLING_SYSTEM));
   # Set target_url

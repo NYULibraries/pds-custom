@@ -8,7 +8,7 @@ use LWP::UserAgent;
 # Export these methods
 require Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(trim xml_encode parse_conf save_permanent_eshelf_records);
+our @EXPORT_OK = qw(trim xml_encode parse_conf save_permanent_eshelf_records whitelist_institution);
 
 # global lookup hash
 my %ESCAPES = ('&' => '&amp;', '"' => '&quot;');
@@ -17,6 +17,12 @@ sub xml_encode {
   my ($string) = @_;
   $string =~ s/([&"])/$ESCAPES{$1}/ge;
   return $string;
+}
+
+sub whitelist_institution {
+  my ($institute) = @_;
+  @institutes = qw/NYU NS NYSID CU NYUAD NYUSH/;
+  ( grep { $_ eq $institute} @ip_addresses ) ? $institute : undef;
 }
 
 sub parse_conf {
