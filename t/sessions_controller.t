@@ -193,6 +193,16 @@ is($controller->login(), "<!DOCTYPE html>
           <div>
             <a href=\"\" class=\"btn shibboleth\">SHIBBOLETH!</a>
           </div>
+          <div>
+            <h3>Need more information?</h3>
+            <ul>
+              <li><a href=\"http://library.newschool.edu/login/cu\" target=\"_blank\">Cooper Union</a></li>
+              <li><a href=\"http://library.newschool.edu/login/nysid\" target=\"_blank\">NYSID</a></li>
+              <li><a href=\"http://library.newschool.edu/login/ns\" target=\"_blank\">New School</a></li>
+              <li><a href=\"http://library.newschool.edu/login/hu\" target=\"_blank\">Hebrew Union</a></li>
+              <li><a href=\"http://answers.library.newschool.edu\" target=\"_blank\">New School Ask-A-Librarian Service</a></li>
+            </ul>
+          </div>
         </div>
       </div>
     </section>
