@@ -12,7 +12,7 @@ BEGIN { use_ok('NYU::Libraries::PDS::Identities::NsLdap') };
 require_ok( 'NYU::Libraries::PDS::Identities::NsLdap' );
 
 # Get an instance of NsLdapIdentity
-my $conf = parse_conf("vendor/pds-core/conf_table/opensso.conf");
+my $conf = parse_conf("vendor/pds-core/config/pds/nyu.conf");
 $conf->{ssl_cert_path} = undef;
 my $identity = NYU::Libraries::PDS::Identities::NsLdap->new($conf, "jonesa", "FAIL");
 
