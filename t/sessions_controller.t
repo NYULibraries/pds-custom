@@ -65,7 +65,7 @@ is($controller->login(), "<!DOCTYPE html>
               Consortium &amp; NYU Users without a NetID
               <a class=\"nyulibraries-help-snippet\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
                 <i class=\"icons-famfamfam-help\"></i>
-                </a>
+              </a>
             </h2>
             <form id=\"nyu_pds_login_form\" action=\"/pds\" method=\"post\">
               <fieldset>
