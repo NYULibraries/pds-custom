@@ -28,6 +28,7 @@ is($controller->login(), "<!DOCTYPE html>
     <meta http-equiv=\"Cache-Control\" content=\"no-cache\" />
     <meta http-equiv=\"Pragma\" content=\"no-cache\" />
     <meta http-equiv=\"Expires\" content=\"Sun, 06 Nov 1994 08:49:37 GMT\" />
+    <meta name=\"viewport\" content=\"width=device-width; initial-scale=1; maximum-scale=1\" />
     <link rel=\"stylesheet\" type=\"text/css\" href=\"/assets/css/nyu.css\" />
     <script src=\"/assets/javascripts/application.js\" type=\"text/javascript\"></script>
   </head>
@@ -105,6 +106,7 @@ is($controller->login(), "<!DOCTYPE html>
     <meta http-equiv=\"Cache-Control\" content=\"no-cache\" />
     <meta http-equiv=\"Pragma\" content=\"no-cache\" />
     <meta http-equiv=\"Expires\" content=\"Sun, 06 Nov 1994 08:49:37 GMT\" />
+    <meta name=\"viewport\" content=\"width=device-width; initial-scale=1; maximum-scale=1\" />
     <link rel=\"stylesheet\" type=\"text/css\" href=\"/assets/css/ns.css\" />
     <script src=\"/assets/javascripts/application.js\" type=\"text/javascript\"></script>
   </head>
