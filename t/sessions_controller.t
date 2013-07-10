@@ -157,10 +157,10 @@ is($controller->login(), "<!DOCTYPE html>
                 <input type=\"hidden\" name=\"selfreg\" value=\"\" />
                 <input type=\"hidden\" name=\"url\" value=\"http://example.com\" />
                 <input type=\"hidden\" name=\"pds_handle\" value=\"\" />
-                <label for=\"bor_id\">Enter your ID Number</label>
-                <input id=\"bor_id\" type=\"text\" name=\"bor_id\" value=\"\" placeholder=\"e.g. N12345678\" />
-                <label for=\"bor_verification\">Password or first four letters of your last name</label>
-                <input id=\"bor_verification\" type=\"password\" name=\"bor_verification\" placeholder=\"e.g. SMIT\" /><br/ >
+                <label for=\"bor_id\">Enter your NetID Username</label>
+                <input id=\"bor_id\" type=\"text\" name=\"bor_id\" value=\"\" placeholder=\"\" />
+                <label for=\"bor_verification\">Enter your NetID Password</label>
+                <input id=\"bor_verification\" type=\"password\" name=\"bor_verification\" placeholder=\"\" /><br/ >
                 <button type=\"submit\" class=\"btn\">Login</button>
               </fieldset>
             </form>

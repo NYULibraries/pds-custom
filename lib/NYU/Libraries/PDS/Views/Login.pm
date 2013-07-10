@@ -21,6 +21,10 @@ sub template_path {
 
 sub template_namespace { 'NYU::Libraries::PDS::Views'; };
 
+use constant DEFAULT_USERNAME_LABEL => "Enter your ID Number";
+use constant DEFAULT_USERNAME_PLACEHOLDER => "e.g. N12345678";
+use constant DEFAULT_PASSWORD_LABEL => "Password or first four letters of your last name";
+use constant DEFAULT_PASSWORD_PLACEHOLDER => "e.g. SMIT";
 use constant DEFAULT_FOOTER => "BobCat.  Powered by Ex Libris Primo";
 
 my %INSTITUTES = (
@@ -51,6 +55,16 @@ my %INSTITUTES = (
         'display' => "BobCat",
         'url' => "http://bobcat.library.nyu.edu/cooper" }}},
   'ns' => {
+    'form' => {
+      'username' => {
+        'label' => "Enter your NetID Username",
+        'placeholder' => "e.g. ParsJ123"
+      },
+      'password' => {
+        'label' => "Enter your NetID Username",
+        'placeholder' => "e.g. ParsJ123"
+      }
+    },
     'breadcrumbs' => {
       'parent' => {
         'display' => "New School University Libraries",
@@ -170,6 +184,45 @@ sub application_title {
 sub bobcat_title {
   my $self = shift;
   return $self->bobcat;
+}
+
+sub form {
+  my $self = shift;
+  return ($self->institute->{'form'});
+}
+
+sub username {
+  my $self = shift;
+  return ($self->form->{'username'}) if defined($self->form);
+}
+
+sub username_label {
+  my $self = shift;
+  return (defined($self->username)) ? 
+    ($self->username->{'label'}) : DEFAULT_USERNAME_LABEL;
+}
+
+sub username_placeholder {
+  my $self = shift;
+  return (defined($self->username)) ? 
+    ($self->username->{'placeholder'}) : DEFAULT_USERNAME_PLACEHOLDER;
+}
+
+sub password {
+  my $self = shift;
+  return ($self->form->{'password'}) if defined($self->form);
+}
+
+sub password_label {
+  my $self = shift;
+  return (defined($self->password)) ? 
+    ($self->password->{'label'}) : DEFAULT_PASSWORD_LABEL;
+}
+
+sub password_placeholder {
+  my $self = shift;
+  return (defined($self->password)) ? 
+    ($self->password->{'placeholder'}) : DEFAULT_PASSWORD_PLACEHOLDER;
 }
 
 sub footer {
