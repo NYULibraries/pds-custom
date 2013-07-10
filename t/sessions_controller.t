@@ -46,9 +46,9 @@ is($controller->login(), "<!DOCTYPE html>
       </ul>
     </nav>
     <div class=\"nyu-container\">
+      <h1>Please login to access library services.</h1>
       <div class=\"container-fluid\">
         <div class=\"row-fluid\">
-          <h1>Please login to access library services.</h1>
           <div class=\"span5 well\">
             <a href=\"\" class=\"btn shibboleth\">SHIBBOLETH!</a>
           </div>
@@ -89,6 +89,12 @@ is($controller->login(), "<!DOCTYPE html>
           </div>
         </div>
       </div>
+      <section>
+        <h3>
+          Library services vary by institution. Please see the
+          <a href=\"https://web1.library.nyu.edu/privileges_guide/\" target=\"_blank\">NYU Libraries Privileges Guide</a>.
+        </h3>
+      </section>
     </div>
     <footer>NYU Division of Libraries.  BobCat.  Powered by Ex Libris Primo</footer>
   </body>
@@ -124,9 +130,9 @@ is($controller->login(), "<!DOCTYPE html>
       </ul>
     </nav>
     <div class=\"nyu-container\">
+      <h1>Please login to access library services.</h1>
       <div class=\"container-fluid\">
         <div class=\"row-fluid\">
-          <h1>Please login to access library services.</h1>
           <div class=\"span5 well\">
             <form id=\"nyu_pds_login_form\" action=\"/pds\" method=\"post\">
               <fieldset>
@@ -166,6 +172,12 @@ is($controller->login(), "<!DOCTYPE html>
           </div>
         </div>
       </div>
+      <section>
+        <h3>
+          Library services vary by institution. Please see the
+          <a href=\"https://web1.library.nyu.edu/privileges_guide/\" target=\"_blank\">NYU Libraries Privileges Guide</a>.
+        </h3>
+      </section>
     </div>
     <footer>BobCat.  Powered by Ex Libris Primo</footer>
   </body>
