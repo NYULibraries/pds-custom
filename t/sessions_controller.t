@@ -55,9 +55,9 @@ is($controller->login(), "<!DOCTYPE html>
               <i class=\"icons-famfamfam-help\"></i>
             </a>
           </h2>
-          <div>
+          <p>
             <a href=\"\" class=\"btn shibboleth\">SHIBBOLETH!</a>
-          </div>
+          </p>
           <div>
             <a href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">Login help with an NYU NetID</a>
           </div>
@@ -190,9 +190,9 @@ is($controller->login(), "<!DOCTYPE html>
               <i class=\"icons-famfamfam-help\"></i>
             </a>
           </h2>
-          <div>
+          <p>
             <a href=\"\" class=\"btn shibboleth\">SHIBBOLETH!</a>
-          </div>
+          </p>
           <div>
             <h3>Need more information?</h3>
             <ul>
