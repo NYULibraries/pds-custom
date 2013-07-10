@@ -58,6 +58,17 @@ is($controller->login(), "<!DOCTYPE html>
           <div>
             <a href=\"\" class=\"btn shibboleth\">SHIBBOLETH!</a>
           </div>
+          <div>
+            <a href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">Login help with an NYU NetID</a>
+          </div>
+          <div>
+            <h3>Additional information:</h3>
+            <ul class=\"unstyled\">
+              <li><a href=\"http://library.nyu.edu/help/proxy.html\" target=\"_blank\">NYU</a></li>
+              <li><a href=\"http://library.poly.edu/research/access/nyu\" target=\"_blank\">NYU-Poly</a></li>
+              <li><a href=\"http://library.nyu.edu/ask/\" target=\"_blank\">Ask a Librarian</a></li>
+            </ul>
+          </div>
         </div>
         <div class=\"span5 well\">
           <h2>
