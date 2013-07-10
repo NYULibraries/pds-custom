@@ -203,7 +203,7 @@ sub username_label {
 
 sub username_placeholder {
   my $self = shift;
-  return (defined($self->username)) ? 
+  return ($self->username) ? 
     ($self->username->{'placeholder'}) : DEFAULT_USERNAME_PLACEHOLDER;
 }
 
@@ -214,13 +214,13 @@ sub password {
 
 sub password_label {
   my $self = shift;
-  return (defined($self->password)) ? 
+  return ($self->password) ? 
     ($self->password->{'label'}) : DEFAULT_PASSWORD_LABEL;
 }
 
 sub password_placeholder {
   my $self = shift;
-  return (defined($self->password)) ? 
+  return ($self->password) ? 
     ($self->password->{'placeholder'}) : DEFAULT_PASSWORD_PLACEHOLDER;
 }
 
