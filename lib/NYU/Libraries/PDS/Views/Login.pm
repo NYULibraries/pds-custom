@@ -21,6 +21,7 @@ sub template_path {
 
 sub template_namespace { 'NYU::Libraries::PDS::Views'; };
 
+use constant DEFAULT_FORM_TITLE => 'Consortium & NYU Users without a NetID';
 use constant DEFAULT_USERNAME_LABEL => "Enter your ID Number";
 use constant DEFAULT_USERNAME_PLACEHOLDER => "e.g. N12345678";
 use constant DEFAULT_PASSWORD_LABEL => "Password or first four letters of your last name";
@@ -56,6 +57,7 @@ my %INSTITUTES = (
         'url' => "http://bobcat.library.nyu.edu/cooper" }}},
   'ns' => {
     'form' => {
+      'title' => 'Consortium or New School Patrons',
       'username' => {
         'label' => "Enter your NetID Username",
         'placeholder' => "e.g. ParsJ123"
@@ -188,6 +190,12 @@ sub bobcat_title {
 sub form {
   my $self = shift;
   return ($self->institute->{'form'});
+}
+
+sub form_title {
+  my $self = shift;
+  return (defined($self->form) && $self->form->{'title'}) ? 
+    ($self->form->{'title'}) : DEFAULT_FORM_TITLE;
 }
 
 sub username {
