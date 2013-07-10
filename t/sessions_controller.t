@@ -9,7 +9,7 @@ BEGIN { use_ok('NYU::Libraries::PDS::SessionsController') };
 require_ok( 'NYU::Libraries::PDS::SessionsController' );
 
 # Get an instance of SessionController
-my $controller = NYU::Libraries::PDS::SessionsController->new({}, "nyu", "primo", "http://example.com");
+my $controller = NYU::Libraries::PDS::SessionsController->new({}, "NYU", "primo", "http://example.com");
 
 # Verify that this a Class::Accessor
 isa_ok($controller, qw(Class::Accessor));
@@ -119,7 +119,7 @@ is($controller->login(), "<!DOCTYPE html>
 ", "Unexpected login html");
 
 # Get another instance of SessionController
-$controller = NYU::Libraries::PDS::SessionsController->new({}, "ns", "primo", "http://example.com");
+$controller = NYU::Libraries::PDS::SessionsController->new({}, "NS", "primo", "http://example.com");
 
 is($controller->login(), "<!DOCTYPE html>
 <html>
