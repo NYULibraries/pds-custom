@@ -21,8 +21,8 @@ sub xml_encode {
 
 sub whitelist_institution {
   my ($institute) = @_;
-  @institutes = qw/NYU NS NYSID CU NYUAD NYUSH/;
-  ( grep { $_ eq $institute} @ip_addresses ) ? $institute : undef;
+  my @institutes = qw/NYU NS NYSID CU NYUAD NYUSH/;
+  ( grep { $_ eq $institute} @institutes ) ? $institute : undef;
 }
 
 sub parse_conf {
