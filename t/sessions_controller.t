@@ -75,12 +75,12 @@ is($controller->login(), "<!DOCTYPE html>
                 <button type=\"submit\" class=\"btn\">Login</button>
               </fieldset>
             </form>
-            <div class=\"login_help\">
+            <div>
               <a href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">Login help without an NYU NetID</a>
             </div>
-            <div id=\"nyu_pds_nonetid_note\" class=\"login_note\">
+            <div>
               <h3>Additional information:</h3>
-              <ul>
+              <ul class=\"unstyled\">
                 <li><a href=\"http://library.cooper.edu/\" target=\"_blank\">Cooper Union</a></li>
                 <li><a href=\"http://library.newschool.edu/login/ns\" target=\"_blank\">New School</a></li>
                 <li><a href=\"http://nysidlibrary.org/logging-into-bobcat\" target=\"_blank\">NYSID</a></li>
@@ -150,15 +150,14 @@ is($controller->login(), "<!DOCTYPE html>
                 <button type=\"submit\" class=\"btn\">Login</button>
               </fieldset>
             </form>
-            <div class=\"login_help\">
-              <a href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">Login help without an NYU NetID</a>
-            </div>
-            <div id=\"nyu_pds_nonetid_note\" class=\"login_note\">
-              <h3>Additional information:</h3>
+            <div>
+              <h3>Need more information?</h3>
               <ul>
-                <li><a href=\"http://library.cooper.edu/\" target=\"_blank\">Cooper Union</a></li>
+                <li><a href=\"http://library.newschool.edu/login/cu\" target=\"_blank\">Cooper Union</a></li>
+                <li><a href=\"http://library.newschool.edu/login/nysid\" target=\"_blank\">NYSID</a></li>
                 <li><a href=\"http://library.newschool.edu/login/ns\" target=\"_blank\">New School</a></li>
-                <li><a href=\"http://nysidlibrary.org/logging-into-bobcat\" target=\"_blank\">NYSID</a></li>
+                <li><a href=\"http://library.newschool.edu/login/hu\" target=\"_blank\">Hebrew Union</a></li>
+                <li><a href=\"http://answers.library.newschool.edu\" target=\"_blank\">New School Ask-A-Librarian Service</a></li>
               </ul>
             </div>
           </div>
