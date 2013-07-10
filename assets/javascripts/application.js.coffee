@@ -10,4 +10,4 @@
 $ ->
   console.log "HELLO!"
   # My Workspace Help Popover
-  new window.nyulibraries.PartialHoverPopover("a.nyulibraries-snippet").init()
+  new window.nyulibraries.PartialHoverPopover("a.nyulibraries-help-snippet").init()

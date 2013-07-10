@@ -50,17 +50,25 @@ is($controller->login(), "<!DOCTYPE html>
       <div class=\"container-fluid\">
         <div class=\"row-fluid\">
           <div class=\"span5 well\">
+          <h2>
+            NYU Users with a NetID
+            <a class=\"nyulibraries-help-snippet\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
+              <i class=\"icons-famfamfam-help\"></i>
+            </a>
+          </h2>
+          <div>
             <a href=\"\" class=\"btn shibboleth\">SHIBBOLETH!</a>
           </div>
+          </div>
           <div class=\"span5 well\">
+            <h2>
+              Consortium &amp; NYU Users without a NetID
+              <a class=\"nyulibraries-help-snippet\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
+                <i class=\"icons-famfamfam-help\"></i>
+                </a>
+            </h2>
             <form id=\"nyu_pds_login_form\" action=\"/pds\" method=\"post\">
               <fieldset>
-                <legend>
-                  Consortium &amp; NYU Users without a NetID
-                  <a class=\"nyulibraries-snippet\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
-                    <i class=\"icons-famfamfam-help\"></i>
-                  </a>
-                </legend>
                 <input type=\"hidden\" name=\"func\" value=\"login\" />
                 <input type=\"hidden\" name=\"calling_system\" value=\"primo\" />
                 <input type=\"hidden\" name=\"institute\" value=\"nyu\" />
