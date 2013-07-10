@@ -45,65 +45,63 @@ is($controller->login(), "<!DOCTYPE html>
         <li>Login</li>
       </ul>
     </nav>
-    <div class=\"nyu-container\">
-      <h1>Please login to access library services.</h1>
-      <div class=\"container-fluid\">
-        <div class=\"row-fluid\">
-          <div class=\"span5 well\">
-            <h2>
-              NYU Users with a NetID
-              <a class=\"nyulibraries-help\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
-                <i class=\"icons-famfamfam-help\"></i>
-              </a>
-            </h2>
-            <div>
-              <a href=\"\" class=\"btn shibboleth\">SHIBBOLETH!</a>
-            </div>
+    <h1 class=\"container-fluid\">Please login to access library services.</h1>
+    <section class=\"container-fluid\">
+      <div class=\"row-fluid\">
+        <div class=\"span5 well\">
+          <h2>
+            NYU Users with a NetID
+            <a class=\"nyulibraries-help\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
+              <i class=\"icons-famfamfam-help\"></i>
+            </a>
+          </h2>
+          <div>
+            <a href=\"\" class=\"btn shibboleth\">SHIBBOLETH!</a>
           </div>
-          <div class=\"span5 well\">
-            <h2>
-              Consortium &amp; NYU Users without a NetID
-              <a class=\"nyulibraries-help-snippet\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
-                <i class=\"icons-famfamfam-help\"></i>
-              </a>
-            </h2>
-            <form id=\"nyu_pds_login_form\" action=\"/pds\" method=\"post\">
-              <fieldset>
-                <input type=\"hidden\" name=\"func\" value=\"login\" />
-                <input type=\"hidden\" name=\"calling_system\" value=\"primo\" />
-                <input type=\"hidden\" name=\"institute\" value=\"nyu\" />
-                <input type=\"hidden\" name=\"term1\" value=\"short\" />
-                <input type=\"hidden\" name=\"selfreg\" value=\"\" />
-                <input type=\"hidden\" name=\"url\" value=\"http://example.com\" />
-                <input type=\"hidden\" name=\"pds_handle\" value=\"\" />
-                <label for=\"bor_id\">Enter your ID Number</label>
-                <input id=\"bor_id\" type=\"text\" name=\"bor_id\" value=\"\" placeholder=\"e.g. N12345678\" />
-                <label for=\"bor_verification\">Password or first four letters of your last name</label>
-                <input id=\"bor_verification\" type=\"password\" name=\"bor_verification\" placeholder=\"e.g. SMIT\" /><br/ >
-                <button type=\"submit\" class=\"btn\">Login</button>
-              </fieldset>
-            </form>
-            <div>
-              <a href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">Login help without an NYU NetID</a>
-            </div>
-            <div>
-              <h3>Additional information:</h3>
-              <ul class=\"unstyled\">
-                <li><a href=\"http://library.cooper.edu/\" target=\"_blank\">Cooper Union</a></li>
-                <li><a href=\"http://library.newschool.edu/login/ns\" target=\"_blank\">New School</a></li>
-                <li><a href=\"http://nysidlibrary.org/logging-into-bobcat\" target=\"_blank\">NYSID</a></li>
-              </ul>
-            </div>
+        </div>
+        <div class=\"span5 well\">
+          <h2>
+            Consortium &amp; NYU Users without a NetID
+            <a class=\"nyulibraries-help-snippet\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
+              <i class=\"icons-famfamfam-help\"></i>
+            </a>
+          </h2>
+          <form id=\"nyu_pds_login_form\" action=\"/pds\" method=\"post\">
+            <fieldset>
+              <input type=\"hidden\" name=\"func\" value=\"login\" />
+              <input type=\"hidden\" name=\"calling_system\" value=\"primo\" />
+              <input type=\"hidden\" name=\"institute\" value=\"nyu\" />
+              <input type=\"hidden\" name=\"term1\" value=\"short\" />
+              <input type=\"hidden\" name=\"selfreg\" value=\"\" />
+              <input type=\"hidden\" name=\"url\" value=\"http://example.com\" />
+              <input type=\"hidden\" name=\"pds_handle\" value=\"\" />
+              <label for=\"bor_id\">Enter your ID Number</label>
+              <input id=\"bor_id\" type=\"text\" name=\"bor_id\" value=\"\" placeholder=\"e.g. N12345678\" />
+              <label for=\"bor_verification\">Password or first four letters of your last name</label>
+              <input id=\"bor_verification\" type=\"password\" name=\"bor_verification\" placeholder=\"e.g. SMIT\" /><br/ >
+              <button type=\"submit\" class=\"btn\">Login</button>
+            </fieldset>
+          </form>
+          <div>
+            <a href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">Login help without an NYU NetID</a>
+          </div>
+          <div>
+            <h3>Additional information:</h3>
+            <ul class=\"unstyled\">
+              <li><a href=\"http://library.cooper.edu/\" target=\"_blank\">Cooper Union</a></li>
+              <li><a href=\"http://library.newschool.edu/login/ns\" target=\"_blank\">New School</a></li>
+              <li><a href=\"http://nysidlibrary.org/logging-into-bobcat\" target=\"_blank\">NYSID</a></li>
+            </ul>
           </div>
         </div>
       </div>
-      <section>
-        <h3>
-          Library services vary by institution. Please see the
-          <a href=\"https://web1.library.nyu.edu/privileges_guide/\" target=\"_blank\">NYU Libraries Privileges Guide</a>.
-        </h3>
-      </section>
-    </div>
+    </section>
+    <section class=\"container-fluid\">
+      <h3>
+        Library services vary by institution. Please see the
+        <a href=\"https://web1.library.nyu.edu/privileges_guide/\" target=\"_blank\">NYU Libraries Privileges Guide</a>.
+      </h3>
+    </section>
     <footer>NYU Division of Libraries.  BobCat.  Powered by Ex Libris Primo</footer>
   </body>
 </html>
@@ -137,64 +135,62 @@ is($controller->login(), "<!DOCTYPE html>
         <li>Login</li>
       </ul>
     </nav>
-    <div class=\"nyu-container\">
-      <h1>Please login to access library services.</h1>
-      <div class=\"container-fluid\">
-        <div class=\"row-fluid\">
-          <div class=\"span5 well\">
-            <h2>
-              Consortium &amp; NYU Users without a NetID
-              <a class=\"nyulibraries-help-snippet\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
-                <i class=\"icons-famfamfam-help\"></i>
-              </a>
-            </h2>
-            <form id=\"nyu_pds_login_form\" action=\"/pds\" method=\"post\">
-              <fieldset>
-                <input type=\"hidden\" name=\"func\" value=\"login\" />
-                <input type=\"hidden\" name=\"calling_system\" value=\"primo\" />
-                <input type=\"hidden\" name=\"institute\" value=\"ns\" />
-                <input type=\"hidden\" name=\"term1\" value=\"short\" />
-                <input type=\"hidden\" name=\"selfreg\" value=\"\" />
-                <input type=\"hidden\" name=\"url\" value=\"http://example.com\" />
-                <input type=\"hidden\" name=\"pds_handle\" value=\"\" />
-                <label for=\"bor_id\">Enter your NetID Username</label>
-                <input id=\"bor_id\" type=\"text\" name=\"bor_id\" value=\"\" placeholder=\"e.g. ParsJ123\" />
-                <label for=\"bor_verification\">Enter your NetID Password</label>
-                <input id=\"bor_verification\" type=\"password\" name=\"bor_verification\" placeholder=\"\" /><br/ >
-                <button type=\"submit\" class=\"btn\">Login</button>
-              </fieldset>
-            </form>
-            <div>
-              <h3>Need more information?</h3>
-              <ul>
-                <li><a href=\"http://library.newschool.edu/login/cu\" target=\"_blank\">Cooper Union</a></li>
-                <li><a href=\"http://library.newschool.edu/login/nysid\" target=\"_blank\">NYSID</a></li>
-                <li><a href=\"http://library.newschool.edu/login/ns\" target=\"_blank\">New School</a></li>
-                <li><a href=\"http://library.newschool.edu/login/hu\" target=\"_blank\">Hebrew Union</a></li>
-                <li><a href=\"http://answers.library.newschool.edu\" target=\"_blank\">New School Ask-A-Librarian Service</a></li>
-              </ul>
-            </div>
+    <h1 class=\"container-fluid\">Please login to access library services.</h1>
+    <section class=\"container-fluid\">
+      <div class=\"row-fluid\">
+        <div class=\"span5 well\">
+          <h2>
+            Consortium &amp; NYU Users without a NetID
+            <a class=\"nyulibraries-help-snippet\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
+              <i class=\"icons-famfamfam-help\"></i>
+            </a>
+          </h2>
+          <form id=\"nyu_pds_login_form\" action=\"/pds\" method=\"post\">
+            <fieldset>
+              <input type=\"hidden\" name=\"func\" value=\"login\" />
+              <input type=\"hidden\" name=\"calling_system\" value=\"primo\" />
+              <input type=\"hidden\" name=\"institute\" value=\"ns\" />
+              <input type=\"hidden\" name=\"term1\" value=\"short\" />
+              <input type=\"hidden\" name=\"selfreg\" value=\"\" />
+              <input type=\"hidden\" name=\"url\" value=\"http://example.com\" />
+              <input type=\"hidden\" name=\"pds_handle\" value=\"\" />
+              <label for=\"bor_id\">Enter your NetID Username</label>
+              <input id=\"bor_id\" type=\"text\" name=\"bor_id\" value=\"\" placeholder=\"e.g. ParsJ123\" />
+              <label for=\"bor_verification\">Enter your NetID Password</label>
+              <input id=\"bor_verification\" type=\"password\" name=\"bor_verification\" placeholder=\"\" /><br/ >
+              <button type=\"submit\" class=\"btn\">Login</button>
+            </fieldset>
+          </form>
+          <div>
+            <h3>Need more information?</h3>
+            <ul>
+              <li><a href=\"http://library.newschool.edu/login/cu\" target=\"_blank\">Cooper Union</a></li>
+              <li><a href=\"http://library.newschool.edu/login/nysid\" target=\"_blank\">NYSID</a></li>
+              <li><a href=\"http://library.newschool.edu/login/ns\" target=\"_blank\">New School</a></li>
+              <li><a href=\"http://library.newschool.edu/login/hu\" target=\"_blank\">Hebrew Union</a></li>
+              <li><a href=\"http://answers.library.newschool.edu\" target=\"_blank\">New School Ask-A-Librarian Service</a></li>
+            </ul>
           </div>
-          <div class=\"span5 well\">
-            <h2>
-              NYU Users with a NetID
-              <a class=\"nyulibraries-help\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
-                <i class=\"icons-famfamfam-help\"></i>
-              </a>
-            </h2>
-            <div>
-              <a href=\"\" class=\"btn shibboleth\">SHIBBOLETH!</a>
-            </div>
+        </div>
+        <div class=\"span5 well\">
+          <h2>
+            NYU Users with a NetID
+            <a class=\"nyulibraries-help\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
+              <i class=\"icons-famfamfam-help\"></i>
+            </a>
+          </h2>
+          <div>
+            <a href=\"\" class=\"btn shibboleth\">SHIBBOLETH!</a>
           </div>
         </div>
       </div>
-      <section>
-        <h3>
-          Library services vary by institution. Please see the
-          <a href=\"https://web1.library.nyu.edu/privileges_guide/\" target=\"_blank\">NYU Libraries Privileges Guide</a>.
-        </h3>
-      </section>
-    </div>
+    </section>
+    <section class=\"container-fluid\">
+      <h3>
+        Library services vary by institution. Please see the
+        <a href=\"https://web1.library.nyu.edu/privileges_guide/\" target=\"_blank\">NYU Libraries Privileges Guide</a>.
+      </h3>
+    </section>
     <footer>BobCat.  Powered by Ex Libris Primo</footer>
   </body>
 </html>
