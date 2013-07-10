@@ -197,7 +197,7 @@ sub username {
 
 sub username_label {
   my $self = shift;
-  return (defined($self->username)) ? 
+  return ($self->username) ? 
     ($self->username->{'label'}) : DEFAULT_USERNAME_LABEL;
 }
 
