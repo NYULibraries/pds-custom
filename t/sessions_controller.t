@@ -144,7 +144,7 @@ is($controller->login(), "<!DOCTYPE html>
           <div class=\"span5 well\">
             <h2>
               Consortium &amp; NYU Users without a NetID
-              <a class=\"nyulibraries-snippet\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
+              <a class=\"nyulibraries-help-snippet\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
                 <i class=\"icons-famfamfam-help\"></i>
               </a>
             </h2>
