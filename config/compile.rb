@@ -10,19 +10,25 @@ require 'microservice_precompiler'
 
 ASSETS = %w(css images javascripts)
 # Get the various paths
-nyulibraries_assets_javascripts_path = 
-  "#{Compass::Frameworks['nyulibraries_assets'].stylesheets_directory}/../javascripts"
+nyulibraries_assets_base = 
+  "#{Compass::Frameworks['nyulibraries_assets'].stylesheets_directory}/.."
+nyulibraries_assets_javascripts_path = "#{nyulibraries_assets_base}/javascripts"
+nyulibraries_assets_images_path = "#{nyulibraries_assets_base}/images"
 bootstrap_assets_base = "#{Compass::Frameworks['bootstrap'].stylesheets_directory}/.."
 bootstrap_javascripts_path = "#{bootstrap_assets_base}/javascripts"
 bootstrap_images_path = "#{bootstrap_assets_base}/images"
+# Clean up old compiled css
+FileUtils.rm_rf "./assets/css"
 # Clean up old distribution
 FileUtils.rm_rf "./dist"
 # Create dist dirs
 ASSETS.each do |asset|
   FileUtils.mkdir_p "./dist/#{asset}"
 end
-# Copy the bootstrap glyphicons to dist
+# Copy the bootstrap glyphicons to assets
 FileUtils.cp_r "#{bootstrap_images_path}", "./assets"
+# Copy the nyulibraries images to assets
+FileUtils.cp_r "#{nyulibraries_assets_images_path}", "./assets"
 pds_javascripts_path = "./assets/javascripts"
 precompiler = MicroservicePrecompiler::Builder.new
 precompiler.compass_build

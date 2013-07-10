@@ -22,8 +22,14 @@ vendor/pds-core
 wiki
 # Ignore SASS cache
 .sass-cache
-# Ignore image/icons
-assets/image/icons-*.png
+# Ignore images from compass extensions
+assets/images/icons-*.png
+assets/images/icons
+assets/images/jquery
+assets/images/glyphicons-*.png
+assets/images/magnifier.png
+assets/images/move.png
+assets/images/nyulibraries
 # Ignore compass css files
 assets/css
 # Ignore dist
