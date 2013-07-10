@@ -158,7 +158,7 @@ is($controller->login(), "<!DOCTYPE html>
                 <input type=\"hidden\" name=\"url\" value=\"http://example.com\" />
                 <input type=\"hidden\" name=\"pds_handle\" value=\"\" />
                 <label for=\"bor_id\">Enter your NetID Username</label>
-                <input id=\"bor_id\" type=\"text\" name=\"bor_id\" value=\"\" placeholder=\"\" />
+                <input id=\"bor_id\" type=\"text\" name=\"bor_id\" value=\"\" placeholder=\"ParsJ123\" />
                 <label for=\"bor_verification\">Enter your NetID Password</label>
                 <input id=\"bor_verification\" type=\"password\" name=\"bor_verification\" placeholder=\"\" /><br/ >
                 <button type=\"submit\" class=\"btn\">Login</button>
