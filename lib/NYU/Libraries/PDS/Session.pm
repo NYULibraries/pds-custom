@@ -33,7 +33,7 @@ sub new {
 sub _init {
   my($self, @identities) = @_;
   foreach my $identity (@identities) {
-    print STDERR "$identity\n\n\n";
+    print STDERR ref($identity)."\n\n\n";
     # Order matters
     if($identity->isa("NYU::Libraries::PDS::Identities::NyuShibboleth")) {
       $self->set('nyu_shibboleth', 'true')
