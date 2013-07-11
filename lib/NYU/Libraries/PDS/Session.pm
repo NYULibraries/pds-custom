@@ -32,7 +32,7 @@ sub new {
 #   $self->_init(identities)
 sub _init {
   my($self, @identities) = @_;
-  print STDERR @identities."ABLE MISER\n\n\n";
+  print STDERR @identities[0]."ABLE MISER\n\n\n";
   foreach my $identity (@identities) {
     print STDERR ref($identity)."MISERY\n\n\n";
     # Order matters
