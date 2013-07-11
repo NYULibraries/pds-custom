@@ -31,9 +31,12 @@ sub new {
 # Usage:
 #   $self->_init(identities)
 sub _init {
-  my($self, @identities) = @_;
-  print STDERR @identities[0]."ABLE MISER\n\n\n";
-  foreach my $identity (@identities) {
+  my($self, $identities) = @_;
+  print STDERR $identities[0]."ABLE MISER\n\n\n";
+  foreach my $identity (@$identities) {
+    print STDERR "\nNYU".UNIVERSAL::isa($identity,"NYU::Libraries::PDS::Identities::NyuShibboleth")
+    print STDERR "\nNS".UNIVERSAL::isa($identity,"NYU::Libraries::PDS::Identities::NsLdap")
+    print STDERR "\nALEPH".UNIVERSAL::isa($identity,"NYU::Libraries::PDS::Identities::Aleph")
     print STDERR ref($identity)."MISERY\n\n\n";
     # Order matters
     if($identity->isa("NYU::Libraries::PDS::Identities::NyuShibboleth")) {
