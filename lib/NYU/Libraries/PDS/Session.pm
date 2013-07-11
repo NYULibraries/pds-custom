@@ -33,16 +33,12 @@ sub new {
 sub _init {
   my($self, @identities) = @_;
   foreach my $identity (@identities) {
-    print STDERR "\nNYU".UNIVERSAL::isa($identity,"NYU::Libraries::PDS::Identities::NyuShibboleth");
-    print STDERR "\nNS".UNIVERSAL::isa($identity,"NYU::Libraries::PDS::Identities::NsLdap");
-    print STDERR "\nALEPH".UNIVERSAL::isa($identity,"NYU::Libraries::PDS::Identities::Aleph");
-    print STDERR ref($identity)."MISERY\n\n\n";
     # Order matters
-    if($identity->isa("NYU::Libraries::PDS::Identities::NyuShibboleth")) {
+    if(ref($identity) eq "NYU::Libraries::PDS::Identities::NyuShibboleth") {
       $self->set('nyu_shibboleth', 'true')
-    } elsif($identity->isa("NYU::Libraries::PDS::Identities::NsLdap")) {
+    } elsif(ref($identity) eq "NYU::Libraries::PDS::Identities::NsLdap") {
       $self->set('ns_ldap', 'true')
-    } elsif($identity->isa("NYU::Libraries::PDS::Identities::Aleph")) {
+    } elsif(ref($identity) eq "NYU::Libraries::PDS::Identities::Aleph") {
     } else {
       # Assume we're creating the Session object from an existing PDS session hash
     }

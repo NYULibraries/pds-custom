@@ -2,6 +2,10 @@ use strict;
 use warnings;
 use Test::More qw(no_plan);
 
+# NYU Libraries modules
+use NYU::Libraries::Util qw(parse_conf);
+use NYU::Libraries::PDS::IdentitiesControllers::AlephController;
+
 # Verify module can be included via "use" pragma
 BEGIN { use_ok('NYU::Libraries::PDS::Session') };
 
@@ -19,6 +23,13 @@ isa_ok($session, qw(NYU::Libraries::PDS::Session));
 
 # Verify methods
 can_ok($session, (qw(id)));
+
+
+# Create a new session based on an Aleph Identity
+# my $conf = parse_conf("vendor/pds-core/config/pds/nyu.conf");
+# my $controller = NYU::Libraries::PDS::IdentitiesControllers::AlephController->new($conf);
+# my $identity = $controller->create("DS03D", "TEST");
+# my $new_session = NYU::Libraries::PDS::Session->new($identity);
 
 # my $existing_session = NYU::Libraries::PDS::Session::find('27620139407145177581349399004532');
 # print $existing_session;
