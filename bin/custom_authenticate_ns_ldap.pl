@@ -23,7 +23,7 @@ sub custom_authenticate_ns_ldap {
   my $target_url = PDSParamUtil::queryUrl();
   my $session_controller = NYU::Libraries::PDS::controller($conf, $institute, 
     $calling_system, $target_url, $session_id);
-  my $session = $session_controller->authenticate_ns_ldap($id, $password)
+  my $session = $session_controller->authenticate_ns_ldap($id, $password);
   return ($session_controller->error) ? 
     ("11", "<error/>", $session_controller->error) : ("00", $session->to_xml);
 }
