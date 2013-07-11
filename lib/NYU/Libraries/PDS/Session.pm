@@ -31,8 +31,7 @@ sub new {
 # Usage:
 #   $self->_init(identities)
 sub _init {
-  my($self, $identities) = @_;
-  print STDERR $identities[0]."ABLE MISER\n\n\n";
+  my($self, @identities) = @_;
   foreach my $identity (@$identities) {
     print STDERR "\nNYU".UNIVERSAL::isa($identity,"NYU::Libraries::PDS::Identities::NyuShibboleth")
     print STDERR "\nNS".UNIVERSAL::isa($identity,"NYU::Libraries::PDS::Identities::NsLdap")
