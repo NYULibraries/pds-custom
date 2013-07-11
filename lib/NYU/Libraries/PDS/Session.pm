@@ -12,10 +12,29 @@ use PDSSession;
 use PDSSessionUserAttrs;
 use PDSUtil qw(isUsingOracle);
 
+# NYU Libraries modules
+use NYU::Libraries::Util qw(trim xml_encode);
+
 use base qw(Class::Accessor);
-__PACKAGE__->mk_ro_accessors(qw(id institute barcode bor_status bor_type name uid email cn 
+my @attributes = qw(id institute barcode bor_status bor_type name uid email cn 
   givenname sn verification nyuidn nyu_shibboleth ns_ldap edupersonentitlement objectclass 
-    ill_permission college_code college_name dept_code dept_name major_code major));
+    ill_permission college_code college_name dept_code dept_name major_code major);
+__PACKAGE__->mk_ro_accessors(@attributes);
+
+use constant NYU_BOR_STATUSES => [ ];
+use constant NYUAD_BOR_STATUSES => [ ];
+use constant NYUSH_BOR_STATUSES => [ ];
+use constant NS_BOR_STATUSES => [ ];
+use constant CU_BOR_STATUSES => [ ];
+use constant NYSID_BOR_STATUSES => [ ];
+
+# Private method returns an institution string for the given bor status
+# Usage:
+#   $self->$institution_for_bor_status(bor_status)
+my $institute_for_bor_status = sub {
+  my($self, $bor_status) = @_;
+  return "NYU";
+};
 
 # Returns an new PDS Session based on the given identities
 # Usage:
@@ -35,12 +54,33 @@ sub _init {
   foreach my $identity (@identities) {
     # Order matters
     if(ref($identity) eq "NYU::Libraries::PDS::Identities::NyuShibboleth") {
-      $self->set('nyu_shibboleth', 'true')
+      my $identity_hash = $identity->to_h();
+      $self->set('nyu_shibboleth', 'true');
+      $self->set('uid', $identity_hash->id);
+      foreach my $attribute (keys %$identity_hash) {
+        $self->set("$attribute", $identity_hash->{$attribute});
+      }
     } elsif(ref($identity) eq "NYU::Libraries::PDS::Identities::NsLdap") {
-      $self->set('ns_ldap', 'true')
+      my $identity_hash = $identity->to_h();
+      $self->set('ns_ldap', 'true');
+      $self->set('uid', $identity_hash->id);
+      foreach my $attribute (keys %$identity_hash) {
+        $self->set("$attribute", $identity_hash->{$attribute});
+      }
     } elsif(ref($identity) eq "NYU::Libraries::PDS::Identities::Aleph") {
+      my $identity_hash = $identity->to_h();
+      # Override ID, if it was already set
+      $self->set('id', $identity->id);
+      foreach my $attribute (keys %$identity_hash) {
+        # Don't override attribute if it was previously set
+        $self->set("$attribute", $identity_hash->{$attribute}) unless $self->{$attribute};
+      }
+      $self->set('institute', $self->$institute_for_bor_status($identity->bor_status));
     } else {
       # Assume we're creating the Session object from an existing PDS session hash
+      foreach my $attribute (keys %$identity) {
+        $self->set("$attribute", $identity->{$attribute});
+      }
     }
   }
   # Return self
@@ -179,6 +219,13 @@ sub find {
 sub to_xml {
   my($self, $root) = @_;
   $root = ($root || "session");
+  my $xml  = '<?xml version="1.0" encoding="UTF-8"?>';
+  $xml .= "<$root>";
+  foreach my $attribute (@attributes) {
+    $xml .= "<$attribute>".xml_encode(trim($self->{$attribute}))."</$attribute>" if $self->{$attribute};
+  }
+  $xml .= "</$root>";
+  return $xml;
 }
 
 1;

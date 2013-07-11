@@ -79,7 +79,7 @@ sub set_attributes {
 
 # Returns a hash respresentatino of this identity
 # Usage:
-#   $identity.to_h()
+#   $identity->to_h()
 sub to_h {
   my $self = shift;
   # Return nothing set if we have an error
@@ -98,7 +98,7 @@ sub to_h {
 
 # Returns an XML respresentatino of this identity
 # Usage:
-#   $identity.to_xml()
+#   $identity->to_xml()
 sub to_xml {
   my $self = shift;
   # Return nothing set if we have an error
