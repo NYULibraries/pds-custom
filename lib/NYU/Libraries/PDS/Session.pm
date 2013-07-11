@@ -32,7 +32,7 @@ sub new {
 #   $self->_init(identities)
 sub _init {
   my($self, @identities) = @_;
-  foreach my $identity (@$identities) {
+  foreach my $identity (@identities) {
     print STDERR "\nNYU".UNIVERSAL::isa($identity,"NYU::Libraries::PDS::Identities::NyuShibboleth")
     print STDERR "\nNS".UNIVERSAL::isa($identity,"NYU::Libraries::PDS::Identities::NsLdap")
     print STDERR "\nALEPH".UNIVERSAL::isa($identity,"NYU::Libraries::PDS::Identities::Aleph")
