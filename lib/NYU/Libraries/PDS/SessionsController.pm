@@ -42,7 +42,7 @@ use constant DEFAULT_CALLING_SYSTEM => "primo";
 #   $self->$create_session($identity1, $identity2)
 my $create_session = sub {
   my($self, @identities) = @_;
-  return NYU::Libraries::PDS::Session->new($self->@identities);
+  return NYU::Libraries::PDS::Session->new(@identities);
 };
 
 # Private method to get a new Aleph Controller
