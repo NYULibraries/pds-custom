@@ -42,7 +42,7 @@ use constant DEFAULT_CALLING_SYSTEM => "primo";
 #   $self->$create_session($identity1, $identity2)
 my $create_session = sub {
   my($self, @identities) = @_;
-  return NYU::Libraries::PDS::Session->new(@identities);
+  return NYU::Libraries::PDS::Session->new($self->@identities);
 };
 
 # Private method to get a new Aleph Controller
@@ -216,7 +216,7 @@ sub authenticate_ns_ldap {
 sub bor_info {
   my($self) = @_;
   return undef unless $self->session_id;
-  return NYU::Libraries::PDS::Session->find($self->session_id, "bor-info")->to_xml();
+  return NYU::Libraries::PDS::Session::find($self->session_id)->to_xml("bor-info");
 }
 
 1;

@@ -19,7 +19,7 @@ __PACKAGE__->mk_ro_accessors(qw(id institute barcode bor_status bor_type name ui
 
 # Returns an new PDS Session based on the given identities
 # Usage:
-#   NYU::Libraries::PDS::Models::Session->new(identities, configurations)
+#   NYU::Libraries::PDS::Session->new(identities, configurations)
 sub new {
   my($proto, @args) = @_;
   my($class) = ref $proto || $proto;
@@ -31,18 +31,17 @@ sub new {
 # Usage:
 #   $self->_init(identities, configurations)
 sub _init {
-  my($self, $identities, $conf) = @_;
-  # Set configurations
-  $self->set('conf', $conf);
-  foreach my $identity (@$identities) {
+  my($self, @identities) = @_;
+  foreach my $identity (@identities) {
     # Order matters
-    if($identity.isa("NYU::Libraries::PDS::Models::NyuShibboleth")) {
+    if($identity.isa("NYU::Libraries::PDS::Identities::NyuShibboleth")) {
       $self->set('nyu_shibboleth', 'true')
-    } elsif($identity.isa("NYU::Libraries::PDS::Models::NsLdap")) {
+    } elsif($identity.isa("NYU::Libraries::PDS::Identities::NsLdap")) {
       $self->set('ns_ldap', 'true')
-    } elsif($identity.isa("NYU::Libraries::PDS::Models::Aleph")) {
+    } elsif($identity.isa("NYU::Libraries::PDS::Identities::Aleph")) {
     } else {
       # Assume we're creating the Session object from an existing PDS session hash
+      print STDERR $identity
     }
   }
   # Return self
@@ -52,9 +51,9 @@ sub _init {
 # Find a session based on the given session id
 # Returns a ??????
 # Usage:
-#   NYU::Libraries::PDS::Models::Session->find('some_id');
+#   NYU::Libraries::PDS::Session::find('some_id');
 sub find {
-  my ($self, $id) = @_;
+  my $id = shift;
   # Check if the login is valid
   my ($xml_string, $error_code) = ('','');
   my %session = {};
@@ -68,7 +67,7 @@ sub find {
     $error_code = IOZ311_file::io_z311_file('DISPLAY', \%session) if $error_code eq "00";
     IOZ312_file::io_z312_file("READ", \%session, $id) if $error_code eq "00";
   }
-  return $self->new(\%session);
+  return NYU::Libraries::PDS::Session->new(\%session);
 }
 
 # Returns this session as XML
