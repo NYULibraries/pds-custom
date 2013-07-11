@@ -21,4 +21,4 @@ isa_ok($controller, qw(NYU::Libraries::PDS::IdentitiesControllers::BaseControlle
 isa_ok($controller, qw(NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethController));
 
 # Verify methods
-can_ok($controller, (qw(target_url create redirect_to_target)));
+can_ok($controller, (qw(target_url create redirect_to_target error)));

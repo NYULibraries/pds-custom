@@ -2,6 +2,9 @@ package NYU::Libraries::PDS::IdentitiesControllers::AlephController;
 use strict;
 use warnings;
 
+# Aleph Identity
+use NYU::Libraries::PDS::Identities::Aleph;
+
 use base qw(NYU::Libraries::PDS::IdentitiesControllers::BaseController);
 
 sub create {

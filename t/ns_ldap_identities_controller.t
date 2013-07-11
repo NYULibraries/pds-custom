@@ -6,7 +6,7 @@ use Test::More qw(no_plan);
 BEGIN { use_ok('NYU::Libraries::PDS::IdentitiesControllers::NsLdapController') };
 
 # Verify module can be included via "require" pragma
-require_ok( 'NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethController' );
+require_ok( 'NYU::Libraries::PDS::IdentitiesControllers::NsLdapController' );
 
 # Get an instance of NsLdapController
 my $controller = NYU::Libraries::PDS::IdentitiesControllers::NsLdapController->new();
@@ -21,7 +21,4 @@ isa_ok($controller, qw(NYU::Libraries::PDS::IdentitiesControllers::BaseControlle
 isa_ok($controller, qw(NYU::Libraries::PDS::IdentitiesControllers::NsLdapController));
 
 # Verify methods
-can_ok($controller, (qw(create)));
-
-
-1;
+can_ok($controller, (qw(create error)));
