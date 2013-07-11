@@ -32,9 +32,9 @@ sub new {
 #   $self->_init(identities)
 sub _init {
   my($self, @identities) = @_;
-  print STDERR ref(@identities)."\n\n\n";
+  print STDERR @identities."ABLE MISER\n\n\n";
   foreach my $identity (@identities) {
-    print STDERR ref($identity)."\n\n\n";
+    print STDERR ref($identity)."MISERY\n\n\n";
     # Order matters
     if($identity->isa("NYU::Libraries::PDS::Identities::NyuShibboleth")) {
       $self->set('nyu_shibboleth', 'true')
