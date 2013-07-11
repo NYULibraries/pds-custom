@@ -19,7 +19,7 @@ __PACKAGE__->mk_ro_accessors(qw(id institute barcode bor_status bor_type name ui
 
 # Returns an new PDS Session based on the given identities
 # Usage:
-#   NYU::Libraries::PDS::Session->new(identities, configurations)
+#   NYU::Libraries::PDS::Session->new(identities)
 sub new {
   my($proto, @args) = @_;
   my($class) = ref $proto || $proto;
@@ -29,7 +29,7 @@ sub new {
 
 # Private initialization method
 # Usage:
-#   $self->_init(identities, configurations)
+#   $self->_init(identities)
 sub _init {
   my($self, @identities) = @_;
   foreach my $identity (@identities) {
@@ -56,7 +56,7 @@ sub find {
   my $id = shift;
   # Check if the login is valid
   my ($xml_string, $error_code) = ('','');
-  my %session = {};
+  my %session = ();
   $session{'session_id'} = $id;
   if (isUsingOracle()) {
     $error_code = PDSSession::pds_session('READ', \%session);
