@@ -33,6 +33,7 @@ sub new {
 sub _init {
   my($self, @identities) = @_;
   foreach my $identity (@identities) {
+    print STDERR "$identity\n\n\n";
     # Order matters
     if($identity->isa("NYU::Libraries::PDS::Identities::NyuShibboleth")) {
       $self->set('nyu_shibboleth', 'true')
@@ -41,7 +42,6 @@ sub _init {
     } elsif($identity->isa("NYU::Libraries::PDS::Identities::Aleph")) {
     } else {
       # Assume we're creating the Session object from an existing PDS session hash
-      print STDERR $identity
     }
   }
   # Return self

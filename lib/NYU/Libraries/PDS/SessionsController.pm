@@ -31,8 +31,7 @@ use constant DEFAULT_CALLING_SYSTEM => "primo";
 #     Attempt single sign on
 #     If not successful, redirects to the calling system
 #   authenticate:
-#     Attemps single sign on
-#     If not successful, attempts authentication with the given
+#     Attempts authentication for the given authentication method
 #   bor_info:
 #     Returns XML representation of an existing PDS session
 # 
@@ -113,12 +112,16 @@ sub new {
   return $self;
 }
 
-# If ShibIdentity and Aleph
-#   Create session
-# Else
-#   Unless ShibController->create
-#     Show login screen
-#     
+# Display the login screen, unless already signed in
+# Usage:
+#   $controller->login()
+# 
+# Logic:
+#   If NYU Shibboleth Identity and Aleph Identity
+#     Create session and return from whence you came
+#   Else
+#     Unless ShibController->create
+#       Show login screen
 sub login {
   my $self = shift;
   my $nyu_shibboleth_controller = $self->$nyu_shibboleth_controller();
@@ -147,12 +150,15 @@ sub login {
   }
 }
 
-# If ShibIdentity
-#   Create session
-# Else
-#   Unless ShibController->create
-#     Redirect to target url
-#     
+# Single sign on if possible, otherwise return from whence you came
+# Usage:
+#   $controller->sso()
+# 
+# Logic:
+#   If NYU Shibboleth Identity and Aleph Identity
+#     Create session and return from whence you came
+#   Else
+#     Return from whence you came
 sub sso {
   my $self = shift;
   my $nyu_shibboleth_controller = $self->$nyu_shibboleth_controller();
