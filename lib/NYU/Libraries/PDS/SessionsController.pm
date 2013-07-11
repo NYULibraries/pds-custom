@@ -134,7 +134,7 @@ sub login {
       $nyu_shibboleth_controller->redirect_to_target();
     } else {
       # Exit with Unauthorized Error
-      set('error', "Unauthorized");
+      $self->set('error', "Unauthorized");
       return undef;
     }
   } else {
@@ -180,7 +180,7 @@ sub authenticate_aleph {
   unless($aleph_identity->exists) {
     # Exit with Login Error
     my $error = $self->$aleph_controller()->error;
-    set('error', "There seems to have been a problem logging in. $error");
+    $self->set('error', "There seems to have been a problem logging in. $error");
     return undef;
   }
   # If all went well, we authenticate
@@ -200,13 +200,13 @@ sub authenticate_ns_ldap {
     # Unless the Aleph identity exists, exit with Unauthorized Error
     unless($aleph_identity->exists) {
       # Exit with Unauthorized Error
-      set('error', "Unauthorized");
+      $self->set('error', "Unauthorized");
       return undef;
     }
   } else {
     # Exit with Login Error
     my $error = $self->$ns_ldap_controller()->error;
-    set('error', "There seems to have been a problem logging in. $error");
+    $self->set('error', "There seems to have been a problem logging in. $error");
     return undef;
   }
   # If all went well, we authenticate
