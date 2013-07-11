@@ -216,7 +216,7 @@ sub authenticate_ns_ldap {
 sub bor_info {
   my($self) = @_;
   return undef unless $self->session_id;
-  return NYU::Libraries::PDS::Models::Session->find($self->session_id, "bor-info")->to_xml();
+  return NYU::Libraries::PDS::Session->find($self->session_id, "bor-info")->to_xml();
 }
 
 1;
