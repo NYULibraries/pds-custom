@@ -14,8 +14,11 @@ my $controller = NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethContro
 # Verify that this a Class::Accessor
 isa_ok($controller, qw(Class::Accessor));
 
+# Verify that this a BaseController
+isa_ok($controller, qw(NYU::Libraries::PDS::IdentitiesControllers::BaseController));
+
 # Verify that this a NyuShibbolethController
 isa_ok($controller, qw(NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethController));
 
 # Verify methods
-can_ok($controller, (qw(target_url)));
+can_ok($controller, (qw(target_url create redirect_to_target)));
