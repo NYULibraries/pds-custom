@@ -190,7 +190,7 @@ sub authenticate_aleph {
     return undef;
   }
   # If all went well, we authenticate
-  $self->$create_session($aleph_identity);
+  return $self->$create_session($aleph_identity);
 }
 
 # Authenticate against New School's LDAP
@@ -216,7 +216,7 @@ sub authenticate_ns_ldap {
     return undef;
   }
   # If all went well, we authenticate
-  $self->$create_session($ns_ldap_identity, $aleph_identity);
+  return $self->$create_session($ns_ldap_identity, $aleph_identity);
 }
 
 sub bor_info {

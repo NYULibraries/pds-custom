@@ -23,5 +23,7 @@ sub custom_bor_info {
   my $target_url = PDSParamUtil::queryUrl();
   my $session_controller = NYU::Libraries::PDS::controller($conf, $institute, 
     $calling_system, $target_url, $session_id);
-  print $session_controller->bor_info();
+  my $bor_info = $session_controller->bor_info();
+  return ($session_controller->error) ? 
+    ("11", $session_controller->error) : ("00", $bor_info);
 }
