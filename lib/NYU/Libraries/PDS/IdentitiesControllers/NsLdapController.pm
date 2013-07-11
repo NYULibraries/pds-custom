@@ -13,5 +13,4 @@ sub create {
   return NYU::Libraries::PDS::Identities::NsLdap->new($self->{'conf'}, $id, $password);
 }
 
-
 1;

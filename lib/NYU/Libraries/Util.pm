@@ -21,6 +21,7 @@ sub xml_encode {
 
 sub whitelist_institution {
   my ($institute) = @_;
+  return undef unless $institute;
   my @institutes = qw(NYU NS NYSID CU NYUAD NYUSH);
   ( grep { $_ eq $institute} @institutes ) ? $institute : undef;
 }
