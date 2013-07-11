@@ -34,11 +34,11 @@ sub _init {
   my($self, @identities) = @_;
   foreach my $identity (@identities) {
     # Order matters
-    if($identity.isa("NYU::Libraries::PDS::Identities::NyuShibboleth")) {
+    if($identity->isa("NYU::Libraries::PDS::Identities::NyuShibboleth")) {
       $self->set('nyu_shibboleth', 'true')
-    } elsif($identity.isa("NYU::Libraries::PDS::Identities::NsLdap")) {
+    } elsif($identity->isa("NYU::Libraries::PDS::Identities::NsLdap")) {
       $self->set('ns_ldap', 'true')
-    } elsif($identity.isa("NYU::Libraries::PDS::Identities::Aleph")) {
+    } elsif($identity->isa("NYU::Libraries::PDS::Identities::Aleph")) {
     } else {
       # Assume we're creating the Session object from an existing PDS session hash
       print STDERR $identity

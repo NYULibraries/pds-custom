@@ -171,7 +171,7 @@ sub sso {
   $nyu_shibboleth_controller->redirect_to_target();
 }
 
-# Depending on 
+# Authenticate against Aleph
 sub authenticate_aleph {
   my($self, $id, $password) = @_;
   my $aleph_identity = 
@@ -187,7 +187,7 @@ sub authenticate_aleph {
   $self->$create_session($aleph_identity);
 }
 
-# Depending on 
+# Authenticate against New School's LDAP
 sub authenticate_ns_ldap {
   my($self, $id, $password) = @_;
   my $ns_ldap_identity = 
