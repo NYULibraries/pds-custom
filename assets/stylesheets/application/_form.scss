@@ -4,8 +4,8 @@ label {
 
 .shibboleth {
   @include background-image(linear-gradient(color-stops(#886EAE, lighten(#886EAE, 5%))));
-  height: 100px;
-  width: 100px;
+  height: 150px;
+  width: 150px;
   background-color: #886EAE;
   border-color: #886EAE;
   color: white;
@@ -15,6 +15,7 @@ label {
     border-color: #886EAE;
     color: white;
   }
+  margin-bottom: 10px;
 }
 
 .popover {
