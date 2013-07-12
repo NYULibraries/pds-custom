@@ -103,6 +103,105 @@ use constant NYU_LOGIN => "<!DOCTYPE html>
 </html>
 ";
 
+use constant NYU_LOGIN_WITH_ERROR => "<!DOCTYPE html>
+<html>
+  <head>
+    <title>BobCat</title>
+    <meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />
+    <meta http-equiv=\"Cache-Control\" content=\"no-cache\" />
+    <meta http-equiv=\"Pragma\" content=\"no-cache\" />
+    <meta http-equiv=\"Expires\" content=\"Sun, 06 Nov 1994 08:49:37 GMT\" />
+    <meta name=\"viewport\" content=\"width=device-width; initial-scale=1; maximum-scale=1\" />
+    <link rel=\"stylesheet\" type=\"text/css\" href=\"/assets/css/nyu.css\" />
+    <script src=\"/assets/javascripts/application.js\" type=\"text/javascript\"></script>
+  </head>
+  <body>
+    <header id=\"header\" class=\"header\">
+      <div class=\"parent\"><a href=\"http://library.nyu.edu\"><span>NYU Libraries</span></a></div>
+      <div class=\"suite\"><span>BobCat</span></div>
+      <div class=\"application\"><span>Login</span></div>
+    </header>
+    <nav id=\"nav1\" class=\"breadcrumb\">
+      <ul class=\"nyu-breadcrumbs\">
+        <li><a href=\"http://library.nyu.edu\">NYU Libraries</a></li>
+        <li><a href=\"http://bobcat.library.nyu.edu\">BobCat</a></li>
+        <li>Login</li>
+      </ul>
+    </nav>
+    <h1 class=\"container-fluid\">Please login to access library services.</h1>
+    <section class=\"container-fluid\">
+      <div class=\"row-fluid\">
+        <div class=\"span5 well\">
+          <h2>
+            NYU Users with a NetID
+            <a class=\"nyulibraries-help\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
+              <i class=\"icons-famfamfam-help\"></i>
+            </a>
+          </h2>
+          <p>
+            <a href=\"\" class=\"btn shibboleth\">SHIBBOLETH!</a>
+          </p>
+          <div>
+            <a href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">Login help with an NYU NetID</a>
+          </div>
+          <div>
+            <h3>Additional information:</h3>
+            <ul class=\"unstyled\">
+              <li><a href=\"http://library.nyu.edu/help/proxy.html\" target=\"_blank\">NYU</a></li>
+              <li><a href=\"http://library.poly.edu/research/access/nyu\" target=\"_blank\">NYU-Poly</a></li>
+              <li><a href=\"http://library.nyu.edu/ask/\" target=\"_blank\">Ask a Librarian</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class=\"span5 well\">
+          <h2>
+            Consortium &amp; NYU Users without a NetID
+            <a class=\"nyulibraries-help-snippet\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
+              <i class=\"icons-famfamfam-help\"></i>
+            </a>
+          </h2>
+          <form id=\"nyu_pds_login_form\" action=\"/pds\" method=\"post\">
+            <fieldset>
+              <div class=\"alert alert-error\">There seems to have been a problem logging in. Please check your credentials.</div>
+              <input type=\"hidden\" name=\"func\" value=\"login\" />
+              <input type=\"hidden\" name=\"calling_system\" value=\"primo\" />
+              <input type=\"hidden\" name=\"institute\" value=\"NYU\" />
+              <input type=\"hidden\" name=\"term1\" value=\"short\" />
+              <input type=\"hidden\" name=\"selfreg\" value=\"\" />
+              <input type=\"hidden\" name=\"url\" value=\"http://example.com\" />
+              <input type=\"hidden\" name=\"pds_handle\" value=\"\" />
+              <label for=\"bor_id\">Enter your ID Number</label>
+              <input id=\"bor_id\" type=\"text\" name=\"bor_id\" value=\"\" placeholder=\"e.g. N12345678\" />
+              <label for=\"bor_verification\">Password or first four letters of your last name</label>
+              <input id=\"bor_verification\" type=\"password\" name=\"bor_verification\" placeholder=\"e.g. SMIT\" /><br/ >
+              <button type=\"submit\" class=\"btn\">Login</button>
+            </fieldset>
+          </form>
+          <div>
+            <a href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">Login help without an NYU NetID</a>
+          </div>
+          <div>
+            <h3>Additional information:</h3>
+            <ul class=\"unstyled\">
+              <li><a href=\"http://library.cooper.edu/\" target=\"_blank\">Cooper Union</a></li>
+              <li><a href=\"http://library.newschool.edu/login/ns\" target=\"_blank\">New School</a></li>
+              <li><a href=\"http://nysidlibrary.org/logging-into-bobcat\" target=\"_blank\">NYSID</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class=\"container-fluid\">
+      <h3>
+        Library services vary by institution. Please see the
+        <a href=\"https://web1.library.nyu.edu/privileges_guide/\" target=\"_blank\">NYU Libraries Privileges Guide</a>.
+      </h3>
+    </section>
+    <footer>NYU Division of Libraries.  BobCat.  Powered by Ex Libris Primo</footer>
+  </body>
+</html>
+";
+
 # Verify module can be included via "use" pragma
 BEGIN { use_ok('NYU::Libraries::PDS::SessionsController') };
 
@@ -235,7 +334,7 @@ is(defined($controller->error), '', "Error should be undefined");
 
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
 # Test authenticate
-is($controller->_authenticate("DS03D", "FAIL"), NYU_LOGIN, "Authenticate should be login screen");
+is($controller->_authenticate("DS03D", "FAIL"), NYU_LOGIN_WITH_ERROR, "Authenticate should be login screen");
 # Test error undefined after authenticate
 isnt($controller->error, undef, "Error should be defined");
 isnt(defined($controller->error), '', "Error should be defined");
