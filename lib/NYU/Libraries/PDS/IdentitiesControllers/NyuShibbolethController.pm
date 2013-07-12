@@ -72,8 +72,7 @@ sub create {
 sub redirect_to_target {
   my $self = shift;
   my $cgi = CGI->new();
-  print $cgi->redirect($self->$target_url());
-  exit;
+  return $cgi->redirect($self->$target_url());
 }
 
 1;

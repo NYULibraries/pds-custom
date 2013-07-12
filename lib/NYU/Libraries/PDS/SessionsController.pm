@@ -83,30 +83,60 @@ my $nyu_shibboleth_controller = sub {
   return $self->{'nyu_shibboleth_controller'};
 };
 
-my $login_screen = sub {
+# Private initialization method
+# Usage:
+#   $self->$initialize(configurations, institute, calling_system, target_url, session_id)
+my $initialize = sub {
+  my($self, $conf, $institute, $calling_system, $target_url, $session_id) = @_;
+  # Set configurations
+  $self->set('conf', $conf);
+  # Set institute
+  $self->set('institute', (whitelist_institution($institute) || DEFAULT_INSTITUTE));
+  # Set calling_system
+  $self->set('calling_system', ($calling_system || DEFAULT_CALLING_SYSTEM));
+  # Set target_url
+  $self->set('target_url', ($target_url || DEFAULT_TARGET_URL));
+  # Set session_id
+  $self->set('session_id', $session_id) if $session_id;
+};
+
+# Returns an new SessionsController
+# Usage:
+#   NYU::Libraries::PDS::Controllers::SessionsController->new(configurations, institute, calling_system, target_url, session_id)
+sub new {
+  my($proto, @initialization_args) = @_;
+  my $class = ref $proto || $proto;
+  my $self = bless(Class::Accessor->new(), $class);
+  # Initialize
+  $self->$initialize(@initialization_args);
+  # Return self
+  return $self;
+}
+
+sub _login_screen {
   my $self = shift;
   # Present Login Screen
   my $template = NYU::Libraries::PDS::Views::Login->new($self->{'conf'}, $self);
-  print $template->render();
-};
+  return $template->render();
+}
 
-my $redirect_to_unauthorized = sub {
+sub _redirect_to_unauthorized {
   my $self = shift;
   my $cgi = CGI->new();
   print $cgi->redirect(UNAUTHORIZED_URL);
-};
+}
 
-my $redirect_to_target_url = sub {
+sub _redirect_to_target_url {
   my $self = shift;
   my $cgi = CGI->new();
-  print $cgi->redirect($self->target_url);
-};
+  return $cgi->redirect($self->target_url);
+}
 
 # Authenticate against Aleph.
 # Returns a newly created session.
 # Usage:
 #   my $session = $self->$authenticate_aleph($id, $password);
-my $authenticate_aleph = sub {
+sub _authenticate_aleph {
   my($self, $id, $password) = @_;
   # We need an Aleph identity to successfully create a session for this
   # authentication mechanism
@@ -124,13 +154,13 @@ my $authenticate_aleph = sub {
   }
   # If we successfully authenticated return identity
   return [$aleph_identity];
-};
+}
 
 # Authenticate against New School's LDAP.
 # Returns a newly created session.
 # Usage:
 #   my $session = $self->$authenticate_ns_ldap($id, $password);
-my $authenticate_ns_ldap = sub {
+sub _authenticate_ns_ldap {
   my($self, $id, $password) = @_;
   # We need a New School LDAP identity AND an Aleph identity
   # to successfully create a session for this authentication
@@ -165,36 +195,6 @@ my $authenticate_ns_ldap = sub {
   return [$ns_ldap_identity, $aleph_identity];
 };
 
-# Private initialization method
-# Usage:
-#   $self->$initialize(configurations, institute, calling_system, target_url, session_id)
-my $initialize = sub {
-  my($self, $conf, $institute, $calling_system, $target_url, $session_id) = @_;
-  # Set configurations
-  $self->set('conf', $conf);
-  # Set institute
-  $self->set('institute', (whitelist_institution($institute) || DEFAULT_INSTITUTE));
-  # Set calling_system
-  $self->set('calling_system', ($calling_system || DEFAULT_CALLING_SYSTEM));
-  # Set target_url
-  $self->set('target_url', ($target_url || DEFAULT_TARGET_URL));
-  # Set session_id
-  $self->set('session_id', $session_id) if $session_id;
-};
-
-# Returns an new SessionsController
-# Usage:
-#   NYU::Libraries::PDS::Controllers::SessionsController->new(configurations, institute, calling_system, target_url, session_id)
-sub new {
-  my($proto, @initialization_args) = @_;
-  my $class = ref $proto || $proto;
-  my $self = bless(Class::Accessor->new(), $class);
-  # Initialize
-  $self->$initialize(@initialization_args);
-  # Return self
-  return $self;
-}
-
 # Display the login screen, unless already signed in
 # Usage:
 #   $controller->login();
@@ -217,17 +217,17 @@ sub login {
       $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
       # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
       # or just got it from me.
-      $nyu_shibboleth_controller->redirect_to_target();
+      print $nyu_shibboleth_controller->redirect_to_target();
       return;
     } else {
       # Exit with Unauthorized Error
       $self->set('error', "Unauthorized");
-      $self->$redirect_to_unauthorized();
+      print $self->_redirect_to_unauthorized();
       return;
     }
   }
   # Print the login screen
-  print $self->$login_screen();
+  print $self->_login_screen();
   return;
 }
 
@@ -256,31 +256,35 @@ sub sso {
   }
   # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
   # or just got it from me.
-  $nyu_shibboleth_controller->redirect_to_target();
+  print $nyu_shibboleth_controller->redirect_to_target();
   return;
 }
 
-sub authenticate {
+sub _authenticate {
   my($self, $id, $password) = @_;
   my $identities;
   unless($self->institute eq "NS") {
-    $identities = $self->$authenticate_aleph($id, $password);
-    $identities = $self->$authenticate_ns_ldap($id, $password) unless defined($identities);
+    $identities = $self->_authenticate_aleph($id, $password);
+    $identities = $self->_authenticate_ns_ldap($id, $password) unless defined($identities);
   } else {
-    $identities = $self->$authenticate_ns_ldap($id, $password);
-    $identities = $self->$authenticate_aleph($id, $password) unless defined($identities);
+    $identities = $self->_authenticate_ns_ldap($id, $password);
+    $identities = $self->_authenticate_aleph($id, $password) unless defined($identities);
   }
   # If we got some identities, create a session and redirect to the target URL
   # Otherwise, present the login screen
   if (defined($identities)) {
     my $session = $self->$create_session(@$identities);
-    $self->$redirect_to_target_url();
+    return $self->_redirect_to_target_url();
   } else {
     $self->set('error', "There seems to have been a problem logging in. Please check your credentials.");
     # Return Login Screen
-    print $self->$login_screen();
+    return $self->_login_screen();
   }
-  return;
+}
+
+sub authenticate {
+  my($self, $id, $password) = @_;
+  print $self->_authenticate($id, $password);
 }
 
 # Return the bor_info as an XML string
