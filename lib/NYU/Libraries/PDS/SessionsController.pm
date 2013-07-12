@@ -52,7 +52,7 @@ my $create_session = sub {
     # Save the session
     $session->save();
     # Set the session cookie
-    $pds_handle = CGI::Cookie->new(-name=>'PDS_HANDLE',
+    my $pds_handle = CGI::Cookie->new(-name=>'PDS_HANDLE',
       -value=>$session->session_id,-domain=>'.library.nyu.edu');
     print header(-cookie=>[$pds_handle]);
   }
