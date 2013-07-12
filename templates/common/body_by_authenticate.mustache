@@ -1,15 +1,19 @@
 <section class="container-fluid">
   <div class="row-fluid">
+    {{#is_form}}
     <div class="span5 well">
       {{> ../common/form }}
       {{> ../common/help/authentication }}
       {{> ../common/help/more_info }}
     </div>
+    {{/is_form}}
+    {{#is_shib}}
     <div class="span5 well">
       {{> ../common/shib }}
       {{> ../common/help/authentication_shib }}
       {{> ../common/help/more_info_shib }}
     </div>
+    {{/is_shib}}
   </div>
 </section>
 {{> ../common/help/privileges }}

@@ -147,6 +147,21 @@ sub session_id {
   return ($self->{'session_id'} || "");
 }
 
+sub is_ezproxy {
+  my $self = shift;
+  return ($self->calling_system eq "ezproxy");
+}
+
+sub is_form {
+  my $self = shift;
+  return (!$self->is_ezproxy);
+}
+
+sub is_shib {
+  my $self = shift;
+  return 1;
+}
+
 sub institutional_stylesheet {
   my $self = shift;
   my $institute_key = $self->institute_key;
