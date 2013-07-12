@@ -73,7 +73,6 @@ sub _init {
       my $identity_hash = $identity->to_h();
       # Override ID, if it was already set
       $self->set('id', $identity->id);
-      $self->set('id', $identity->id);
       foreach my $attribute (keys %$identity_hash) {
         # Don't override attribute if it was previously set
         $self->set("$attribute", $identity_hash->{$attribute}) unless $self->{$attribute};
