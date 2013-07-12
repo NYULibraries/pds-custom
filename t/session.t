@@ -36,6 +36,7 @@ is($new_session->to_xml(),
     "<id>DS03D</id>".
     "<institute>NYU</institute>".
     "<bor_status>03</bor_status>".
+    "<name>DS03D, TEST-RECORD</name>".
     "<verification>TEST</verification>".
     "<ill_permission>N</ill_permission>".
   "</session>", "Unexpected session xml");
