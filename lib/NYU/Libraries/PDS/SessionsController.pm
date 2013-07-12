@@ -258,7 +258,7 @@ sub sso {
   my $self = shift;
   my $nyu_shibboleth_controller = $self->$nyu_shibboleth_controller();
   my $nyu_shibboleth_identity = $nyu_shibboleth_controller->create();
-  if ($nyu_shibboleth_identity->exists) {
+  if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
     my $aleph_controller = $self->$aleph_controller();
     my $aleph_identity = 
       $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
