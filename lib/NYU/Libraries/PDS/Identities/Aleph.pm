@@ -225,6 +225,8 @@ sub set_attributes {
     }
     $self->set('verification', $verification);
   }
+  # Set the name from Aleph
+  $self->set('name', $self->bor_name);
 }
 
 1;
