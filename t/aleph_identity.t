@@ -66,7 +66,7 @@ is($identity->verification, "DALT", "Should have encrypted verification");
 # Verify XML
 is($identity->to_xml(), 
   "<aleph>".
-    "<name>DALTON,SCOT THOMAS</name>"
+    "<name>DALTON,SCOT THOMAS</name>".
     "<bor_name>DALTON,SCOT THOMAS</bor_name>".
     "<verification>DALT</verification>".
     "<expiry_date>20131031</expiry_date>".
