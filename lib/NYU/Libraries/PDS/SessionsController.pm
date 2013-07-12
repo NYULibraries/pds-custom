@@ -47,6 +47,8 @@ my $create_session = sub {
   # Add some attributes from the controller
   $session->target_url($self->target_url);
   $session->calling_system($self->calling_system);
+  # Testing environment differs
+  return $session if ($ENV{'CI'});
   # Save the session
   return $session if $session->save();
 };

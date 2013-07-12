@@ -15,6 +15,7 @@ sub template_path {
   my $self = shift;
   my $institute = $self->institute_key;
   my $template_path = "templates/$institute";
+  # Testing environment differs
   return ($ENV{'CI'}) ? "./$template_path" : 
     "/exlibris/primo/p3_1/pds/custom/$template_path";
 }

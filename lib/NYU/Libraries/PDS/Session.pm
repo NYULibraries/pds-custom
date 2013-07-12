@@ -115,15 +115,16 @@ sub save {
   my($self) = @_;
   my (%Z311, %Z312) = ((), ());
   # Store PDS info in Z311 hash.
-  %Z311 = {};
+  %Z311 = ();
   $Z311{'exl_id'} = $self->id;
   $Z311{'institute'} = $self->institute;
   $Z311{'id'} = $self->id;
   $Z311{'verification'} = $self->verification;
   my ($http, $temp, $host, $cgi_name) = map split(/\//), split(/\?/,$self->target_url);
   my $user_ip = PDSUtil::getIpAddress();
-  $Z311{'remote_address'} = $host.'/'.$cgi_name.';'.$user_ip.';'.$self->calling_system;
-  $Z311{'calling_system'} = $self->calling_system;
+  my $calling_system = $self->calling_system;
+  $Z311{'remote_address'} = "$host/$cgi_name;$user_ip;$calling_system";
+  $Z311{'calling_system'} = $calling_system;
   my $term = PDSParamUtil::getAndFilterParam('term');
   $Z311{'term'} = PDSUtil::reset_term_cookie($term);
   # Persist Z311
@@ -133,7 +134,7 @@ sub save {
     IOZ311_file::io_z311_file('WRITE', \%Z311);
   }
   # Store additional information in Z312 hash.
-  %Z312 = {};
+  %Z312 = ();
   $Z312{'verification'} = $self->verification;
   foreach my $attribute (@attributes) {
     $Z312{$attribute} = $self->{attribute} if defined($self->{$attribute});
