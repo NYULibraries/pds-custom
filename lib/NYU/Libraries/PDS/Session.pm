@@ -22,7 +22,7 @@ my @attributes = qw(id institute barcode bor_status bor_type name uid email cn
   givenname sn verification nyuidn nyu_shibboleth ns_ldap edupersonentitlement objectclass 
     ill_permission college_code college_name dept_code dept_name major_code major session_id);
 __PACKAGE__->mk_ro_accessors(@attributes);
-__PACKAGE__->mk_accessors(qw(calling_system url));
+__PACKAGE__->mk_accessors(qw(calling_system target_url));
 use constant NYU_BOR_STATUSES => [ ];
 use constant NYUAD_BOR_STATUSES => [ ];
 use constant NYUSH_BOR_STATUSES => [ ];
@@ -120,9 +120,9 @@ sub save {
   $Z311{'institute'} = $self->institute;
   $Z311{'id'} = $self->id;
   $Z311{'verification'} = $self->verification;
-  my ($http, $temp, $host, $cgi_name) = map split(/\//), split(/\?/,$self->url);
-  my $p_user_ip = PDSUtil::getIpAddress();
-  $Z311{'remote_address'} = $host.'/'.$cgi_name.';'.$p_user_ip.';'.$calling_system;
+  my ($http, $temp, $host, $cgi_name) = map split(/\//), split(/\?/,$self->target_url);
+  my $user_ip = PDSUtil::getIpAddress();
+  $Z311{'remote_address'} = $host.'/'.$cgi_name.';'.$user_ip.';'.$self->calling_system;
   $Z311{'calling_system'} = $self->calling_system;
   my $term = PDSParamUtil::getAndFilterParam('term');
   $Z311{'term'} = PDSUtil::reset_term_cookie($term);
