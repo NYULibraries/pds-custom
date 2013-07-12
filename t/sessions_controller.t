@@ -226,14 +226,9 @@ is($controller->_login_screen(), "<!DOCTYPE html>
 
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
 # Test authenticate
-is($controller->_authenticate("DS03D", "TEST"), "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".
-  "<session>".
-    "<id>DS03D</id>".
-    "<institute>NYU</institute>".
-    "<bor_status>03</bor_status>".
-    "<verification>TEST</verification>".
-    "<ill_permission>N</ill_permission>".
-  "</session>", "Authenticate should return xml");
+is($controller->_authenticate("DS03D", "TEST"), 
+  "Status: 302 Found\nLocation: http://example.com\n\n", "Authenticate should return redirect to target");
+
 # Test error undefined after authenticate
 is($controller->error, undef, "Error should be undefined");
 is(defined($controller->error), '', "Error should be undefined");
