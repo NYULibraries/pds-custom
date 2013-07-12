@@ -325,8 +325,8 @@ is($controller->_login_screen(), "<!DOCTYPE html>
 
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
 # Test authenticate
-is($controller->_authenticate("DS03D", "TEST"), 
-  "Status: 302 Found\nLocation: http://example.com\n\n", "Authenticate should return redirect to target");
+is($controller->_authenticate("DS03D", "TEST"), "Status: 302 Found$CGI::CRLF".
+  "Location: http://example.com$CGI::CRLF$CGI::CRLF", "Authenticate should return redirect to target");
 
 # Test error undefined after authenticate
 is($controller->error, undef, "Error should be undefined");
