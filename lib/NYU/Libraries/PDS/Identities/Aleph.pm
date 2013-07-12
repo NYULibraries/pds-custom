@@ -16,7 +16,7 @@ use constant LOADED_FROM_PLIF => "PLIF LOADED";
 use constant FAMILY_MEMBER_BOR_STATUS => "65";
 
 use base qw(NYU::Libraries::PDS::Identities::Base);
-my @attributes = qw(bor_name verification barcode expiry_date bor_status
+my @attributes = qw(name bor_name verification barcode expiry_date bor_status
   bor_type ill_permission college_code college_name dept_code dept_name
     major_code major plif_status);
 __PACKAGE__->mk_ro_accessors(@attributes);
