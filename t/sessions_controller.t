@@ -81,7 +81,7 @@ is($controller->login(), "<!DOCTYPE html>
             <fieldset>
               <input type=\"hidden\" name=\"func\" value=\"login\" />
               <input type=\"hidden\" name=\"calling_system\" value=\"primo\" />
-              <input type=\"hidden\" name=\"institute\" value=\"nyu\" />
+              <input type=\"hidden\" name=\"institute\" value=\"NYU\" />
               <input type=\"hidden\" name=\"term1\" value=\"short\" />
               <input type=\"hidden\" name=\"selfreg\" value=\"\" />
               <input type=\"hidden\" name=\"url\" value=\"http://example.com\" />
@@ -160,7 +160,7 @@ is($controller->login(), "<!DOCTYPE html>
             <fieldset>
               <input type=\"hidden\" name=\"func\" value=\"login\" />
               <input type=\"hidden\" name=\"calling_system\" value=\"primo\" />
-              <input type=\"hidden\" name=\"institute\" value=\"ns\" />
+              <input type=\"hidden\" name=\"institute\" value=\"NS\" />
               <input type=\"hidden\" name=\"term1\" value=\"short\" />
               <input type=\"hidden\" name=\"selfreg\" value=\"\" />
               <input type=\"hidden\" name=\"url\" value=\"http://example.com\" />

@@ -118,6 +118,11 @@ sub institute_key {
   return lc($self->{'institute'});
 }
 
+sub institute_key_uc {
+  my $self = shift;
+  return uc($self->institute_key);
+}
+
 sub institutes {
   return \%INSTITUTES;
 }
