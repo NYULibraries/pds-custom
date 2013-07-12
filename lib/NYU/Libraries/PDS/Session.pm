@@ -133,13 +133,13 @@ sub save {
   } else {
     IOZ311_file::io_z311_file('WRITE', \%Z311);
   }
+  $self->set('session_id', $Z311{'session_id'});
   # Store additional information in Z312 hash.
   %Z312 = ();
   $Z312{'verification'} = $self->verification;
   foreach my $attribute (@attributes) {
-    $Z312{$attribute} = $self->{attribute} if defined($self->{$attribute});
+    $Z312{$attribute} = $self->{$attribute} if $self->{$attribute};
   }
-  $self->set('session_id', $Z311{'session_id'});
   # Persist Z312
   if (isUsingOracle()) {
     PDSSessionUserAttrs::pds_session_ua('WRITE', \%Z312, $self->session_id);
