@@ -12,6 +12,7 @@ use IOZ312_file;
 use PDSSession;
 use PDSSessionUserAttrs;
 use PDSUtil qw(isUsingOracle);
+use PDSParamUtil;
 
 # NYU Libraries modules
 use NYU::Libraries::Util qw(trim xml_encode);
@@ -19,9 +20,9 @@ use NYU::Libraries::Util qw(trim xml_encode);
 use base qw(Class::Accessor);
 my @attributes = qw(id institute barcode bor_status bor_type name uid email cn 
   givenname sn verification nyuidn nyu_shibboleth ns_ldap edupersonentitlement objectclass 
-    ill_permission college_code college_name dept_code dept_name major_code major);
+    ill_permission college_code college_name dept_code dept_name major_code major session_id);
 __PACKAGE__->mk_ro_accessors(@attributes);
-
+__PACKAGE__->mk_accessors(qw(calling_system url));
 use constant NYU_BOR_STATUSES => [ ];
 use constant NYUAD_BOR_STATUSES => [ ];
 use constant NYUSH_BOR_STATUSES => [ ];
@@ -108,6 +109,43 @@ sub find {
     IOZ312_file::io_z312_file("READ", \%session, $id) if $error_code eq "00";
   }
   return ($error_code eq "00") ? NYU::Libraries::PDS::Session->new(\%session) : undef;
+}
+
+sub save {
+  my($self) = @_;
+  my (%Z311, %Z312) = ((), ());
+  # Store PDS info in Z311 hash.
+  %Z311 = {};
+  $Z311{'exl_id'} = $self->id;
+  $Z311{'institute'} = $self->institute;
+  $Z311{'id'} = $self->id;
+  $Z311{'verification'} = $self->verification;
+  my ($http, $temp, $host, $cgi_name) = map split(/\//), split(/\?/,$self->url);
+  my $p_user_ip = PDSUtil::getIpAddress();
+  $Z311{'remote_address'} = $host.'/'.$cgi_name.';'.$p_user_ip.';'.$calling_system;
+  $Z311{'calling_system'} = $self->calling_system;
+  my $term = PDSParamUtil::getAndFilterParam('term');
+  $Z311{'term'} = PDSUtil::reset_term_cookie($term);
+  # Persist Z311
+  if(isUsingOracle()) {
+    PDSSession::pds_session('WRITE', \%Z311);
+  } else {
+    IOZ311_file::io_z311_file('WRITE', \%Z311);
+  }
+  # Store additional information in Z312 hash.
+  %Z312 = {};
+  $Z312{'verification'} = $self->verification;
+  foreach my $attribute (@attributes) {
+    $Z312{$attribute} = $self->{attribute} if defined($self->{$attribute});
+  }
+  $self->set('session_id', $Z311{'session_id'});
+  # Persist Z312
+  if (isUsingOracle()) {
+    PDSSessionUserAttrs::pds_session_ua('WRITE', \%Z312, $self->session_id);
+  } else {
+    IOZ312_file::io_z312_file('WRITE', \%Z312, $self->session_id);
+  }
+  return $self;
 }
 
 # Returns this session as XML

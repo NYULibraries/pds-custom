@@ -42,7 +42,8 @@ use constant DEFAULT_TARGET_URL => "http://bobcat.library.nyu.edu";
 #   $self->$create_session($identity1, $identity2)
 my $create_session = sub {
   my($self, @identities) = @_;
-  return NYU::Libraries::PDS::Session->new(@identities);
+  my $session = NYU::Libraries::PDS::Session->new(@identities);
+  return $session->save();
 };
 
 # Private method to get a new Aleph Controller
