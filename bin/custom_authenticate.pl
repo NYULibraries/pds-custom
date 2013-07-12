@@ -18,7 +18,7 @@ use PDSParamUtil;
 sub custom_authenticate {
   my ($session_id, $id, $password, $institute, $user_ip, $params) = @_;
   my $pds_directory = getEnvironmentParams('pds_directory');
-  my $conf = parse_conf("$pds_directory/config/nyu.conf");
+  my $conf = parse_conf("$pds_directory/config/pds/nyu.conf");
   my $calling_system = PDSParamUtil::getAndFilterParam('calling_system');
   my $target_url = PDSParamUtil::queryUrl();
   my $session_controller = NYU::Libraries::PDS::controller($conf, $institute, 
