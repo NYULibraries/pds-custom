@@ -48,8 +48,14 @@ my $create_session = sub {
   $session->target_url($self->target_url);
   $session->calling_system($self->calling_system);
   # Testing environment differs
-  return $session if ($ENV{'CI'});
-  # Save the session
+  unless ($ENV{'CI'}) {
+    # Save the session
+    $session->save();
+    # Set the session cookie
+    $pds_handle = CGI::Cookie->new(-name=>'PDS_HANDLE',
+      -value=>$session->session_id,-domain=>'.library.nyu.edu');
+    print header(-cookie=>[$pds_handle]);
+  }
   return $session if $session->save();
 };
 
