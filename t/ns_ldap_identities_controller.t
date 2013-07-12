@@ -26,7 +26,7 @@ isa_ok($controller, qw(NYU::Libraries::PDS::IdentitiesControllers::BaseControlle
 isa_ok($controller, qw(NYU::Libraries::PDS::IdentitiesControllers::NsLdapController));
 
 # Verify methods
-can_ok($controller, (qw(create error)));
+can_ok($controller, (qw(create)));
 
 # Try a create with an invalid password
 my $identity = $controller->create("ajones", "FAIL");

@@ -32,6 +32,7 @@ use base qw(Class::Accessor);
 __PACKAGE__->mk_accessors(qw(institute calling_system target_url session_id error));
 
 # Default constants
+use constant UNAUTHORIZED_URL => "http://library.nyu.edu/unauthorized";
 use constant DEFAULT_INSTITUTE => "NYU";
 use constant DEFAULT_CALLING_SYSTEM => "primo";
 use constant DEFAULT_TARGET_URL => "http://bobcat.library.nyu.edu";
@@ -80,6 +81,88 @@ my $nyu_shibboleth_controller = sub {
     $self->{'nyu_shibboleth_controller'} = $nyu_shibboleth_controller;
   }
   return $self->{'nyu_shibboleth_controller'};
+};
+
+my $login_screen = sub {
+  my $self = shift;
+  # Present Login Screen
+  my $template = NYU::Libraries::PDS::Views::Login->new($self->{'conf'}, $self);
+  print $template->render();
+};
+
+my $redirect_to_unauthorized = sub {
+  my $self = shift;
+  my $cgi = CGI->new();
+  print $cgi->redirect(UNAUTHORIZED_URL);
+};
+
+my $redirect_to_target_url = sub {
+  my $self = shift;
+  my $cgi = CGI->new();
+  print $cgi->redirect($self->target_url);
+};
+
+# Authenticate against Aleph.
+# Returns a newly created session.
+# Usage:
+#   my $session = $self->$authenticate_aleph($id, $password);
+my $authenticate_aleph = sub {
+  my($self, $id, $password) = @_;
+  # We need an Aleph identity to successfully create a session for this
+  # authentication mechanism
+  # Try to create the Aleph identity
+  # based on the given ID and password
+  my $aleph_identity = 
+    $self->$aleph_controller()->create($id, $password);
+  # Check if the Aleph identity exists
+  unless($aleph_identity->exists) {
+    # The Aleph identity doesn't exist
+    # so we exit and set a Login Error
+    my $error = $aleph_identity->error;
+    $self->set('error', "There seems to have been a problem logging in. $error");
+    return undef;
+  }
+  # If we successfully authenticated return identity
+  return [$aleph_identity];
+};
+
+# Authenticate against New School's LDAP.
+# Returns a newly created session.
+# Usage:
+#   my $session = $self->$authenticate_ns_ldap($id, $password);
+my $authenticate_ns_ldap = sub {
+  my($self, $id, $password) = @_;
+  # We need a New School LDAP identity AND an Aleph identity
+  # to successfully create a session for this authentication
+  # mechanism
+  my ($ns_ldap_identity, $aleph_identity);
+  # Try to create the New School identity
+  # based on the given ID and password
+  $ns_ldap_identity = 
+    $self->$ns_ldap_controller()->create($id, $password);
+  # Check if the New School LDAP identity exists
+  if($ns_ldap_identity->exists) {
+    # Try to create the Aleph identity
+    # based on the Aleph identifier that we got from
+    # the New School LDAP identity
+    $aleph_identity =
+      $self->$aleph_controller()->get($ns_ldap_identity->aleph_identifier);
+    # Check if the Aleph identity exists
+    unless($aleph_identity->exists) {
+      # The Aleph identity doesn't exist
+      # so we exit and set a Unauthorized Error
+      $self->set('error', "Unauthorized");
+      return undef;
+    }
+  } else {
+    # The New School LDAP identity doesn't exist
+    # so we exit and set a Login Error
+    my $error = $ns_ldap_identity->error;
+    $self->set('error', "There seems to have been a problem logging in. $error");
+    return undef;
+  }
+  # If we successfully authenticated return identities
+  return [$ns_ldap_identity, $aleph_identity];
 };
 
 # Private initialization method
@@ -135,19 +218,17 @@ sub login {
       # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
       # or just got it from me.
       $nyu_shibboleth_controller->redirect_to_target();
+      return;
     } else {
       # Exit with Unauthorized Error
       $self->set('error', "Unauthorized");
-      return undef;
+      $self->$redirect_to_unauthorized();
+      return;
     }
-  } else {
-    # Present Login Screen
-    my $template = 
-      NYU::Libraries::PDS::Views::Login->new(
-        $self->{'conf'}, $self->institute, $self->calling_system, 
-          $self->target_url, $self->session_id);
-    return $template->render();
   }
+  # Print the login screen
+  print $self->$login_screen();
+  return;
 }
 
 # Single sign on if possible, otherwise return from whence you came
@@ -169,84 +250,52 @@ sub sso {
       $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
     # Check if the Aleph identity exists
     if ($aleph_identity->exists) {
-      $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
+      my $session = 
+        $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
     }
   }
   # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
   # or just got it from me.
   $nyu_shibboleth_controller->redirect_to_target();
+  return;
 }
 
-# Authenticate against Aleph.
-# Returns a newly created session.
-# Usage:
-#   my $session = $controller->authenticate_aleph($id, $password);
-sub authenticate_aleph {
+sub authenticate {
   my($self, $id, $password) = @_;
-  # We need an Aleph identity to successfully create a session for this
-  # authentication mechanism
-  # Try to create the Aleph identity
-  # based on the given ID and password
-  my $aleph_identity = 
-    $self->$aleph_controller()->create($id, $password);
-  # Check if the Aleph identity exists
-  unless($aleph_identity->exists) {
-    # The Aleph identity doesn't exist
-    # so we exit and set a Login Error
-    my $error = $self->$aleph_controller()->error;
-    $self->set('error', "There seems to have been a problem logging in. $error");
-    return undef;
-  }
-  # If we successfully authenticated, create the session 
-  # and return the session as XML
-  return $self->$create_session($aleph_identity)->to_xml;
-}
-
-# Authenticate against New School's LDAP.
-# Returns a newly created session.
-# Usage:
-#   my $session = $controller->authenticate_ns_ldap($id, $password);
-sub authenticate_ns_ldap {
-  my($self, $id, $password) = @_;
-  # We need a New School LDAP identity AND an Aleph identity
-  # to successfully create a session for this authentication
-  # mechanism
-  my ($ns_ldap_identity, $aleph_identity);
-  # Try to create the New School identity
-  # based on the given ID and password
-  $ns_ldap_identity = 
-    $self->$ns_ldap_controller()->create($id, $password);
-  # Check if the New School LDAP identity exists
-  if($ns_ldap_identity->exists) {
-    # Try to create the Aleph identity
-    # based on the Aleph identifier that we got from
-    # the New School LDAP identity
-    $aleph_identity =
-      $self->$aleph_controller()->get($ns_ldap_identity->aleph_identifier);
-    # Check if the Aleph identity exists
-    unless($aleph_identity->exists) {
-      # The Aleph identity doesn't exist
-      # so we exit and set a Unauthorized Error
-      $self->set('error', "Unauthorized");
-      return undef;
-    }
+  my $identities;
+  unless($self->institute eq "NS") {
+    $identities = $self->$authenticate_aleph($id, $password);
+    $identities = $self->$authenticate_ns_ldap($id, $password) unless defined($identities);
   } else {
-    # The New School LDAP identity doesn't exist
-    # so we exit and set a Login Error
-    my $error = $self->$ns_ldap_controller()->error;
-    $self->set('error', "There seems to have been a problem logging in. $error");
-    return undef;
+    $identities = $self->$authenticate_ns_ldap($id, $password);
+    $identities = $self->$authenticate_aleph($id, $password) unless defined($identities);
   }
-  # If we successfully authenticated, create the session 
-  # and return the session as XML
-  return $self->$create_session($ns_ldap_identity, $aleph_identity)->to_xml;
+  # If we got some identities, create a session and redirect to the target URL
+  # Otherwise, present the login screen
+  if (defined($identities)) {
+    my $session = $self->$create_session(@$identities);
+    $self->$redirect_to_target_url();
+  } else {
+    $self->set('error', "There seems to have been a problem logging in. Please check your credentials.");
+    # Return Login Screen
+    print $self->$login_screen();
+  }
+  return;
 }
 
 # Return the bor_info as an XML string
 sub bor_info {
   my($self) = @_;
-  return undef unless $self->session_id;
-  return NYU::Libraries::PDS::Session::find($self->session_id)->to_xml("bor-info");
+  if ($self->session_id) {
+    my $session = NYU::Libraries::PDS::Session::find($self->session_id);
+    if ($session) {
+      print $session->to_xml("bor-info");
+    } else {
+      print "<!--?xml version=\"1.0\" encoding=\"UTF-8\" ?-->".
+        "<error>Error User does not exist</error>";
+    }
+  }
+  return;
 }
 
 1;

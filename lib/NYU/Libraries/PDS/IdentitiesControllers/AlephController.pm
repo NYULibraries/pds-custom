@@ -10,7 +10,9 @@ use base qw(NYU::Libraries::PDS::IdentitiesControllers::BaseController);
 
 sub create {
   my($self, $id, $password) = @_;
-  return NYU::Libraries::PDS::Identities::Aleph->new($self->{'conf'}, $id, $password);
+  my $identity = 
+    NYU::Libraries::PDS::Identities::Aleph->new($self->{'conf'}, $id, $password);
+  return $identity;
 }
 
 # Returns an Aleph identity
@@ -18,7 +20,9 @@ sub get {
   my($self, $id) = @_;
   # Specify that this is only a lookup
   $self->{'conf'}->{lookup_only} = 1;
-  return NYU::Libraries::PDS::Identities::Aleph->new($self->{'conf'}, $id);
+  my $identity = 
+    NYU::Libraries::PDS::Identities::Aleph->new($self->{'conf'}, $id);
+  return $identity;
 }
 
 1;

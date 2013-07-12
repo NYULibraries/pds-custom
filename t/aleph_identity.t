@@ -128,7 +128,7 @@ $identity = NYU::Libraries::PDS::Identities::Aleph->new(
 
 # Verify identity is defined
 ok(!defined($identity->{'identity'}));
-is($identity->error, "BorAuth errored: Error in Verification", "Should have error");
+is($identity->error, "Authentication error: Error in Verification", "Should have error");
 
 # Verify attributes not yet set
 is($identity->id, undef, "Should not have id attribute");

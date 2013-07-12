@@ -15,7 +15,7 @@ use NYU::Libraries::PDS;
 use PDSUtil qw(getEnvironmentParams);
 use PDSParamUtil;
 
-sub custom_authenticate_ns_ldap {
+sub custom_authenticate {
   my ($session_id, $id, $password, $institute, $user_ip, $params) = @_;
   my $pds_directory = getEnvironmentParams('pds_directory');
   my $conf = parse_conf("$pds_directory/config/nyu.conf");
@@ -23,7 +23,7 @@ sub custom_authenticate_ns_ldap {
   my $target_url = PDSParamUtil::queryUrl();
   my $session_controller = NYU::Libraries::PDS::controller($conf, $institute, 
     $calling_system, $target_url, $session_id);
-  my $session = $session_controller->authenticate_ns_ldap($id, $password);
-  my $error = $session_controller->error;
-  return ($error) ? ("11", "<error>$error</error>") : ("00", $session);
+  $session_controller->authenticate($id, $password);
+  # We're overriding the PDS chain, so we should just exit.
+  exit;
 }

@@ -7,7 +7,6 @@ use warnings;
 use lib "vendor/lib";
 
 use base qw(Class::Accessor);
-__PACKAGE__->mk_accessors(qw(error));
 
 # Private initialization method
 # Usage:

@@ -23,7 +23,7 @@ sub custom_load_login {
   my $target_url = PDSParamUtil::queryUrl();
   my $session_controller = NYU::Libraries::PDS::controller($conf, $institute, 
     $calling_system, $target_url, $session_id);
-  print $session_controller->login();
+  $session_controller->login();
   # We're overriding the PDS chain, so we should just exit.
   exit;
 }

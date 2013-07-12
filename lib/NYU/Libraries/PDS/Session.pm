@@ -107,7 +107,7 @@ sub find {
     $error_code = IOZ311_file::io_z311_file('DISPLAY', \%session) if $error_code eq "00";
     IOZ312_file::io_z312_file("READ", \%session, $id) if $error_code eq "00";
   }
-  return NYU::Libraries::PDS::Session->new(\%session);
+  return ($error_code eq "00") ? NYU::Libraries::PDS::Session->new(\%session) : undef;
 }
 
 # Returns this session as XML

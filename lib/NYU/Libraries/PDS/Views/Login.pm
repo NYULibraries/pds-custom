@@ -85,24 +85,18 @@ my %INSTITUTES = (
 
 # Private initialization method
 # Usage:
-#   $self->$initialize(configurations, institute, calling_system, target_url, session_id)
+#   $self->$initialize($configurations, $controller)
 my $initialize = sub {
-  my($self, $conf, $institute, $calling_system, $target_url, $session_id) = @_;
+  my($self, $conf, $controller) = @_;
   # Set configurations
   $self->{'conf'} = $conf;
-  # Set institute
-  $self->{'institute'} = $institute;
-  # Set calling_system
-  $self->{'calling_system'} = $calling_system;
-  # Set target_url
-  $self->{'target_url'} = $target_url;
-  # Set session_id
-  $self->{'session_id'} = $session_id;
+  # Set controller
+  $self->{'controller'} = $controller;
 };
 
-# Returns an new SessionsController
+# Returns an new Login template
 # Usage:
-#   NYU::Libraries::PDS::Controllers::SessionsController->new(configurations, institute, calling_system, target_url, session_id)
+#   NYU::Libraries::PDS::Views::Login->new($configurations, $controller)
 sub new {
   my($proto, @initialization_args) = @_;
   my $class = ref $proto || $proto;
@@ -113,9 +107,14 @@ sub new {
   return $self;
 }
 
+sub controller {
+  my $self = shift;
+  return $self->{'controller'};
+}
+
 sub institute_key {
   my $self = shift;
-  return lc($self->{'institute'});
+  return lc($self->controller->institute);
 }
 
 sub institute_key_uc {
@@ -134,22 +133,27 @@ sub institute {
 
 sub calling_system {
   my $self = shift;
-  return $self->{'calling_system'};
+  return $self->controller->calling_system;
 }
 
 sub self_url {
   my $self = shift;
-  return ($self->{'self_url'} || "");
+  return ($self->controller->self_url || "");
 }
 
 sub target_url {
   my $self = shift;
-  return ($self->{'target_url'} || "");
+  return ($self->controller->target_url || "");
 }
 
 sub session_id {
   my $self = shift;
-  return ($self->{'session_id'} || "");
+  return ($self->controller->session_id || "");
+}
+
+sub error {
+  my $self = shift;
+  return $self->controller->error;
 }
 
 sub is_ezproxy {

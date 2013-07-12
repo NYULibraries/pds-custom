@@ -107,8 +107,8 @@ my $aleph_authenticate = sub {
         "Translate" => "N", "UserName" => $conf->{ xserver_user }, 
             "UserPassword" => $conf->{ xserver_password });
   # Set error and return undef if the xservice call was unsuccessful or if it returned errors
-  $self->set('error', "BorAuth was unsuccessful.") and return undef unless $bor_auth->success();
-  $self->set('error', "BorAuth errored: ".$bor_auth->get_error()) and return undef if $bor_auth->get_error();
+  $self->set('error', "Authentication was unsuccessful.") and return undef unless $bor_auth->success();
+  $self->set('error', "Authentication error: ".$bor_auth->get_error()) and return undef if $bor_auth->get_error();
   # Set identity hash reference from xservice.
   my $identity;
   $identity->{"verification"} = $password;
