@@ -56,7 +56,7 @@ my $create_session = sub {
       -value=>$session->session_id,-domain=>'.library.nyu.edu');
     print header(-cookie=>[$pds_handle]);
   }
-  return $session if $session->save();
+  return $session;
 };
 
 # Private method to get a new Aleph Controller
