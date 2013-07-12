@@ -1,3 +1,5 @@
+# The Aleph Identity stores data from Aleph
+# for current user given an ID and password
 package NYU::Libraries::PDS::Identities::Aleph;
 
 use strict;

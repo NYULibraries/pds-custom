@@ -1,3 +1,4 @@
+# Controller for creating NYU Shibboleth identities
 package NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethController;
 use strict;
 use warnings;

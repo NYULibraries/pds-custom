@@ -1,3 +1,5 @@
+# The NYU Shibboleth Identity stores data from the Apache
+# environment for current user's Shibboleth session
 package NYU::Libraries::PDS::Identities::NyuShibboleth;
 use strict;
 use warnings;
@@ -46,7 +48,9 @@ sub authenticate {
   if ($identity) {
     $self->set('exists', 1);
     $self->set('identity', $identity);
+    return 1;
   }
+  return undef;
 };
 
 # Method that gets the attributes from the NYU Shibboleth identity

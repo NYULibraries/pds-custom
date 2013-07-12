@@ -24,4 +24,6 @@ sub custom_load_sso {
   my $session_controller = NYU::Libraries::PDS::controller($conf, $institute, 
     $calling_system, $target_url, $session_id);
   $session_controller->sso();
+  # We're overriding the PDS chain, so we should just exit.
+  exit;
 }

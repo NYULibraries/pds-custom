@@ -1,3 +1,4 @@
+# Model for creating, finding and storing data for a PDS session
 package NYU::Libraries::PDS::Session;
 use strict;
 use warnings;

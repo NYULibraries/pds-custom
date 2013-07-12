@@ -1,3 +1,4 @@
+# Controller for creating New School LDAP identities
 package NYU::Libraries::PDS::IdentitiesControllers::NsLdapController;
 use strict;
 use warnings;

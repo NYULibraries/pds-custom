@@ -1,3 +1,4 @@
+# Base controller for identities
 package NYU::Libraries::PDS::IdentitiesControllers::BaseController;
 use strict;
 use warnings;

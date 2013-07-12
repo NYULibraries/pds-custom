@@ -24,6 +24,5 @@ sub custom_bor_info {
   my $session_controller = NYU::Libraries::PDS::controller($conf, $institute, 
     $calling_system, $target_url, $session_id);
   my $bor_info = $session_controller->bor_info();
-  return ($session_controller->error) ? 
-    ("11", $session_controller->error) : ("00", $bor_info);
-}
+  my $error = $session_controller->error;
+  return ($error) ? ("11", "<error>$error</error>") : ("00", $bor_info);}

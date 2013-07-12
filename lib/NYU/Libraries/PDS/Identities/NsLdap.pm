@@ -1,3 +1,5 @@
+# The New School LDAP Identity stores data from the New
+# School LDAP for current user given an ID and password
 package NYU::Libraries::PDS::Identities::NsLdap;
 
 use strict;

@@ -1,3 +1,4 @@
+# Base class for identities
 package NYU::Libraries::PDS::Identities::Base;
 
 use strict;
