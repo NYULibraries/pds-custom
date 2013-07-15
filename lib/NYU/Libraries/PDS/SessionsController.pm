@@ -115,7 +115,12 @@ my $initialize = sub {
   $self->set('institute', (whitelist_institution($institute) || DEFAULT_INSTITUTE));
   # Set calling_system
   $self->set('calling_system', ($calling_system || DEFAULT_CALLING_SYSTEM));
-  # Set current_url, needs to be done before we set the target url
+  # Set target_url from either the given target URL, the shibboleth controller stored
+  # "been there done that cookie" or the default
+  $target_url ||= NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethController->been_there_done_that();
+  $target_url = DEFAULT_TARGET_URL unless $target_url;
+  $self->set('target_url', $target_url);
+  # Set current_url
   my $cgi = CGI->new();
   my $base = $cgi->url(-base => 1);
   my $function = ($cgi->url_param('func') || DEFAULT_FUNCTION);
@@ -124,11 +129,6 @@ my $initialize = sub {
   $self->set('current_url', uri_escape("$base/pds?func=$function&institute=$institute&calling_system=$calling_system"));
   # Set session_id
   $self->set('session_id', $session_id) if $session_id;
-  # Set target_url from either the given target URL, the shibboleth controller stored
-  # "been there done that cookie" or the default
-  $target_url ||= $self->$nyu_shibboleth_controller->been_there_done_that();
-  $target_url = DEFAULT_TARGET_URL unless $target_url;
-  $self->set('target_url', $target_url);
 };
 
 # Returns an new SessionsController
