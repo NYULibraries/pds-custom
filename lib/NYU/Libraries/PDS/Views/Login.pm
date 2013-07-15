@@ -2,6 +2,12 @@ package NYU::Libraries::PDS::Views::Login;
 use strict;
 use warnings;
 
+# CGI module for dealing with redirects and cookies
+use CGI qw/:standard/;
+
+# URI encoding module
+use URI::Escape;
+
 # Use our bundled Perl modules, e.g. Template::Mustache
 use lib "vendor/lib";
 
