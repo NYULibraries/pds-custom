@@ -38,7 +38,7 @@ my $current_url = sub {
   my $self = shift;
   my $cgi = CGI->new();
   return uri_encode($cgi->url(-query => 1));
-}
+};
 
 # Private method gets/sets the cookie that specifies that 
 # we've been here done that
