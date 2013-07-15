@@ -2,12 +2,6 @@ package NYU::Libraries::PDS::Views::Login;
 use strict;
 use warnings;
 
-# CGI module for dealing with redirects and cookies
-use CGI qw/:standard/;
-
-# URI encoding module
-use URI::Escape;
-
 # Use our bundled Perl modules, e.g. Template::Mustache
 use lib "vendor/lib";
 
@@ -160,8 +154,7 @@ sub session_id {
 
 sub current_url {
   my $self = shift;
-  my $cgi = CGI->new();
-  return uri_escape($cgi->url(-query => 1));
+  return $self->controller->current_url;
 }
 
 sub error {

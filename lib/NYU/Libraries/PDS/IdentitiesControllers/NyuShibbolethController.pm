@@ -6,14 +6,11 @@ use warnings;
 # CGI module for dealing with redirects and cookies
 use CGI qw/:standard/;
 
-# URI encoding module
-use URI::Escape;
-
 # NYU Libraries Shibboleth Identity
 use NYU::Libraries::PDS::Identities::NyuShibboleth;
 
 use base qw(NYU::Libraries::PDS::IdentitiesControllers::BaseController);
-__PACKAGE__->mk_accessors(qw(target_url));
+__PACKAGE__->mk_accessors(qw(target_url current_url));
 
 # Been there done that cookie name
 use constant PDS_TARGET_COOKIE => 'pds_btdt_target_url';
@@ -30,13 +27,6 @@ my $been_here_done_that = sub {
 my $target_url = sub {
   my $self = shift;
   return ($self->$been_here_done_that() || $self->target_url);
-};
-
-# Private method returns the current url, properly encoded
-my $current_url = sub {
-  my $self = shift;
-  my $cgi = CGI->new();
-  return uri_escape($cgi->url(-query => 1));
 };
 
 # Private method gets/sets the cookie that specifies that 
@@ -65,7 +55,7 @@ my $check = sub {
 my $wreck = sub {
   my $self = shift;
   my $cgi = CGI->new();
-  my $current_url = $self->$current_url();
+  my $current_url = $self->current_url();
   # Redirect to the Shib IdP and exit
   print $cgi->redirect("/Shibboleth.sso/Login?isPassive=true&target=$current_url");
   # Stop, collabortate and listen!

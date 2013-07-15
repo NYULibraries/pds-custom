@@ -17,8 +17,12 @@ use warnings;
 # Use our bundled Perl modules, e.g. Class::Accessor
 use lib "vendor/lib";
 
-# CGI module for dealing with redirects
+# CGI module for dealing with redirects, etc.
 use CGI qw/:standard/;
+
+# URI encoding module
+use URI::Escape;
+
 
 # NYU Libraries modules
 use NYU::Libraries::Util qw(trim whitelist_institution);
@@ -29,7 +33,7 @@ use NYU::Libraries::PDS::Session;
 use NYU::Libraries::PDS::Views::Login;
 
 use base qw(Class::Accessor);
-__PACKAGE__->mk_accessors(qw(institute calling_system target_url session_id error));
+__PACKAGE__->mk_accessors(qw(institute calling_system target_url current_url session_id error));
 
 # Default constants
 use constant UNAUTHORIZED_URL => "http://library.nyu.edu/unauthorized";
@@ -93,6 +97,7 @@ my $nyu_shibboleth_controller = sub {
     my $nyu_shibboleth_controller = 
       NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethController->new($self->{'conf'});
     $nyu_shibboleth_controller->target_url($self->target_url);
+    $nyu_shibboleth_controller->current_url($self->current_url);
     $self->{'nyu_shibboleth_controller'} = $nyu_shibboleth_controller;
   }
   return $self->{'nyu_shibboleth_controller'};
@@ -111,6 +116,8 @@ my $initialize = sub {
   $self->set('calling_system', ($calling_system || DEFAULT_CALLING_SYSTEM));
   # Set target_url
   $self->set('target_url', ($target_url || DEFAULT_TARGET_URL));
+  # Set current_url
+  $self->set('current_url', uri_escape(CGI->new()->url(-query => 1)));
   # Set session_id
   $self->set('session_id', $session_id) if $session_id;
 };
