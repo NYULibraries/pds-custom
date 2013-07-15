@@ -115,8 +115,11 @@ my $initialize = sub {
   $self->set('institute', (whitelist_institution($institute) || DEFAULT_INSTITUTE));
   # Set calling_system
   $self->set('calling_system', ($calling_system || DEFAULT_CALLING_SYSTEM));
-  # Set target_url
-  $self->set('target_url', ($target_url || DEFAULT_TARGET_URL));
+  # Set target_url from either the given target URL, the shibboleth controller stored
+  # "been there done that cookie" or the default
+  $self->set('target_url', ($target_url || 
+    $self->$nyu_shibboleth_controller->been_there_done_that() || 
+      DEFAULT_TARGET_URL));
   # Set current_url
   my $cgi = CGI->new();
   my $base = $cgi->url(-base => 1);

@@ -15,18 +15,10 @@ __PACKAGE__->mk_accessors(qw(target_url current_url));
 # Been there done that cookie name
 use constant PDS_TARGET_COOKIE => 'pds_btdt_target_url';
 
-# Private method to get the "been here done that" cookie
-my $been_here_done_that = sub {
-  # Get the "been_here_done_that" cookie that says 
-  # we've tried this and failed.  Get the target URL.
-  my $cgi = CGI->new();
-  return $cgi->cookie(PDS_TARGET_COOKIE);
-};
-
 # Private method returns the target url
 my $target_url = sub {
   my $self = shift;
-  return ($self->$been_here_done_that() || $self->target_url);
+  return ($self->been_there_done_that() || $self->target_url);
 };
 
 # Private method gets/sets the cookie that specifies that 
@@ -35,7 +27,7 @@ my $check = sub {
   my $self = shift;
   my $cgi = CGI->new();
   my $pds_target;
-  if ($self->$been_here_done_that()) {
+  if ($self->been_there_done_that()) {
     # Unset the cookie!
     $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE,
       -expires => '-5Y', -value => '');
@@ -85,6 +77,15 @@ sub redirect_to_target {
   my $self = shift;
   my $cgi = CGI->new();
   return $cgi->redirect($self->$target_url());
+}
+
+# Method to get the "been there done that" cookie
+sub been_there_done_that {
+  my $self = shift;
+  # Get the "been there done that" cookie that says 
+  # we've tried this and failed.  Get the target URL.
+  my $cgi = CGI->new();
+  return $cgi->cookie(PDS_TARGET_COOKIE);
 }
 
 1;
