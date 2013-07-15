@@ -40,6 +40,7 @@ use constant UNAUTHORIZED_URL => "http://library.nyu.edu/unauthorized";
 use constant DEFAULT_INSTITUTE => "NYU";
 use constant DEFAULT_CALLING_SYSTEM => "primo";
 use constant DEFAULT_TARGET_URL => "http://bobcat.library.nyu.edu";
+use constant DEFAULT_FUNCTION => "sso";
 
 # Private method to create a session
 # Usage:
@@ -119,7 +120,9 @@ my $initialize = sub {
   # Set current_url
   my $cgi = CGI->new();
   my $base = $cgi->url(-base => 1);
-  my $function = $cgi->url_param('func');
+  my $function = ($cgi->url_param('func') || DEFAULT_FUNCTION);
+  $institute = $self->institute;
+  $calling_system = $self->calling_system;
   $self->set('current_url', uri_escape("$base?func=$function&institute=$institute&calling_system=$calling_system"));
   # Set session_id
   $self->set('session_id', $session_id) if $session_id;
