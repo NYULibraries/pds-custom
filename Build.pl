@@ -24,6 +24,7 @@ my $builder = Module::Build->new(
       'IO::Socket::SSL' => '1.951',
       # Mustache Templates
       'Template::Mustache' => '0.5.1'
+      'URI::Encode' => '0.09'
     }
 );
 
