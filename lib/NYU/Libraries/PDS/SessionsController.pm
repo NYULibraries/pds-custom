@@ -126,7 +126,8 @@ my $initialize = sub {
   my $function = ($cgi->url_param('func') || DEFAULT_FUNCTION);
   $institute = $self->institute;
   $calling_system = $self->calling_system;
-  $self->set('current_url', uri_escape("$base/pds?func=$function&institute=$institute&calling_system=$calling_system"));
+  $target_url = uri_escape($target_url);
+  $self->set('current_url', uri_escape("$base/pds?func=$function&institute=$institute&calling_system=$calling_system&url=$target_url"));
   # Set session_id
   $self->set('session_id', $session_id) if $session_id;
 };
