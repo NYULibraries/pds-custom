@@ -119,7 +119,7 @@ my $initialize = sub {
   $self->set('target_url', ($target_url || DEFAULT_TARGET_URL));
   # Set current_url
   my $cgi = CGI->new();
-  my $base = $cgi->url(-base => 1);
+  my $base = $cgi->url();
   my $function = ($cgi->url_param('func') || DEFAULT_FUNCTION);
   $institute = $self->institute;
   $calling_system = $self->calling_system;
