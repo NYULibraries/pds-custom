@@ -23,9 +23,9 @@ use constant PDS_TARGET_COOKIE => 'pds_btdt_target_url';
 my $been_here_done_that = sub {
   # Get the "been_here_done_that" cookie that says 
   # we've tried this and failed.  Get the target URL.
-  my %cookies = CGI::Cookie->fetch;
-  my $been_here_done_that_cookie = $cookies{PDS_TARGET_COOKIE};
-  return $been_here_done_that_cookie->value if $been_here_done_that_cookie;
+  my $cgi = CGI->new();
+  my $been_here_done_that_cookie = $cgi->cookie(PDS_TARGET_COOKIE);
+  return $been_here_done_that_cookie->value if defined($been_here_done_that_cookie);
 };
 
 # Private method returns the target url
