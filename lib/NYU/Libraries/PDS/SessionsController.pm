@@ -117,7 +117,10 @@ my $initialize = sub {
   # Set target_url
   $self->set('target_url', ($target_url || DEFAULT_TARGET_URL));
   # Set current_url
-  $self->set('current_url', uri_escape(CGI->new()->url(-query => 1)));
+  my $cgi = CGI->new();
+  my $base = $cgi->url(-base => 1);
+  my $function = $cgi->url_param('func');
+  $self->set('current_url', uri_escape("$base?func=$function&institute=$institute&calling_system=$calling_system"));
   # Set session_id
   $self->set('session_id', $session_id) if $session_id;
 };
