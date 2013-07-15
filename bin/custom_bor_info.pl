@@ -24,7 +24,8 @@ sub custom_bor_info {
   $target_url = '' if $target_url eq '?';
   my $session_controller = NYU::Libraries::PDS::controller($conf, $institute, 
     $calling_system, $target_url, $session_id);
-  $session_controller->bor_info();
-  # We're overriding the PDS chain, so we should just exit.
-  exit;
+  my $bor_info_xml = $session_controller->bor_info();
+  return (defined($bor_info_xml)) ? ("00", $bor_info_xml) : ("11", undef);
+  # # We're overriding the PDS chain, so we should just exit.
+  # exit;
 }

@@ -54,7 +54,8 @@ my $create_session = sub {
     # Set the session cookie
     my $pds_handle = CGI::Cookie->new(-name=>'PDS_HANDLE',
       -value=>$session->session_id,-domain=>'.library.nyu.edu');
-    print header(-cookie=>[$pds_handle]);
+    my $cgi = CGI->new();
+    print $cgi->header(-cookie=>[$pds_handle]);
   }
   return $session;
 };
@@ -309,13 +310,13 @@ sub bor_info {
   if ($self->session_id) {
     my $session = NYU::Libraries::PDS::Session::find($self->session_id);
     if ($session) {
-      print $session->to_xml("bor-info");
-    } else {
-      print "<!--?xml version=\"1.0\" encoding=\"UTF-8\" ?-->".
-        "<error>Error User does not exist</error>";
+      return $session->to_xml("bor-info");
+    # } else {
+    #   return "<!--?xml version=\"1.0\" encoding=\"UTF-8\" ?-->".
+    #     "<error>Error User does not exist</error>";
     }
   }
-  return;
+  return undef;
 }
 
 1;

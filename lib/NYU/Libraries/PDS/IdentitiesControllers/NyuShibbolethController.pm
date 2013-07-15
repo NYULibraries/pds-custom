@@ -13,12 +13,15 @@ use NYU::Libraries::PDS::Identities::NyuShibboleth;
 use base qw(NYU::Libraries::PDS::IdentitiesControllers::BaseController);
 __PACKAGE__->mk_accessors(qw(target_url));
 
+use constant PDS_TARGET_COOKIE => 'pds_target';
+use constant PDS_TARGET_COOKIE_DOMAIN => '.logindev.library.nyu.edu';
+
 # Private method to get the "been_here_done_that" cookie
 my $been_here_done_that = sub {
   # Get the "been_here_done_that" cookie that says 
   # we've tried this and failed.  Get the target URL.
   my %cookies = CGI::Cookie->fetch;
-  return $cookies{'pds_been_here_done_that'};
+  return $cookies{PDS_TARGET_COOKIE};
 };
 
 # Private method to return the target url
@@ -31,13 +34,22 @@ my $target_url = sub {
 # we've been here done that
 my $check = sub {
   my $self = shift;
+  my $cgi = CGI->new();
+  my $pds_target;
   if ($self->$been_here_done_that()) {
     # Unset the cookie!
     # TODO: Unset the cookie!
+    $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE, -expires => '-5Y',
+      -value => $self->target_url, -domain => PDS_TARGET_COOKIE_DOMAIN);
+    print $cgi->header(-cookie=>[$pds_target]);
     return 0;
   } else {
     # Set the cookie to the current target URL
     # TODO: Set the cookie to the current target URL
+    # Set the session cookie
+    $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE,
+      -value => $self->target_url, -domain => PDS_TARGET_COOKIE_DOMAIN);
+    print $cgi->header(-cookie=>[$pds_target]);
     return 1;
   }
 };
@@ -45,8 +57,9 @@ my $check = sub {
 # Private method redirects to the NYU Shibboleth IdP
 my $wreck = sub {
   my $self = shift;
+  my $cgi = CGI->new();
   # Redirect to the Shib IdP
-  # TODO: Redirect to the Shib IdP
+  return $cgi->redirect("/Shibboleth.sso/Login?isPassive=true&target=https://logindev.library.nyu.edu/pds?func=load-login&institute=NYU");
 };
 
 sub create {
@@ -61,8 +74,9 @@ sub create {
     #   If exists, returns undef
     #   otherwise redirects to Idp
     if($self->$check()) {
-      $self->$wreck();
-      return undef;
+      print $self->$wreck();
+      # Stop, collabortate and listen!
+      exit;
     } else {
       return undef;
     }
