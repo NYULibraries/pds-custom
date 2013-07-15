@@ -7,16 +7,19 @@ use warnings;
 use CGI qw/:standard/;
 use CGI::Cookie;
 
+# URI encoding module
+use URI::Encode qw(uri_encode);
+
 # NYU Libraries Shibboleth Identity
 use NYU::Libraries::PDS::Identities::NyuShibboleth;
 
 use base qw(NYU::Libraries::PDS::IdentitiesControllers::BaseController);
-__PACKAGE__->mk_accessors(qw(target_url));
+__PACKAGE__->mk_accessors(qw(institute function target_url));
 
-use constant PDS_TARGET_COOKIE => 'pds_target';
-use constant PDS_TARGET_COOKIE_DOMAIN => '.logindev.library.nyu.edu';
+# Been there done that cookie name
+use constant PDS_TARGET_COOKIE => 'pds_btdt_target_url';
 
-# Private method to get the "been_here_done_that" cookie
+# Private method to get the "been here done that" cookie
 my $been_here_done_that = sub {
   # Get the "been_here_done_that" cookie that says 
   # we've tried this and failed.  Get the target URL.
@@ -24,11 +27,18 @@ my $been_here_done_that = sub {
   return $cookies{PDS_TARGET_COOKIE};
 };
 
-# Private method to return the target url
+# Private method returns the target url
 my $target_url = sub {
   my $self = shift;
   return ($self->$been_here_done_that() || $self->target_url);
 };
+
+# Private method returns the current url, properly encoded
+my $current_url = sub {
+  my $self = shift;
+  my $cgi = CGI->new();
+  return uri_encode($cgi->url(-query => 1));
+}
 
 # Private method gets/sets the cookie that specifies that 
 # we've been here done that
@@ -38,19 +48,17 @@ my $check = sub {
   my $pds_target;
   if ($self->$been_here_done_that()) {
     # Unset the cookie!
-    # TODO: Unset the cookie!
-    $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE, -expires => '-5Y',
-      -value => $self->target_url, -domain => PDS_TARGET_COOKIE_DOMAIN);
-    print $cgi->header(-cookie=>[$pds_target]);
-    return 0;
+    $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE,
+      -expires => '-5Y' -value => '');
+    print $cgi->header(-cookie => [$pds_target]);
+    return 1;
   } else {
     # Set the cookie to the current target URL
-    # TODO: Set the cookie to the current target URL
     # Set the session cookie
-    $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE,
-      -value => $self->target_url, -domain => PDS_TARGET_COOKIE_DOMAIN);
-    print $cgi->header(-cookie=>[$pds_target]);
-    return 1;
+    $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE, 
+      -value => $self->target_url);
+    print $cgi->header(-cookie => [$pds_target]);
+    return 0;
   }
 };
 
@@ -58,8 +66,11 @@ my $check = sub {
 my $wreck = sub {
   my $self = shift;
   my $cgi = CGI->new();
-  # Redirect to the Shib IdP
-  return $cgi->redirect("/Shibboleth.sso/Login?isPassive=true&target=https://logindev.library.nyu.edu/pds?func=load-login&institute=NYU");
+  my $current_url = $self->$current_url();
+  # Redirect to the Shib IdP and exit
+  print $cgi->redirect("/Shibboleth.sso/Login?isPassive=true&target=$current_url");
+  # Stop, collabortate and listen!
+  exit;
 };
 
 sub create {
@@ -73,10 +84,8 @@ sub create {
     # Checks for passive cookie
     #   If exists, returns undef
     #   otherwise redirects to Idp
-    if($self->$check()) {
-      print $self->$wreck();
-      # Stop, collabortate and listen!
-      exit;
+    unless($self->$check()) {
+      $self->$wreck();
     } else {
       return undef;
     }

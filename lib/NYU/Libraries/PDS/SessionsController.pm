@@ -92,7 +92,8 @@ my $nyu_shibboleth_controller = sub {
   unless ($self->{'nyu_shibboleth_controller'}) {
     my $nyu_shibboleth_controller = 
       NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethController->new($self->{'conf'});
-    $nyu_shibboleth_controller->target_url($self->{'target_url'});
+    $nyu_shibboleth_controller->target_url($self->target_url);
+    $nyu_shibboleth_controller->institute($self->institute);
     $self->{'nyu_shibboleth_controller'} = $nyu_shibboleth_controller;
   }
   return $self->{'nyu_shibboleth_controller'};
@@ -223,6 +224,7 @@ sub _authenticate_ns_ldap {
 sub login {
   my $self = shift;
   my $nyu_shibboleth_controller = $self->$nyu_shibboleth_controller();
+  $nyu_shibboleth_controller->function("login");
   my $nyu_shibboleth_identity = $nyu_shibboleth_controller->create();
   if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
     my $aleph_controller = $self->$aleph_controller();
@@ -258,6 +260,7 @@ sub login {
 sub sso {
   my $self = shift;
   my $nyu_shibboleth_controller = $self->$nyu_shibboleth_controller();
+  $nyu_shibboleth_controller->function("sso");
   my $nyu_shibboleth_identity = $nyu_shibboleth_controller->create();
   if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
     my $aleph_controller = $self->$aleph_controller();
