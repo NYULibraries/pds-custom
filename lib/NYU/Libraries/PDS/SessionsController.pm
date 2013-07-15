@@ -119,11 +119,11 @@ my $initialize = sub {
   $self->set('target_url', ($target_url || DEFAULT_TARGET_URL));
   # Set current_url
   my $cgi = CGI->new();
-  my $base = $cgi->url();
+  my $base = $cgi->url(-base => 1);
   my $function = ($cgi->url_param('func') || DEFAULT_FUNCTION);
   $institute = $self->institute;
   $calling_system = $self->calling_system;
-  $self->set('current_url', uri_escape("$base?func=$function&institute=$institute&calling_system=$calling_system"));
+  $self->set('current_url', uri_escape("$base/pds?func=$function&institute=$institute&calling_system=$calling_system"));
   # Set session_id
   $self->set('session_id', $session_id) if $session_id;
 };
