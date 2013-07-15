@@ -152,6 +152,12 @@ sub session_id {
   return ($self->controller->session_id || "");
 }
 
+sub current_url {
+  my $self = shift;
+  my $cgi = CGI->new();
+  return uri_escape($cgi->url(-query => 1));
+}
+
 sub error {
   my $self = shift;
   return $self->controller->error;

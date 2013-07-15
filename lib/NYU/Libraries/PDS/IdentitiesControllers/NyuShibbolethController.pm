@@ -14,7 +14,7 @@ use URI::Escape;
 use NYU::Libraries::PDS::Identities::NyuShibboleth;
 
 use base qw(NYU::Libraries::PDS::IdentitiesControllers::BaseController);
-__PACKAGE__->mk_accessors(qw(institute function target_url));
+__PACKAGE__->mk_accessors(qw(target_url));
 
 # Been there done that cookie name
 use constant PDS_TARGET_COOKIE => 'pds_btdt_target_url';
