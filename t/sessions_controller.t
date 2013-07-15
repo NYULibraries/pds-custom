@@ -41,7 +41,7 @@ use constant NYU_LOGIN => "<!DOCTYPE html>
             </a>
           </h2>
           <p>
-            <a href=\"\" class=\"btn shibboleth\">SHIBBOLETH!</a>
+            <a href=\"/Shibboleth.sso/Login?isPassive=true&amp;target=http%3A%2F%2Flocalhost\" class=\"btn shibboleth\">SHIBBOLETH!</a>
           </p>
           <div>
             <a href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">Login help with an NYU NetID</a>
@@ -139,7 +139,7 @@ use constant NYU_LOGIN_WITH_ERROR => "<!DOCTYPE html>
             </a>
           </h2>
           <p>
-            <a href=\"\" class=\"btn shibboleth\">SHIBBOLETH!</a>
+            <a href=\"/Shibboleth.sso/Login?isPassive=true&amp;target=http%3A%2F%2Flocalhost\" class=\"btn shibboleth\">SHIBBOLETH!</a>
           </p>
           <div>
             <a href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">Login help with an NYU NetID</a>
@@ -297,7 +297,7 @@ is($controller->_login_screen(), "<!DOCTYPE html>
             </a>
           </h2>
           <p>
-            <a href=\"\" class=\"btn shibboleth\">SHIBBOLETH!</a>
+            <a href=\"/Shibboleth.sso/Login?isPassive=true&amp;target=http%3A%2F%2Flocalhost\" class=\"btn shibboleth\">SHIBBOLETH!</a>
           </p>
           <div>
             <h3>Need more information?</h3>
