@@ -8,7 +8,7 @@ use CGI qw/:standard/;
 use CGI::Cookie;
 
 # URI encoding module
-use URI::Encode qw(uri_encode);
+use URI::Escape;
 
 # NYU Libraries Shibboleth Identity
 use NYU::Libraries::PDS::Identities::NyuShibboleth;
@@ -37,7 +37,7 @@ my $target_url = sub {
 my $current_url = sub {
   my $self = shift;
   my $cgi = CGI->new();
-  return uri_encode($cgi->url(-query => 1));
+  return uri_escape($cgi->url(-query => 1));
 };
 
 # Private method gets/sets the cookie that specifies that 
