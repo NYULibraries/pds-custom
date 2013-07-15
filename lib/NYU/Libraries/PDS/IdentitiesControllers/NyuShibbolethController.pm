@@ -49,7 +49,7 @@ my $check = sub {
   if ($self->$been_here_done_that()) {
     # Unset the cookie!
     $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE,
-      -expires => '-5Y' -value => '');
+      -expires => '-5Y', -value => '');
     print $cgi->header(-cookie => [$pds_target]);
     return 1;
   } else {
