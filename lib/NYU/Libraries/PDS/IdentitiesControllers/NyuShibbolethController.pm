@@ -24,8 +24,7 @@ my $been_here_done_that = sub {
   # Get the "been_here_done_that" cookie that says 
   # we've tried this and failed.  Get the target URL.
   my $cgi = CGI->new();
-  my $been_here_done_that_cookie = $cgi->cookie(PDS_TARGET_COOKIE);
-  return $been_here_done_that_cookie->value if defined($been_here_done_that_cookie);
+  return $cgi->cookie(PDS_TARGET_COOKIE);
 };
 
 # Private method returns the target url
