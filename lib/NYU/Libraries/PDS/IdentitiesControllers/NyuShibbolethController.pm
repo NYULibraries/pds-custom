@@ -59,7 +59,7 @@ my $wreck = sub {
   my $self = shift;
   my $cgi = CGI->new();
   # Redirect to the Shib IdP
-  return $cgi->redirect("/Shibboleth.sso/pds/Login?isPassive=true&target=https://logindev.library.nyu.edu/pds?func=load-login&institute=NYU");
+  return $cgi->redirect("/Shibboleth.sso/Login?isPassive=true&target=https://logindev.library.nyu.edu/pds?func=load-login&institute=NYU");
 };
 
 sub create {
