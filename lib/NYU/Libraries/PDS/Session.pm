@@ -21,8 +21,8 @@ use base qw(Class::Accessor);
 # Assumes the same names as the identities
 my @attributes = qw(id email givenname cn sn institute barcode bor_status 
   bor_type name uid verification nyuidn nyu_shibboleth ns_ldap 
-    edupersonentitlement objectclass  ill_permission college_code college_name 
-      dept_code dept_name major_code major session_id);
+    edupersonentitlement objectclass ill_permission college_code college_name 
+      dept_code dept_name major_code major session_id expiry_date);
 __PACKAGE__->mk_ro_accessors(@attributes);
 __PACKAGE__->mk_accessors(qw(calling_system target_url));
 use constant NYU_BOR_STATUSES => qw(03 04 05 06 07 50 52 53 51 54 55 56 57 58 59 60 61 62 
