@@ -12,7 +12,7 @@ use Net::LDAP::Util qw(ldap_error_text ldap_error_name ldap_error_desc);
 use Net::LDAP::Constant;
 
 use base qw(NYU::Libraries::PDS::Identities::Base);
-my @attributes = qw(cn givenname sn role aleph_identifer);
+my @attributes = qw(role aleph_identifer);
 __PACKAGE__->mk_ro_accessors(@attributes);
 
 # Private method returns a new LDAP object based on the objects configuration

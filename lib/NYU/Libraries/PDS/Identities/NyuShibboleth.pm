@@ -5,8 +5,7 @@ use strict;
 use warnings;
 
 use base qw(NYU::Libraries::PDS::Identities::Base);
-my @attributes = qw(givenname cn sn aleph_identifier edupersonentitlement index
-  authentication_instance authentication_method context_class identity_provider);
+my @attributes = qw(aleph_identifier edupersonentitlement);
 __PACKAGE__->mk_ro_accessors(@attributes);
 
 my $shibboleth_attribute_mappings = {
@@ -16,12 +15,7 @@ my $shibboleth_attribute_mappings = {
   'cn' => 'displayName',
   'sn' => 'sn',
   'aleph_identifier' => 'NYUIdn',
-  'edupersonentitlement' => 'eduPersonEntitlement',
-  'index' => '',
-  'authentication_instance' => '',
-  'authentication_method' => '',
-  'context_class' => '',
-  'identity_provider' => ''
+  'edupersonentitlement' => 'eduPersonEntitlement'
 };
 
 # Private sub that gets the identity from the ShibbolethSP

@@ -25,7 +25,7 @@ isa_ok($controller, qw(NYU::Libraries::PDS::IdentitiesControllers::BaseControlle
 isa_ok($controller, qw(NYU::Libraries::PDS::IdentitiesControllers::AlephController));
 
 # Verify methods
-can_ok($controller, (qw(create get)));
+can_ok($controller, (qw(new create get)));
 
 # Try a create with a valid password
 my $identity = $controller->create("DS03D", "TEST");

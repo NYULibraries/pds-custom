@@ -21,8 +21,10 @@ isa_ok($identity, qw(NYU::Libraries::PDS::Identities::Base));
 isa_ok($identity, qw(NYU::Libraries::PDS::Identities::Aleph));
 
 # Verify methods
-can_ok($identity, (qw(error encrypt id email bor_name verification barcode expiry_date bor_status
-  bor_type ill_permission college_code college_name dept_code dept_name major_code major plif_status)));
+can_ok($identity, (qw(error encrypt id email cn givenname sn bor_name
+  verification barcode expiry_date bor_status bor_type ill_permission
+    college_code college_name dept_code dept_name major_code major plif_status
+      new authenticate set_attributes get_attributes to_h to_xml)));
 
 # Verify identity is defined
 ok(defined($identity->{'identity'}));

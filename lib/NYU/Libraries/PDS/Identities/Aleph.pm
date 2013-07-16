@@ -11,6 +11,7 @@ use Digest::MD5 qw(md5_hex md5);
 # NYU Libraries modules
 use NYU::Libraries::XService::Aleph::BorAuth;
 use NYU::Libraries::XService::Aleph::BorInfo;
+use NYU::Libraries::Util qw(trim);
 
 use constant LOADED_FROM_PLIF => "PLIF LOADED";
 use constant FAMILY_MEMBER_BOR_STATUS => "65";
@@ -128,7 +129,8 @@ my $aleph_authenticate = sub {
 
 # Private method returns a surnamed scrubbed of special chars
 my $clean_surname = sub {
-  my($self, $sn) = @_;
+  my $self  = shift;
+  my $sn = $self->sn;
   $sn =~ s/\s//g;
   $sn =~ s/-//g;
   $sn =~ s/\.//g;
@@ -173,6 +175,18 @@ my $encryption_exception = sub {
   return ($self->bor_status eq FAMILY_MEMBER_BOR_STATUS);
 };
 
+# Private method parses the name and sets the cn, givenname and sn
+# Usage:
+#   $self->$set_names()
+my $set_names = sub {
+  my $self = shift;
+  return unless $self->bor_name;
+  my @name_array = split(/,/, $self->bor_name);
+  $self->set('cn', $self->bor_name);
+  $self->set('sn', trim($name_array[0]));
+  $self->set('givenname', trim($name_array[1]));
+};
+
 # Authentication method
 # Usage:
 #   $self->authenticate(id, password)
@@ -212,12 +226,11 @@ sub set_attributes {
   $self->SUPER::set_attributes();
   unless ($self->verification && !$force) {
     # Since verification isn't necessary for this call, add it based on the Aleph attributes
-    return undef unless $self->bor_name;
-    my @name_array = split(/,/, $self->bor_name);
-    my $surname = $name_array[0];
-    return undef unless $surname;
+    # Set the various name attributes (cn, givenname, sn)
+    $self->$set_names();
+    return undef unless $self->sn;
     # Set verification as first four characters of the cleaned last name 
-    my $verification = uc(substr($self->$clean_surname($surname), 0, 4));
+    my $verification = uc(substr($self->$clean_surname(), 0, 4));
     # Don't encrypt if this is an exception.
     unless ($self->$encryption_exception()) {
       # Don't encrypt unless the patron meets the encryption business logic.
