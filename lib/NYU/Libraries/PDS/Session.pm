@@ -24,27 +24,46 @@ my @attributes = qw(id institute barcode bor_status bor_type name uid email cn
     ill_permission college_code college_name dept_code dept_name major_code major session_id);
 __PACKAGE__->mk_ro_accessors(@attributes);
 __PACKAGE__->mk_accessors(qw(calling_system target_url));
-use constant NYU_BOR_STATUSES => [ ];
-use constant NYUAD_BOR_STATUSES => [ ];
-use constant NYUSH_BOR_STATUSES => [ ];
-use constant NS_BOR_STATUSES => [ ];
-use constant CU_BOR_STATUSES => [ ];
-use constant NYSID_BOR_STATUSES => [ ];
+use constant NYU_BOR_STATUSES => qw(03 04 05 06 07 50 52 53 51 54 55 56 57 58 59 60 61 62 
+  63 64 65 66 67 68 69 70 72 74 76 77);
+use constant NYUAD_BOR_STATUSES => qw(80 81 82);
+use constant NYUSH_BOR_STATUSES => qw(20 21 22 23);
+use constant CU_BOR_STATUSES => qw(10 11 12 15 16 17 18 20);
+use constant NS_BOR_STATUSES => qw(30 31 32 33 34 35 36 37 38 40 41 42 43);
+use constant NYSID_BOR_STATUSES => qw(90 95 96 97);
+use constant HSL_BOR_TYPES => qw();
+use constant DEFAULT_INSTITUTE => "NYU";
 
-# Private method returns an institution string for the given bor status
+# Private method returns an institution string for the session's bor status
 # Usage:
-#   $self->$institution_for_bor_status(bor_status)
+#   $self->$institution_for_bor_status()
 my $institute_for_bor_status = sub {
-  my($self, $bor_status) = @_;
-  return "NYU";
+  my $self = shift;
+  if(grep { $_ eq $self->bor_status} NYU_BOR_STATUSES) {
+    return "NYU";
+  } elsif(grep { $_ eq $self->bor_status} NYUAD_BOR_STATUSES){
+    return "NYUAD";
+  } elsif(grep { $_ eq $self->bor_status} NYUSH_BOR_STATUSES){
+    return "NYUSH";
+  } elsif(grep { $_ eq $self->bor_status} CU_BOR_STATUSES){
+    return "CU";
+  } elsif(grep { $_ eq $self->bor_status} NS_BOR_STATUSES){
+    return "NS";
+  } elsif(grep { $_ eq $self->bor_status} NYSID_BOR_STATUSES){
+    return "NYSID";
+  }
+  return undef;
 };
 
-# Private method returns an institution string for the given bor type
+# Private method returns an institution string for the session's bor type
 # Usage:
-#   $self->$institute_for_bor_type(bor_type)
+#   $self->$institute_for_bor_type()
 my $institute_for_bor_type = sub {
-  my($self, $bor_type) = @_;
-  return "NYU";
+  my $self = shift;
+  if(grep { $_ eq $self->bor_type} HSL_BOR_TYPES) {
+    return "HSL";
+  }
+  return undef;
 };
 
 # Private initialization method
@@ -83,8 +102,10 @@ my $initialize = sub {
         next if $self->{$attribute};
         $self->set("$attribute", $identity_hash->{$attribute});
       }
-      $self->set('institute', $self->$institute_for_bor_status($self->bor_status));
-      $self->set('institute', $self->$institute_for_bor_type($self->bor_type)) unless $self->institute;
+      # Try to get institute from borrower type first, since it's more specific
+      $self->set('institute', $self->$institute_for_bor_type($self->bor_type));
+      $self->set('institute', $self->$institute_for_bor_status($self->bor_status)) unless $self->institute;
+      $self->set('institute', DEFAULT_INSTITUTE) unless $self->institute;
     } else {
       # Assume we're creating the Session object from an existing PDS session hash
       foreach my $attribute (keys %$identity) {
