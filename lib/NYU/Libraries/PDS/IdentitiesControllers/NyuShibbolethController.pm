@@ -16,6 +16,9 @@ __PACKAGE__->mk_accessors(qw(target_url current_url));
 use constant PDS_TARGET_COOKIE => 'pds_btdt_target_url';
 
 # Private method returns the target url
+# Checks the "been there done that" cookie first.
+# Usage:
+#   $self->$target_url();
 my $target_url = sub {
   my $self = shift;
   return ($self->been_there_done_that() || $self->target_url);
@@ -23,6 +26,10 @@ my $target_url = sub {
 
 # Private method gets/sets the cookie that specifies that 
 # we've been here done that
+# Method name is a dumb reference to 
+# "check yourself before you wreck yourself"
+# Usage:
+#   $self->$check();
 my $check = sub {
   my $self = shift;
   my $cgi = CGI->new();
@@ -43,7 +50,12 @@ my $check = sub {
   }
 };
 
-# Private method redirects to the NYU Shibboleth IdP
+# Private method exits the running program and immediately redirects
+# to the Shibboleth IdP
+# Method name is a dumb reference to 
+# "check yourself before you wreck yourself"
+# Usage:
+#   $self->$wreck();
 my $wreck = sub {
   my $self = shift;
   my $cgi = CGI->new();
@@ -54,6 +66,9 @@ my $wreck = sub {
   exit;
 };
 
+# Method to create an NYU Shibboleth identity based on the current environment
+# Usage:
+#   $controller->create($id, $password);
 sub create {
   my $self = shift;
   my $identity = NYU::Libraries::PDS::Identities::NyuShibboleth->new();
@@ -81,7 +96,6 @@ sub redirect_to_target {
 
 # Method to get the "been there done that" cookie
 sub been_there_done_that {
-  my $self = shift;
   # Get the "been there done that" cookie that says 
   # we've tried this and failed.  Get the target URL.
   my $cgi = CGI->new();

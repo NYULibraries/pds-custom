@@ -325,7 +325,7 @@ is($controller->_login_screen(), "<!DOCTYPE html>
 
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
 # Test authenticate
-is($controller->_authenticate("DS03D", "TEST"), "Status: 302 Found$CGI::CRLF".
+is($controller->authenticate("DS03D", "TEST"), "Status: 302 Found$CGI::CRLF".
   "Location: http://example.com$CGI::CRLF$CGI::CRLF", "Authenticate should return redirect to target");
 
 # Test error undefined after authenticate
@@ -334,7 +334,7 @@ is(defined($controller->error), '', "Error should be undefined");
 
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
 # Test authenticate
-is($controller->_authenticate("DS03D", "FAIL"), NYU_LOGIN_WITH_ERROR, "Authenticate should be login screen");
+is($controller->authenticate("DS03D", "FAIL"), NYU_LOGIN_WITH_ERROR, "Authenticate should be login screen");
 # Test error undefined after authenticate
 isnt($controller->error, undef, "Error should be defined");
 isnt(defined($controller->error), '', "Error should be defined");

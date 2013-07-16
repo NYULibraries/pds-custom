@@ -24,7 +24,7 @@ sub custom_authenticate {
   $target_url = '' if $target_url eq '?';
   my $session_controller = NYU::Libraries::PDS::controller($conf, $institute, 
     $calling_system, $target_url, $session_id);
-  $session_controller->authenticate($id, $password);
+  print $session_controller->authenticate($id, $password);
   # We're overriding the PDS chain, so we should just exit.
   exit;
 }

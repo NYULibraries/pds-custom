@@ -8,7 +8,9 @@ use NYU::Libraries::PDS::Identities::NsLdap;
 
 use base qw(NYU::Libraries::PDS::IdentitiesControllers::BaseController);
 
-# Attempts to create the 
+# Method to create a New School LDAP identity based on the given ID and password
+# Usage:
+#   $controller->create($id, $password);
 sub create {
   my($self, $id, $password) = @_;
   my $identity = 

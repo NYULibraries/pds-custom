@@ -8,6 +8,9 @@ use NYU::Libraries::PDS::Identities::Aleph;
 
 use base qw(NYU::Libraries::PDS::IdentitiesControllers::BaseController);
 
+# Method to create an Aleph identity based on the given ID and password
+# Usage:
+#   $controller->create($id, $password);
 sub create {
   my($self, $id, $password) = @_;
   my $identity = 
@@ -15,7 +18,9 @@ sub create {
   return $identity;
 }
 
-# Returns an Aleph identity
+# Method to get an Aleph identity based on the given ID
+# Usage:
+#   $controller->create($id);
 sub get {
   my($self, $id) = @_;
   # Specify that this is only a lookup

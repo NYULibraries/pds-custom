@@ -111,6 +111,10 @@ sub find {
   return ($error_code eq "00") ? NYU::Libraries::PDS::Session->new(\%session) : undef;
 }
 
+# Save the session to either the DB or file system
+# Returns self
+# Usage:
+#   $session->save();
 sub save {
   my($self) = @_;
   my (%Z311, %Z312) = ((), ());
@@ -149,7 +153,7 @@ sub save {
   return $self;
 }
 
-# Returns this session as XML
+# Returns the session as XML
 # Usage:
 #   $session->to_xml()
 # Output:
