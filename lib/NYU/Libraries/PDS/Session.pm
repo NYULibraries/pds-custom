@@ -84,7 +84,7 @@ my $initialize = sub {
         $self->set("$attribute", $identity_hash->{$attribute});
       }
       $self->set('institute', $self->$institute_for_bor_status($self->bor_status));
-      $self->set('institute', $self->$institute_for_bor_type($self->bor_status)) unless $self->institute;
+      $self->set('institute', $self->$institute_for_bor_type($self->bor_type)) unless $self->institute;
     } else {
       # Assume we're creating the Session object from an existing PDS session hash
       foreach my $attribute (keys %$identity) {
