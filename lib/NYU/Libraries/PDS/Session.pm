@@ -310,10 +310,6 @@ sub to_xml {
   foreach my $attribute (@attributes) {
     $xml .= "<$attribute>".xml_encode(trim($self->{$attribute}))."</$attribute>" if $self->{$attribute};
   }
-  # Add some ODD tags
-  $xml .= "<bor-status>".trim($self->bor_status)."</bor-status>" if $self->bor_status;
-  $xml .= "<ill-permission>".trim($self->ill_permission)."</ill-permission>" if $self->ill_permission;
-  $xml .= "<bor-type>".trim($self->bor_type)."</bor-type>" if $self->bor_type;
   $xml .= "</$root>";
   return $xml;
 }

@@ -26,6 +26,4 @@ sub custom_bor_info {
     $calling_system, $target_url, $session_id);
   my $bor_info_xml = $session_controller->bor_info();
   return (defined($bor_info_xml)) ? ("00", $bor_info_xml) : ("11", undef);
-  # # We're overriding the PDS chain, so we should just exit.
-  # exit;
 }

@@ -349,7 +349,7 @@ sub authenticate {
 sub bor_info {
   my($self) = @_;
   my $cgi = CGI->new();
-  print $cgi->header(-type=>'text/xml', -charset =>'UTF-8');
+  # print $cgi->header(-type=>'text/xml', -charset =>'UTF-8');
   if ($self->session_id) {
     my $session = NYU::Libraries::PDS::Session::find($self->session_id);
     if ($session) {
