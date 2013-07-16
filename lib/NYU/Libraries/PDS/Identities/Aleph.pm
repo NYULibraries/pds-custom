@@ -215,7 +215,10 @@ sub authenticate {
 # Usage:
 #   $self->get_attributes()
 sub get_attributes {
-  return @attributes;
+  my $self = shift;
+  my @all_attributes = $self->SUPER::get_attributes();
+  push(@all_attributes, @attributes);
+  return @all_attributes;
 }
 
 # Method that sets the attributes from the Aleph identity
@@ -224,10 +227,10 @@ sub get_attributes {
 sub set_attributes {
   my($self, $force) = @_;
   $self->SUPER::set_attributes();
+  # Set the various name attributes (cn, givenname, sn)
+  $self->$set_names();
   unless ($self->verification && !$force) {
     # Since verification isn't necessary for this call, add it based on the Aleph attributes
-    # Set the various name attributes (cn, givenname, sn)
-    $self->$set_names();
     return undef unless $self->sn;
     # Set verification as first four characters of the cleaned last name 
     my $verification = uc(substr($self->$clean_surname(), 0, 4));
@@ -239,7 +242,7 @@ sub set_attributes {
     $self->set('verification', $verification);
   }
   # Set the name from Aleph
-  $self->set('name', $self->bor_name);
+  $self->set('name', $self->givenname);
 }
 
 1;

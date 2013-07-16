@@ -33,7 +33,7 @@ my $shibboleth_identity = sub {
 # Usage:
 #   $self->authenticate()
 sub authenticate {
-  my($self) = @_;
+  my $self = shift;
   # Set error and return if we don't have a configuration
   $self->set('error', "No configuration set.") and return undef unless $self->{'conf'};
   # Get the identity
@@ -51,7 +51,10 @@ sub authenticate {
 # Usage:
 #   $self->get_attributes()
 sub get_attributes {
-  return @attributes;
+  my $self = shift;
+  my @all_attributes = $self->SUPER::get_attributes();
+  push(@all_attributes, @attributes);
+  return @all_attributes;
 }
 
 1;

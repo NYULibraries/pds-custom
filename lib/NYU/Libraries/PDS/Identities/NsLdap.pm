@@ -99,7 +99,10 @@ sub authenticate {
 # Usage:
 #   $self->get_attributes()
 sub get_attributes {
-  return @attributes;
+  my $self = shift;
+  my @all_attributes = $self->SUPER::get_attributes();
+  push(@all_attributes, @attributes);
+  return @all_attributes;
 }
 
 # Method sets the attributes from the NS LDAP identity

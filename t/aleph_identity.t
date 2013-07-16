@@ -68,7 +68,12 @@ is($identity->verification, "DALT", "Should have encrypted verification");
 # Verify XML
 is($identity->to_xml(), 
   "<aleph>".
-    "<name>DALTON,SCOT THOMAS</name>".
+    "<id>N12162279</id>".
+    "<email>std5\@nyu.edu</email>".
+    "<givenname>SCOT THOMAS</givenname>".
+    "<cn>DALTON,SCOT THOMAS</cn>".
+    "<sn>DALTON</sn>".
+    "<name>SCOT THOMAS</name>".
     "<bor_name>DALTON,SCOT THOMAS</bor_name>".
     "<verification>DALT</verification>".
     "<expiry_date>20131031</expiry_date>".
