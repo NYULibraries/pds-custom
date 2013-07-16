@@ -37,13 +37,33 @@ is($new_session->to_xml(),
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".
   "<session>".
     "<id>DS03D</id>".
+    "<givenname>TEST-RECORD</givenname>".
+    "<cn>DS03D, TEST-RECORD</cn>".
+    "<sn>DS03D</sn>".
     "<institute>NYU</institute>".
     "<bor_status>03</bor_status>".
     "<name>TEST-RECORD</name>".
-    "<cn>DS03D, TEST-RECORD</cn>".
-    "<givenname>TEST-RECORD</givenname>".
-    "<sn>DS03D</sn>".
     "<verification>TEST</verification>".
+    "<ill_permission>N</ill_permission>".
+  "</session>", "Unexpected session xml");
+
+$conf->{xserver_host} = undef;
+$controller = NYU::Libraries::PDS::IdentitiesControllers::AlephController->new($conf);
+$identity = $controller->get("N12162279");
+$new_session = NYU::Libraries::PDS::Session->new($identity);
+is($new_session->to_xml(), 
+  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".
+  "<session>".
+    "<id>N12162279</id>".
+    "<email>std5\@nyu.edu</email>".
+    "<givenname>SCOT THOMAS</givenname>".
+    "<cn>DALTON,SCOT THOMAS</cn>".
+    "<sn>DALTON</sn>".
+    "<institute>NYU</institute>".
+    "<bor_status>51</bor_status>".
+    "<bor_type>CB</bor_type>".
+    "<name>SCOT THOMAS</name>".
+    "<verification>DALT</verification>".
     "<ill_permission>N</ill_permission>".
   "</session>", "Unexpected session xml");
 

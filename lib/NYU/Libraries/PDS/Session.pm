@@ -19,9 +19,10 @@ use NYU::Libraries::Util qw(trim xml_encode);
 
 use base qw(Class::Accessor);
 # Assumes the same names as the identities
-my @attributes = qw(id institute barcode bor_status bor_type name uid email cn 
-  givenname sn verification nyuidn nyu_shibboleth ns_ldap edupersonentitlement objectclass 
-    ill_permission college_code college_name dept_code dept_name major_code major session_id);
+my @attributes = qw(id email givenname cn sn institute barcode bor_status 
+  bor_type name uid verification nyuidn nyu_shibboleth ns_ldap 
+    edupersonentitlement objectclass  ill_permission college_code college_name 
+      dept_code dept_name major_code major session_id);
 __PACKAGE__->mk_ro_accessors(@attributes);
 __PACKAGE__->mk_accessors(qw(calling_system target_url));
 use constant NYU_BOR_STATUSES => qw(03 04 05 06 07 50 52 53 51 54 55 56 57 58 59 60 61 62 
@@ -80,7 +81,7 @@ my $initialize = sub {
       foreach my $attribute (keys %$identity_hash) {
         # Skip ID attribute
         next if $attribute eq "id";
-        $self->set("$attribute", $identity_hash->{$attribute});
+        $self->set($attribute, $identity_hash->{$attribute});
       }
     } elsif(ref($identity) eq "NYU::Libraries::PDS::Identities::NsLdap") {
       my $identity_hash = $identity->to_h();
@@ -89,7 +90,7 @@ my $initialize = sub {
       foreach my $attribute (keys %$identity_hash) {
         # Skip ID attribute
         next if $attribute eq "id";
-        $self->set("$attribute", $identity_hash->{$attribute});
+        $self->set($attribute, $identity_hash->{$attribute});
       }
     } elsif(ref($identity) eq "NYU::Libraries::PDS::Identities::Aleph") {
       my $identity_hash = $identity->to_h();
@@ -100,7 +101,7 @@ my $initialize = sub {
         next if $attribute eq "id";
         # Don't override attribute if it was previously set
         next if $self->{$attribute};
-        $self->set("$attribute", $identity_hash->{$attribute});
+        $self->set($attribute, $identity_hash->{$attribute});
       }
       # Try to get institute from borrower type first, since it's more specific
       $self->set('institute', $self->$institute_for_bor_type($self->bor_type));
