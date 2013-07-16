@@ -40,6 +40,9 @@ is($new_session->to_xml(),
     "<institute>NYU</institute>".
     "<bor_status>03</bor_status>".
     "<name>TEST-RECORD</name>".
+    "<cn>DS03D, TEST-RECORD</cn>".
+    "<givenname>TEST-RECORD</givenname>".
+    "<sn>DS03D</sn>".
     "<verification>TEST</verification>".
     "<ill_permission>N</ill_permission>".
     "<bor-status>03</bor-status>".
