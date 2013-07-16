@@ -44,6 +44,7 @@ is($new_session->to_xml(),
     "<givenname>TEST-RECORD</givenname>".
     "<sn>DS03D</sn>".
     "<verification>TEST</verification>".
+    "<ill_permission>N</ill_permission>".
   "</session>", "Unexpected session xml");
 
 # my $existing_session = NYU::Libraries::PDS::Session::find('27620139407145177581349399004532');
