@@ -1,10 +1,13 @@
-# NYU PDS Perl Modules
+# NYU PDS Custom Modules
 [![Build Status](http://jenkins1.bobst.nyu.edu/buildStatus/icon?job=PDS Custom)](http://jenkins1.bobst.nyu.edu:8080/job/PDS%20Custom/)
 
-The NYU PDS Perl Modules are a set of libraries, written in Perl, that facilitate customized functionality for NYU's PDS implementation.
+The NYU PDS Custom Libraries are a set of Perl modules, SASS stylesheets, Coffeescripts, Mustache templates and compile scripts
+that facilitate customized functionality for NYU's PDS implementation.
+
+They're pretty dope.
 
 ## Testing
-NYU PDS Perl Modules uses the [Test Anything Protocol](http://testanything.org/) as the testing framework for its 
+NYU PDS Custom Perl modules uses the [Test Anything Protocol](http://testanything.org/) as the testing framework for its 
 continuous integration implementation.
 
 Since Ex Libris bundles its perl version with PDS, we use [perlbrew](http://perlbrew.pl/) to simulate the PDS environment.
@@ -21,8 +24,6 @@ These dependencies, have dependencies of there own, which introduces yet more va
 but that is a rabbit hole left to braver souls.
 
 [This sucks](http://en.wikipedia.org/wiki/Dependency_hell), but we can't think of a cleaner way of doing it.
-Maybe [vagrant](http://www.vagrantup.com/) and 
-[the Jenkin's VirtualBox plugin](https://wiki.jenkins-ci.org/display/JENKINS/VirtualBox+Plugin) can help at some point.
 
 #### Build Dependencies
 There are two dependencies for building our testing environment:
@@ -32,7 +33,7 @@ There are two dependencies for building our testing environment:
 
 #### Library Bundled Dependencies
 Since we use PDS' bundled perl and want to keep it in its original state,
-we bundle `Class::Accessor` with this package in the `vendor/lib` directory.
+we bundle several dependencies with this package in the `vendor/lib` directory.
 
 #### Testing Modules
 In order to run our tests, we use the four testing modules listed below.
