@@ -206,6 +206,7 @@ sub destroy {
   my $error_code;
   # Set PDS Handle for session file
   $Z311{'session_id'} = $self->session_id;
+  # Delete the session
   if (isUsingOracle()) {
     PDSSession::pds_session('DELETE', \%Z311);
   } else {

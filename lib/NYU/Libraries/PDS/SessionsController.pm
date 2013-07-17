@@ -428,7 +428,8 @@ sub logout {
   }
   my $cgi = CGI->new();
   my $target_url = uri_escape($self->target_url);
-  return $cgi->redirect("/Shibboleth.sso/Logout?return=$target_url");
+  my $return = ($target_url) ? "return=$target_url" : "";
+  return $cgi->redirect("/Shibboleth.sso/Logout?$return");
 }
 
 # Return the bor_info as an XML string
