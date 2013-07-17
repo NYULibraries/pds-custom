@@ -407,23 +407,25 @@ sub authenticate {
 sub logout {
   my $self = shift;
   my $session = $self->$current_session;
-  # Logout of ExLibris applications with hack for logging out of Primo due to load balancer issues.
-  my @remote_address = split (/,/,$session->remote_address);
-  my $bobcat_logout_url = $self->{'conf'}->{'bobcat_logout_url'};
-  my $session_id = $session->session_id;
-  for (my $i=0; $remote_address[$i]; $i++) {
-    my @remote_one = split (/;/,$remote_address[$i]);
-    # Hack for dealing with the fact that we can't call primo logout from the 
-    # pds server since they are the same box and the load balancer doesn't like it.
-    if ($remote_one[2] eq "primo") {
-      PDSLogout::logout_application($remote_one[0], $session_id, $session->institute, $remote_one[2], , "");
-    } else {
-      my $url = uri_escape($remote_one[0]);
-      CallHttpd::call_httpd('GET',"$bobcat_logout_url?bobcat_url=$url&pds_handle=$session_id");
+  if($session) {
+    # Logout of ExLibris applications with hack for logging out of Primo due to load balancer issues.
+    my @remote_address = split (/,/,$session->remote_address);
+    my $bobcat_logout_url = $self->{'conf'}->{'bobcat_logout_url'};
+    my $session_id = $session->session_id;
+    for (my $i=0; $remote_address[$i]; $i++) {
+      my @remote_one = split (/;/,$remote_address[$i]);
+      # Hack for dealing with the fact that we can't call primo logout from the 
+      # pds server since they are the same box and the load balancer doesn't like it.
+      if ($remote_one[2] eq "primo") {
+        PDSLogout::logout_application($remote_one[0], $session_id, $session->institute, $remote_one[2], , "");
+      } else {
+        my $url = uri_escape($remote_one[0]);
+        CallHttpd::call_httpd('GET',"$bobcat_logout_url?bobcat_url=$url&pds_handle=$session_id");
+      }
     }
+    # Logout
+    $self->$destroy_session();
   }
-  # Logout
-  $self->$destroy_session();
   my $cgi = CGI->new();
   my $target_url = uri_escape($self->target_url);
   return $cgi->redirect("/Shibboleth.sso?return=target_url");
