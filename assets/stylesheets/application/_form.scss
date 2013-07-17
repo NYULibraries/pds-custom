@@ -6,23 +6,23 @@ label {
   @include background-image(image-url("nyu.jpg"),linear-gradient(color-stops(#886EAE, lighten(#886EAE, 5%))));
   height: 150px;
   width: 150px;
-  background-color: #886EAE;
-  background-position: center center;
   background-repeat: no-repeat;
-  border-color: #886EAE;
+  background-color: white;
+  background-position: center center;
+  border-color: white;
   color: white;
   &:hover {
     @include background-image(url(image-url("nyu.jpg")),linear-gradient(color-stops(darken(#886EAE, 5%), #886EAE)));
-    background-color: #886EAE;
-    background-position: 0px 0px;
-    border-color: #886EAE;
+    background-color: white;
+    background-position: center center;
+    border-color: white;
     color: white;
   }
   &:active {
     @include background-image(url(image-url("nyu.jpg")),linear-gradient(color-stops(darken(#886EAE, 5%), #886EAE)));
-    background-color: #886EAE;
+    background-color: white;
     background-position: center center;
-    border-color: #886EAE;
+    border-color: white;
     color: white;
   }
   margin-bottom: 10px;
