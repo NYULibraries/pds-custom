@@ -113,7 +113,7 @@ my $set_target_url = sub {
   # "been there done that cookie" or the default
   $target_url ||= 
     NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethController->been_there_done_that();
-  $target_url ||= $self->conf{bobcat_url};
+  $target_url ||= $self->conf->{bobcat_url};
   $target_url ||= DEFAULT_TARGET_URL;
   $self->set('target_url', $target_url);
 };
