@@ -7,11 +7,21 @@ label {
   height: 150px;
   width: 150px;
   background-color: #886EAE;
+  background-position: center center;
+  background-repeat: no-repeat;
   border-color: #886EAE;
   color: white;
   &:hover {
     @include background-image(url(image-url("nyu.jpg")),linear-gradient(color-stops(darken(#886EAE, 5%), #886EAE)));
     background-color: #886EAE;
+    background-position: 0px 0px;
+    border-color: #886EAE;
+    color: white;
+  }
+  &:active {
+    @include background-image(url(image-url("nyu.jpg")),linear-gradient(color-stops(darken(#886EAE, 5%), #886EAE)));
+    background-color: #886EAE;
+    background-position: center center;
     border-color: #886EAE;
     color: white;
   }
