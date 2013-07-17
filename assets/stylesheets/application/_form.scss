@@ -6,31 +6,31 @@ label {
   @include background-image(image-url("nyu.jpg"));
   height: 150px;
   width: 150px;
-  background-color: white;
+  background-color: whitesmoke;
   background-position: center center;
   background-repeat: no-repeat;
-  border-color: white;
-  color: white;
+  border-color: whitesmoke;
+  color: whitesmoke;
   &:hover {
     @include background-image(image-url("nyu.jpg"));
-    background-color: white;
+    background-color: whitesmoke;
     background-position: center center;
     border-color: #886EAE;
-    color: white;
+    color: whitesmoke;
   }
   &:focus {
     @include background-image(image-url("nyu.jpg"));
-    background-color: white;
+    background-color: whitesmoke;
     background-position: center center;
-    border-color: white;
-    color: white;
+    border-color: whitesmoke;
+    color: whitesmoke;
   }
   &:active {
     @include background-image(image-url("nyu.jpg"));
-    background-color: white;
+    background-color: whitesmoke;
     background-position: center center;
-    border-color: white;
-    color: white;
+    border-color: whitesmoke;
+    color: whitesmoke;
   }
   margin-bottom: 10px;
 }
