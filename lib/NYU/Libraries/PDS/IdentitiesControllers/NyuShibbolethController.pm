@@ -78,17 +78,18 @@ sub create {
   # If we have an identity, we've successfully created from the Shibboleth SP
   if ($identity->exists) {
     return $identity
-  } else {
-    # Check yourself before you wreck yourself
-    # Checks for passive cookie
-    #   If exists, returns undef
-    #   otherwise redirects to Idp
-    unless($self->$check()) {
-      $self->$wreck();
-    } else {
-      return undef;
-    }
+  # } else {
+  #   # Check yourself before you wreck yourself
+  #   # Checks for passive cookie
+  #   #   If exists, returns undef
+  #   #   otherwise redirects to Idp
+  #   unless($self->$check()) {
+  #     $self->$wreck();
+  #   } else {
+  #     return undef;
+  #   }
   }
+  return undef;
 }
 
 sub redirect_to_target {
