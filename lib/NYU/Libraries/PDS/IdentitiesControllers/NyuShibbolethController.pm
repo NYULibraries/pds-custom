@@ -6,6 +6,9 @@ use warnings;
 # CGI module for dealing with redirects and cookies
 use CGI qw/:standard/;
 
+# URI encoding module
+use URI::Escape;
+
 # NYU Libraries Shibboleth Identity
 use NYU::Libraries::PDS::Identities::NyuShibboleth;
 
