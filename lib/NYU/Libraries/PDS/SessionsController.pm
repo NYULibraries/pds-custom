@@ -33,7 +33,7 @@ use NYU::Libraries::PDS::Session;
 use NYU::Libraries::PDS::Views::Login;
 
 use base qw(Class::Accessor);
-__PACKAGE__->mk_accessors(qw(institute calling_system target_url current_url session_id error));
+__PACKAGE__->mk_accessors(qw(institute calling_system target_url current_url cleanup_url session_id error));
 
 # Default constants
 use constant UNAUTHORIZED_URL => "http://library.nyu.edu/unauthorized";
@@ -99,6 +99,7 @@ my $nyu_shibboleth_controller = sub {
       NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethController->new($self->{'conf'});
     $nyu_shibboleth_controller->target_url($self->target_url);
     $nyu_shibboleth_controller->current_url($self->current_url);
+    $nyu_shibboleth_controller->cleanup_url($self->cleanup_url);
     $self->{'nyu_shibboleth_controller'} = $nyu_shibboleth_controller;
   }
   return $self->{'nyu_shibboleth_controller'};
@@ -122,7 +123,7 @@ my $set_target_url = sub {
 # Usage:
 #   $self->$set_current_url();
 my $set_current_url = sub {
-  my($self) = @_;
+  my $self = shift;
   my $cgi = CGI->new();
   my $base = $cgi->url(-base => 1);
   my $function = ($cgi->url_param('func') || DEFAULT_FUNCTION);
@@ -132,6 +133,19 @@ my $set_current_url = sub {
   my $current_url ||=
     uri_escape("$base/pds?func=$function&institute=$institute&calling_system=$calling_system&url=$target_url");
   $self->set('current_url', $current_url);
+};
+
+# Private method to set the cleanup URL
+# Usage:
+#   $self->$set_cleanup_url();
+my $set_cleanup_url = sub {
+  my $self = shift;
+  my $conf = $self->{'conf'};
+  my $base = $conf->{bobcat_url};
+  if($base) {
+    my $cleanup_url ||= "$base/primo_library/libweb/custom/cleanup.jsp?url=";
+    $self->set('cleanup_url', $cleanup_url);
+  }
 };
 
 # Private method to get the target_url
@@ -150,6 +164,8 @@ my $initialize = sub {
   $self->$set_target_url($target_url);
   # Set current_url
   $self->$set_current_url();
+  # Set cleanup_url
+  $self->$set_cleanup_url();
   # Set session_id
   $self->set('session_id', $session_id) if $session_id;
 };
@@ -193,6 +209,17 @@ sub _redirect_to_target_url {
   my $self = shift;
   my $cgi = CGI->new();
   return $cgi->redirect($self->target_url);
+}
+
+# Returns a redirect header to the cleanup URL.
+# Usage:
+#   my $redirect_header = $self->$_redirect_to_cleanup_url();
+sub _redirect_to_cleanup_url {
+  my $self = shift;
+  my $cgi = CGI->new();
+  return _redirect_to_target_url unless $self->cleanup_url;
+  my $target_url = uri_escape($self->target_url);
+  return $cgi->redirect($self->cleanup_url.$target_url);
 }
 
 # Authenticate against Aleph.
@@ -282,7 +309,8 @@ sub load_login {
       $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
       # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
       # or just got it from me.
-      return $nyu_shibboleth_controller->redirect_to_target();
+      # return $nyu_shibboleth_controller->redirect_to_target();
+      return $nyu_shibboleth_controller->redirect_to_cleanup();
     } else {
       # Exit with Unauthorized Error
       $self->set('error', "Unauthorized");
@@ -312,7 +340,8 @@ sub sso {
   }
   # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
   # or just got it from me.
-  return $nyu_shibboleth_controller->redirect_to_target();
+  # return $nyu_shibboleth_controller->redirect_to_target();
+  return $nyu_shibboleth_controller->redirect_to_cleanup();
 }
 
 # Authenticate based on the given id and password
@@ -334,7 +363,8 @@ sub authenticate {
   # Otherwise, present the login screen or redirect to unauthorized
   if (defined($identities)) {
     my $session = $self->$create_session(@$identities);
-    return $self->_redirect_to_target_url();
+    # return $self->_redirect_to_target_url();
+    return $self->_redirect_to_cleanup_url();
   } else {
     # Redirect to unauthorized page
     return $self->_redirect_to_unauthorized() if ($self->error eq "Unauthorized");

@@ -220,7 +220,7 @@ isa_ok($controller, qw(Class::Accessor));
 isa_ok($controller, qw(NYU::Libraries::PDS::SessionsController));
 
 # Verify methods
-can_ok($controller, (qw(institute calling_system target_url session_id)));
+can_ok($controller, (qw(institute calling_system target_url current_url cleanup_url session_id error)));
 
 is($controller->_login_screen(), NYU_LOGIN, "Unexpected login html");
 

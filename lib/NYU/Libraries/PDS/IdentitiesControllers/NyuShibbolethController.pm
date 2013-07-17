@@ -10,7 +10,7 @@ use CGI qw/:standard/;
 use NYU::Libraries::PDS::Identities::NyuShibboleth;
 
 use base qw(NYU::Libraries::PDS::IdentitiesControllers::BaseController);
-__PACKAGE__->mk_accessors(qw(target_url current_url));
+__PACKAGE__->mk_accessors(qw(target_url current_url cleanup_url));
 
 # Been there done that cookie name
 use constant PDS_TARGET_COOKIE => 'pds_btdt_target_url';
@@ -37,7 +37,7 @@ my $check = sub {
   if ($self->been_there_done_that()) {
     # Unset the cookie!
     $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE,
-      -expires => '-5Y', -value => '');
+      -expires => '-10Y', -value => '');
     print $cgi->header(-cookie => [$pds_target]);
     return 1;
   } else {
@@ -92,6 +92,14 @@ sub redirect_to_target {
   my $self = shift;
   my $cgi = CGI->new();
   return $cgi->redirect($self->$target_url());
+}
+
+sub redirect_to_cleanup {
+  my $self = shift;
+  my $cgi = CGI->new();
+  return redirect_to_target unless $self->cleanup_url;
+  my $target_url = uri_escape($self->$target_url);
+  return $cgi->redirect($self->cleanup_url.$target_url);
 }
 
 # Method to get the "been there done that" cookie
