@@ -25,7 +25,7 @@ isa_ok($session, qw(NYU::Libraries::PDS::Session));
 can_ok($session, (qw(id institute barcode bor_status bor_type name uid email cn 
   givenname sn verification nyuidn nyu_shibboleth ns_ldap edupersonentitlement objectclass 
     ill_permission college_code college_name dept_code dept_name major_code major session_id
-      calling_system target_url new find to_xml)));
+      calling_system target_url new find to_xml remote_address)));
 
 
 # Create a new session based on an Aleph Identity

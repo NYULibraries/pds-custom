@@ -23,6 +23,8 @@ use CGI qw/:standard/;
 # URI encoding module
 use URI::Escape;
 
+# PDS Logout module
+use PDSLogout;
 
 # NYU Libraries modules
 use NYU::Libraries::Util qw(trim whitelist_institution);
@@ -41,6 +43,18 @@ use constant DEFAULT_INSTITUTE => "NYU";
 use constant DEFAULT_CALLING_SYSTEM => "primo";
 use constant DEFAULT_TARGET_URL => "http://bobcat.library.nyu.edu";
 use constant DEFAULT_FUNCTION => "sso";
+
+# Private method to fing the current session
+# Usage:
+#   $self->$current_session()
+my $current_session = sub {
+  my $self = shift;
+  unless ($self->{'current_session'}) {
+    $self->{'current_session'} = 
+      NYU::Libraries::PDS::Session::find($self->session_id);
+  }
+  return $self->{'current_session'};
+};
 
 # Private method to create a session
 # Usage:
@@ -63,6 +77,22 @@ my $create_session = sub {
     print $cgi->header(-cookie=>[$pds_handle]);
   }
   return $session;
+};
+
+# Private method to destroy the session
+# Usage:
+#   $self->$destroy_session()
+my $destroy_session = sub {
+  my $self = shift;
+  # Get the current session
+  my $session = $self->$current_session();
+  # Destroy it
+  $session->destroy();
+  # Expire the session cookie
+  my $pds_handle = CGI::Cookie->new(-name=>'PDS_HANDLE',
+    -expires => '-10Y', -value=>'', -domain=>'.library.nyu.edu');
+  my $cgi = CGI->new();
+  print $cgi->header(-cookie=>[$pds_handle]);
 };
 
 # Private method to get a new Aleph Controller
@@ -216,8 +246,8 @@ sub _redirect_to_target_url {
 #   my $redirect_header = $self->$_redirect_to_cleanup_url();
 sub _redirect_to_cleanup_url {
   my $self = shift;
-  my $cgi = CGI->new();
   return _redirect_to_target_url unless $self->cleanup_url;
+  my $cgi = CGI->new();
   my $target_url = uri_escape($self->target_url);
   return $cgi->redirect($self->cleanup_url.$target_url);
 }
@@ -374,15 +404,40 @@ sub authenticate {
   }
 }
 
+sub logout {
+  my $self = shift;
+  my $session = $self->$current_session;
+  # Logout of ExLibris applications with hack for logging out of Primo due to load balancer issues.
+  my @remote_address = split (/,/,$session->remote_address);
+  my $bobcat_logout_url = $self->{'conf'}->{'bobcat_logout_url'};
+  my $session_id = $session->session_id;
+  for (my $i=0; $remote_address[$i]; $i++) {
+    my @remote_one = split (/;/,$remote_address[$i]);
+    # Hack for dealing with the fact that we can't call primo logout from the 
+    # pds server since they are the same box and the load balancer doesn't like it.
+    if ($remote_one[2] eq "primo") {
+      PDSLogout::logout_application($remote_one[0], $session_id, $session->institute, $remote_one[2], , "");
+    } else {
+      my $url = uri_escape($remote_one[0]);
+      CallHttpd::call_httpd('GET',"$bobcat_logout_url?bobcat_url=$url&pds_handle=$session_id");
+    }
+  }
+  # Logout
+  $self->$destroy_session();
+  my $cgi = CGI->new();
+  my $target_url = uri_escape($self->target_url);
+  return $cgi->redirect("/Shibboleth.sso?return=target_url");
+}
+
 # Return the bor_info as an XML string
 # Usage:
 #   $controller->bor_info();
 sub bor_info {
-  my($self) = @_;
+  my $self = shift;
   my $cgi = CGI->new();
   print $cgi->header(-type=>'text/xml', -charset =>'UTF-8');
   if ($self->session_id) {
-    my $session = NYU::Libraries::PDS::Session::find($self->session_id);
+    my $session = $self->$current_session();
     if ($session) {
       return $session->to_xml("bor-info");
     # } else {

@@ -99,8 +99,8 @@ sub redirect_to_target {
 
 sub redirect_to_cleanup {
   my $self = shift;
-  my $cgi = CGI->new();
   return redirect_to_target unless $self->cleanup_url;
+  my $cgi = CGI->new();
   my $target_url = uri_escape($self->$target_url);
   return $cgi->redirect($self->cleanup_url.$target_url);
 }

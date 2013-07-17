@@ -22,7 +22,7 @@ use base qw(Class::Accessor);
 my @attributes = qw(id email givenname cn sn institute barcode bor_status 
   bor_type name uid verification nyuidn nyu_shibboleth ns_ldap 
     edupersonentitlement objectclass ill_permission college_code college_name 
-      dept_code dept_name major_code major session_id expiry_date);
+      dept_code dept_name major_code major session_id expiry_date remote_address);
 __PACKAGE__->mk_ro_accessors(@attributes);
 __PACKAGE__->mk_accessors(qw(calling_system target_url));
 use constant NYU_BOR_STATUSES => qw(03 04 05 06 07 50 52 53 51 54 55 56 57 58 59 60 61 62 
@@ -155,7 +155,7 @@ sub find {
 # Usage:
 #   $session->save();
 sub save {
-  my($self) = @_;
+  my $self = shift;
   my (%Z311, %Z312) = ((), ());
   # Store PDS info in Z311 hash.
   %Z311 = ();
@@ -194,6 +194,23 @@ sub save {
     IOZ312_file::io_z312_file('WRITE', \%Z312, $self->session_id);
   }
   return $self;
+}
+
+# Save the session in either the DB or file system
+# Returns self
+# Usage:
+#   $session->destroy();
+sub destroy {
+  my $self = shift;
+  my %Z311 = ();
+  my $error_code;
+  # Set PDS Handle for session file
+  $Z311{'session_id'} = $self->session_id;
+  if (isUsingOracle()) {
+    PDSSession::pds_session('DELETE', \%Z311);
+  } else {
+    IOZ311_file::io_z311_file('DELETE', \%Z311);
+  }
 }
 
 # Returns the session as XML
