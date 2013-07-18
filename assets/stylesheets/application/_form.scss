@@ -8,6 +8,7 @@ label {
   line-height: 20px;
   font-size: 20px;
   background-repeat: no-repeat;
+  background-color: darken(whitesmoke, 5%);
   @include background-image(image-url("nyu.png"),linear-gradient(color-stops(darken(whitesmoke, 5%), white)));
   background-position: center 25px;
   &:hover, &:focus {
