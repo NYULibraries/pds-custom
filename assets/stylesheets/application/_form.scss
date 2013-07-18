@@ -20,6 +20,8 @@ label {
   }
   &:active {
     @include background-image(image-url("nyu.png"));
+    background-color: #886EAE;
+    border-color: #886EAE;
     color: white;
   }
   margin-bottom: 10px;
