@@ -8,7 +8,7 @@ use lib "vendor/lib";
 use base qw(Template::Mustache);
 
 # Specify the name of the template file that we're looking for
-$Template::Mustache::template_file = 'login.mustache';
+sub template_file { return 'login.mustache'; }
 
 # Override Template::Mustache methods with our configurations
 sub template_path {

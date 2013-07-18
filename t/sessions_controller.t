@@ -123,13 +123,13 @@ use constant NYU_LOGOUT => "<!DOCTYPE html>
     <header id=\"header\" class=\"header\">
       <div class=\"parent\"><a href=\"http://library.nyu.edu\"><span>NYU Libraries</span></a></div>
       <div class=\"suite\"><span>BobCat</span></div>
-      <div class=\"application\"><span>Login</span></div>
+      <div class=\"application\"><span>Logout</span></div>
     </header>
     <nav id=\"nav1\" class=\"breadcrumb\">
       <ul class=\"nyu-breadcrumbs\">
         <li><a href=\"http://library.nyu.edu\">NYU Libraries</a></li>
         <li><a href=\"http://bobcat.library.nyu.edu\">BobCat</a></li>
-        <li>Login</li>
+        <li>Logout</li>
       </ul>
     </nav>
     <h1><a href=\"http://example.com\">Logout</a></h1>
@@ -256,6 +256,14 @@ isa_ok($controller, qw(NYU::Libraries::PDS::SessionsController));
 
 # Verify methods
 can_ok($controller, (qw(institute calling_system target_url current_url cleanup_url session_id error)));
+
+# The following tests will only pass if the CI environment variable is set.
+unless($ENV{'CI'}) {
+  print STDERR "\nSet the CI ENV variable for these tests to pass.\n".
+  "\n\te.g. export CI=true\n\n";
+  isnt($ENV{'CI'}, undef, "CI environment variable should be defined");
+  exit;
+}
 
 is($controller->_login_screen(), NYU_LOGIN, "Unexpected login html");
 

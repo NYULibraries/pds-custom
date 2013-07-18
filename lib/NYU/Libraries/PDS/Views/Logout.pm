@@ -8,7 +8,7 @@ use lib "vendor/lib";
 use base qw(NYU::Libraries::PDS::Views::Login);
 
 # Specify the name of the template file that we're looking for
-$Template::Mustache::template_file = 'logout.mustache';
+sub template_file { return 'logout.mustache'; }
 
 # Override Template::Mustache methods with our configurations
 sub template_path {
