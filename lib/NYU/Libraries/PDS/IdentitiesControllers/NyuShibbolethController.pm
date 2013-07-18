@@ -27,6 +27,15 @@ my $target_url = sub {
   return ($self->been_there_done_that() || $self->target_url);
 };
 
+my $expire_been_there_done_that = sub {
+  my $self = shift;
+  my $cgi = CGI->new();
+  # Unset the cookie!
+  my $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE,
+    -expires => '-10Y', -value => '');
+  print $cgi->header(-cookie => [$pds_target]);
+};
+
 # Private method gets/sets the cookie that specifies that 
 # we've been here done that
 # Method name is a dumb reference to 
@@ -36,17 +45,13 @@ my $target_url = sub {
 my $check = sub {
   my $self = shift;
   my $cgi = CGI->new();
-  my $pds_target;
   if ($self->been_there_done_that()) {
-    # Unset the cookie!
-    $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE,
-      -expires => '-10Y', -value => '');
-    print $cgi->header(-cookie => [$pds_target]);
+    $self->$expire_been_there_done_that();
     return 1;
   } else {
     # Set the cookie to the current target URL
     # Set the session cookie
-    $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE, 
+    my $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE, 
       -value => $self->target_url);
     print $cgi->header(-cookie => [$pds_target]);
     return 0;
@@ -77,6 +82,8 @@ sub create {
   my $identity = NYU::Libraries::PDS::Identities::NyuShibboleth->new($self->{'conf'});
   # If we have an identity, we've successfully created from the Shibboleth SP
   if ($identity->exists) {
+    # Expire the been there done that cookie.
+    $self->$expire_been_there_done_that();
     return $identity
   } else {
     # Check yourself before you wreck yourself
