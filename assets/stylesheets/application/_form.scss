@@ -5,7 +5,7 @@ label {
 .shibboleth {
   height: 150px;
   width: 150px;
-  line-height: 20px;
+  line-height: 280px;
   font-size: 20px;
   background-repeat: no-repeat;
   background-color: darken(whitesmoke, 5%);
@@ -18,7 +18,7 @@ label {
   &:active {
     background-image: image-url("nyu.png");
   }
-  background-position: center 25px;
+  background-position: center 5px;
 }
 
 .popover {
