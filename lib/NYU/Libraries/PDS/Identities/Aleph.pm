@@ -23,7 +23,6 @@ my @attributes = qw(name bor_name verification barcode expiry_date bor_status
 __PACKAGE__->mk_ro_accessors(@attributes);
 __PACKAGE__->mk_accessors(qw(encrypt));
 
-
 # Private method returns an identity from the flat file for the given id
 # Usage:
 #   $self->$lookup_from_xserver(id)

@@ -77,7 +77,7 @@ my $initialize = sub {
     if(ref($identity) eq "NYU::Libraries::PDS::Identities::NyuShibboleth") {
       my $identity_hash = $identity->to_h();
       $self->set('nyu_shibboleth', 'true');
-      $self->set('uid', $identity_hash->id);
+      $self->set('uid', $identity->id);
       foreach my $attribute (keys %$identity_hash) {
         # Skip ID attribute
         next if $attribute eq "id";
@@ -86,7 +86,7 @@ my $initialize = sub {
     } elsif(ref($identity) eq "NYU::Libraries::PDS::Identities::NsLdap") {
       my $identity_hash = $identity->to_h();
       $self->set('ns_ldap', 'true');
-      $self->set('uid', $identity_hash->id);
+      $self->set('uid', $identity->id);
       foreach my $attribute (keys %$identity_hash) {
         # Skip ID attribute
         next if $attribute eq "id";
