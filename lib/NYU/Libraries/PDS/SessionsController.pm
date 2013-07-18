@@ -45,7 +45,7 @@ use constant DEFAULT_INSTITUTE => "NYU";
 use constant DEFAULT_CALLING_SYSTEM => "primo";
 use constant DEFAULT_TARGET_URL => "http://bobcat.library.nyu.edu";
 use constant DEFAULT_FUNCTION => "sso";
-use constant GLOBAL_NYU_SHIBBOLETH_LOGOUT => "https://login.nyu.edu/sso/UI/Logout"
+use constant GLOBAL_NYU_SHIBBOLETH_LOGOUT => "https://login.nyu.edu/sso/UI/Logout";
 
 # Private method to encrypt the Aleph identity
 # Usage:
