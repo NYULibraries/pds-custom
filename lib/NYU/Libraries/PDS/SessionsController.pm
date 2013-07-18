@@ -45,6 +45,7 @@ use constant DEFAULT_INSTITUTE => "NYU";
 use constant DEFAULT_CALLING_SYSTEM => "primo";
 use constant DEFAULT_TARGET_URL => "http://bobcat.library.nyu.edu";
 use constant DEFAULT_FUNCTION => "sso";
+use constant GLOBAL_NYU_SHIBBOLETH_LOGOUT => "https://login.nyu.edu/sso/UI/Logout"
 
 # Private method to encrypt the Aleph identity
 # Usage:
@@ -446,10 +447,12 @@ sub authenticate {
 sub logout {
   my $self = shift;
   my $session = $self->$current_session;
+  my $nyu_shibboleth;
   if($session) {
     # Logout of ExLibris applications with hack for logging out of Primo due to load balancer issues.
     my @remote_address = split (/,/,$session->remote_address);
     my $bobcat_logout_url = $self->{'conf'}->{'bobcat_logout_url'};
+    $nyu_shibboleth = $session->nyu_shibboleth;
     my $session_id = $session->session_id;
     for (my $i=0; $remote_address[$i]; $i++) {
       my @remote_one = split (/;/,$remote_address[$i]);
@@ -466,7 +469,8 @@ sub logout {
     $self->$destroy_session();
   }
   my $cgi = CGI->new();
-  my $target_url = uri_escape($self->target_url);
+  my $target_url = ($nyu_shibboleth) ? GLOBAL_NYU_SHIBBOLETH_LOGOUT : $self->target_url;
+  $target_url = uri_escape($target_url) if $target_url;
   my $return = ($target_url) ? "return=$target_url" : "";
   return $cgi->redirect("/Shibboleth.sso/Logout?$return");
 }

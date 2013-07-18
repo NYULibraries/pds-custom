@@ -36,6 +36,16 @@ my $expire_been_there_done_that = sub {
   print $cgi->header(-cookie => [$pds_target]);
 };
 
+my $set_been_there_done_that = sub {
+  my $self = shift;
+  my $cgi = CGI->new();
+  # Set the cookie to the current target URL
+  # Set the session cookie
+  my $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE, 
+    -value => $self->target_url);
+  print $cgi->header(-cookie => [$pds_target]);
+};
+
 # Private method gets/sets the cookie that specifies that 
 # we've been here done that
 # Method name is a dumb reference to 
@@ -49,11 +59,7 @@ my $check = sub {
     $self->$expire_been_there_done_that();
     return 1;
   } else {
-    # Set the cookie to the current target URL
-    # Set the session cookie
-    my $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE, 
-      -value => $self->target_url);
-    print $cgi->header(-cookie => [$pds_target]);
+    $self->$set_been_there_done_that();
     return 0;
   }
 };
