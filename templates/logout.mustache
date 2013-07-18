@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    {{> ./common/meta}}
+    <script src="https://library.nyu.edu/scripts/system_map.js" type="text/javascript"></script>
+    <script src="/assets/javascripts/logout.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      logout('{{target_url}}');
+    </script>
+  </head>
+  <body>
+    {{> ./common/header }}
+    {{> ./common/nav }}
+    <h1><a href="{{target_url}}">Logout</a></h1>
+    {{> ./common/footer }}
+  </body>
+</html>

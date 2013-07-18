@@ -102,6 +102,41 @@ use constant NYU_LOGIN => "<!DOCTYPE html>
   </body>
 </html>
 ";
+use constant NYU_LOGOUT => "<!DOCTYPE html>
+<html>
+  <head>
+    <title>BobCat</title>
+    <meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />
+    <meta http-equiv=\"Cache-Control\" content=\"no-cache\" />
+    <meta http-equiv=\"Pragma\" content=\"no-cache\" />
+    <meta http-equiv=\"Expires\" content=\"Sun, 06 Nov 1994 08:49:37 GMT\" />
+    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1\" />
+    <link rel=\"stylesheet\" type=\"text/css\" href=\"/assets/css/nyu.css\" />
+    <script src=\"/assets/javascripts/application.js\" type=\"text/javascript\"></script>
+    <script src=\"https://library.nyu.edu/scripts/system_map.js\" type=\"text/javascript\"></script>
+    <script src=\"/assets/javascripts/logout.js\" type=\"text/javascript\"></script>
+    <script type=\"text/javascript\">
+      logout('http://example.com');
+    </script>
+  </head>
+  <body>
+    <header id=\"header\" class=\"header\">
+      <div class=\"parent\"><a href=\"http://library.nyu.edu\"><span>NYU Libraries</span></a></div>
+      <div class=\"suite\"><span>BobCat</span></div>
+      <div class=\"application\"><span>Login</span></div>
+    </header>
+    <nav id=\"nav1\" class=\"breadcrumb\">
+      <ul class=\"nyu-breadcrumbs\">
+        <li><a href=\"http://library.nyu.edu\">NYU Libraries</a></li>
+        <li><a href=\"http://bobcat.library.nyu.edu\">BobCat</a></li>
+        <li>Login</li>
+      </ul>
+    </nav>
+    <h1><a href=\"http://example.com\">Logout</a></h1>
+    <footer>NYU Division of Libraries.  BobCat.  Powered by Ex Libris Primo</footer>
+  </body>
+</html>
+";
 
 use constant NYU_LOGIN_WITH_ERROR => "<!DOCTYPE html>
 <html>
@@ -225,7 +260,7 @@ can_ok($controller, (qw(institute calling_system target_url current_url cleanup_
 is($controller->_login_screen(), NYU_LOGIN, "Unexpected login html");
 
 # Get another instance of SessionController
-$controller = NYU::Libraries::PDS::SessionsController->new($conf, "NS", "primo", "http://example.com");
+$controller = NYU::Libraries::PDS::SessionsController->new($conf, "ns", "primo", "http://example.com");
 
 is($controller->_login_screen(), "<!DOCTYPE html>
 <html>
@@ -340,3 +375,7 @@ isnt($controller->error, undef, "Error should be defined");
 isnt(defined($controller->error), '', "Error should be defined");
 is($controller->error, "There seems to have been a problem logging in. ".
   "Please check your credentials.", "Error should be defined");
+
+$controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
+# Test logout screen
+is($controller->_logout_screen(), NYU_LOGOUT, "Should be logout screen.");

@@ -39,6 +39,7 @@ __PACKAGE__->mk_accessors(qw(institute calling_system target_url current_url cle
 
 # Default constants
 use constant UNAUTHORIZED_URL => "http://library.nyu.edu/unauthorized";
+use constant EZPROXY_UNAUTHORIZED_URL => "http://library.nyu.edu/ezproxy_unauthorized";
 use constant DEFAULT_INSTITUTE => "NYU";
 use constant DEFAULT_CALLING_SYSTEM => "primo";
 use constant DEFAULT_TARGET_URL => "http://bobcat.library.nyu.edu";
@@ -215,11 +216,21 @@ sub new {
 
 # Returns a rendered HTML login screen for presentation.
 # Usage:
-#   my $login_screen = $self->$_login_screen();
+#   my $login_screen = $self->_login_screen();
 sub _login_screen {
   my $self = shift;
   # Present Login Screen
   my $template = NYU::Libraries::PDS::Views::Login->new($self->{'conf'}, $self);
+  return $template->render();
+}
+
+# Returns a rendered HTML logout screen for presentation.
+# Usage:
+#   my $login_screen = $self->_logout_screen();
+sub _logout_screen {
+  my $self = shift;
+  # Present Login Screen
+  my $template = NYU::Libraries::PDS::Views::Logout->new($self->{'conf'}, $self);
   return $template->render();
 }
 
@@ -230,6 +241,15 @@ sub _redirect_to_unauthorized {
   my $self = shift;
   my $cgi = CGI->new();
   return $cgi->redirect(UNAUTHORIZED_URL);
+}
+
+# Returns a redirect header to the EZProxy unauthorized message URL.
+# Usage:
+#   my $redirect_header = $self->$_redirect_to_ezproxy_unauthorized();
+sub _redirect_to_ezproxy_unauthorized {
+  my $self = shift;
+  my $cgi = CGI->new();
+  return $cgi->redirect(EZPROXY_UNAUTHORIZED_URL);
 }
 
 # Returns a redirect header to the target URL.
@@ -430,6 +450,37 @@ sub logout {
   my $target_url = uri_escape($self->target_url);
   my $return = ($target_url) ? "return=$target_url" : "";
   return $cgi->redirect("/Shibboleth.sso/Logout?$return");
+}
+
+# Redirect to ezproxy if authenticated and authorized
+# Otherwise, present unauthorized screen if unauthorized
+# or login screen in not logged in
+# Usage:
+#   $controller->bor_info();
+sub ezproxy {
+  my $self = shift;
+  my $nyu_shibboleth_controller = $self->$nyu_shibboleth_controller();
+  # The Shibboleth controller can go "nuclear" and just exit at this point.
+  # It will redirect to the Shibboleth IdP for passive authentication.
+  my $nyu_shibboleth_identity = $nyu_shibboleth_controller->create();
+  # Do we have an identity? If so, let's get the associated Aleph identity
+  if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
+    my $aleph_controller = $self->$aleph_controller();
+    my $aleph_identity = $aleph_controller->create($nyu_shibboleth_identity->aleph_identifier);
+    # Check if the Aleph identity exists
+    if ($aleph_identity->exists) {
+      $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
+      # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
+      # or just got it from me.
+      return $nyu_shibboleth_controller->redirect_to_target();
+    } else {
+      # Exit with Unauthorized Error
+      $self->set('error', "EZProxy Unauthorized");
+      return $self->_redirect_to_ezproxy_unauthorized();
+    }
+  }
+  # Print the login screen
+  return $self->_login_screen();
 }
 
 # Return the bor_info as an XML string
