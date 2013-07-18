@@ -14,7 +14,7 @@ my $shibboleth_attribute_mappings = {
   'givenname' => 'givenName',
   'cn' => 'displayName',
   'sn' => 'sn',
-  'aleph_identifier' => 'NYUIdn',
+  'aleph_identifier' => 'nyuidn',
   'edupersonentitlement' => 'eduPersonEntitlement'
 };
 
