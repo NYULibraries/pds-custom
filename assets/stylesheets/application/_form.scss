@@ -7,22 +7,19 @@ label {
   width: 150px;
   background-repeat: no-repeat;
   @include background-image(image-url("nyu.png"),linear-gradient(color-stops(#886EAE, lighten(#886EAE, 5%))));
-  // background-color: #886EAE;
+  background-color: #886EAE;
   border-color: #886EAE;
   background-position: 50% 50%;
   color: white;
-  &:hover {
-    @include background-image(image-url("nyu.png"),linear-gradient(color-stops(lig=(#886EAE, 5%), #886EAE)));
-    // background-color: #886EAE;
+  &:hover, &:focus {
+    @include background-image(image-url("nyu.png"),linear-gradient(color-stops(darken(#886EAE, 5%), #886EAE)));
+    background-color: #886EAE;
     border-color: #886EAE;
-    background-position: 49% 49%;
+    background-position: 50% 48%;
     color: white;
   }
   &:active {
-    // @include background-image(image-url("nyu.png"),linear-gradient(color-stops(darken(#886EAE, 5%), #886EAE)));
-    // background-color: #886EAE;
-    border-color: #886EAE;
-    background-position: 50% 50%;
+    @include background-image(image-url("nyu.png"));
     color: white;
   }
   margin-bottom: 10px;
