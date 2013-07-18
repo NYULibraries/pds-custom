@@ -32,13 +32,9 @@ is($identity->{'identity'}->{'id'}, "N12162279", "Should have identity id");
 is($identity->{'identity'}->{'email'}, "std5\@nyu.edu", "Should have identity mail");
 is($identity->{'identity'}->{'plif_status'}, "PLIF LOADED", "Should have identity plif status");
 
-# Verify attributes not yet set
-is($identity->id, undef, "Should not have mail attribute");
-is($identity->email, undef, "Should not have mail attribute");
-
 # Verify attributes are set
 $identity->encrypt(1);
-$identity->set_attributes();
+$identity->set_attributes(1);
 is($identity->id, "N12162279", "Should have id attribute");
 is($identity->email, "std5\@nyu.edu", "Should have email attribute");
 is($identity->plif_status, "PLIF LOADED", "Should have plif status attribute");
@@ -54,12 +50,7 @@ is($identity->{'identity'}->{'email'}, "std5\@nyu.edu", "Should have identity em
 is($identity->{'identity'}->{'plif_status'}, "PLIF LOADED", "Should have identity plif status");
 is($identity->{'identity'}->{'bor_status'}, "51", "Should have identity bor status");
 
-# Verify attributes not yet set
-is($identity->id, undef, "Should not have id attribute");
-is($identity->email, undef, "Should not have email attribute");
-
 # Verify attributes are set
-$identity->set_attributes();
 is($identity->id, "N12162279", "Should have id attribute");
 is($identity->email, "std5\@nyu.edu", "Should have email attribute");
 is($identity->plif_status, "PLIF LOADED", "Should have plif status attribute");
@@ -94,13 +85,9 @@ is($identity->{'identity'}->{'email'}, "ba36\@nyu.edu", "Should have identity em
 is($identity->{'identity'}->{'plif_status'}, "PLIF LOADED", "Should have identity plif_status");
 is($identity->{'identity'}->{'bor_status'}, "65", "Should have identity bor status");
 
-# Verify attributes not yet set
-is($identity->id, undef, "Should not have mail attribute");
-is($identity->email, undef, "Should not have mail attribute");
-
 # Verify attributes are set
 $identity->encrypt(1);
-$identity->set_attributes();
+$identity->set_attributes(1);
 is($identity->id, "N18158418", "Should not have mail attribute");
 is($identity->email, "ba36\@nyu.edu", "Should not have mail attribute");
 is($identity->bor_status, "65", "Should not have bor status attribute");
@@ -118,10 +105,6 @@ is($identity->{'identity'}->{'email'}, "", "Should have identity email");
 is($identity->{'identity'}->{'plif_status'}, "PLIF LOADED", "Should have identity birthplace");
 is($identity->{'identity'}->{'bor_status'}, "03", "Should have identity bor status");
 
-# Verify attributes not yet set
-is($identity->id, undef, "Should not have id attribute");
-is($identity->email, undef, "Should not have email attribute");
-
 # Verify attributes are set
 $identity->encrypt(1);
 $identity->set_attributes();
@@ -138,13 +121,9 @@ $identity = NYU::Libraries::PDS::Identities::Aleph->new(
 ok(!defined($identity->{'identity'}));
 is($identity->error, "Authentication error: Error in Verification", "Should have error");
 
-# Verify attributes not yet set
-is($identity->id, undef, "Should not have id attribute");
-is($identity->email, undef, "Should not have email attribute");
-
 # Verify attributes are set
 $identity->encrypt(1);
-$identity->set_attributes();
+$identity->set_attributes(1);
 is($identity->id, undef, "Should not have id attribute");
 is($identity->email, undef, "Should not have email attribute");
 is($identity->bor_status, undef, "Should not have bor status attribute");

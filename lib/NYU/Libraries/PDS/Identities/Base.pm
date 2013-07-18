@@ -51,6 +51,8 @@ sub new {
   $self->$initialize($conf);
   # Authenticate
   $self->authenticate(@authentication_args);
+  # Set attributes
+  $self->set_attributes() if $self->exists;
   # Return self
   return $self;
 }

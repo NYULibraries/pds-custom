@@ -46,7 +46,19 @@ use constant DEFAULT_CALLING_SYSTEM => "primo";
 use constant DEFAULT_TARGET_URL => "http://bobcat.library.nyu.edu";
 use constant DEFAULT_FUNCTION => "sso";
 
-# Private method to fing the current session
+# Private method to encrypt the Aleph identity
+# Usage:
+#   $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity)
+my $encrypt_aleph_identity = sub {
+  my($self, $aleph_identity) = @_;
+  # Encrypt the password
+  $aleph_identity->encrypt(1);
+  # And reset the attributes
+  $aleph_identity->set_attributes(1);
+  return $aleph_identity;
+};
+
+# Private method to find the current session
 # Usage:
 #   $self->$current_session()
 my $current_session = sub {
@@ -338,6 +350,8 @@ sub _authenticate_ns_ldap {
     $self->set('error', "There seems to have been a problem logging in. $error");
     return undef;
   }
+  # Encrypt the Aleph identity's password
+  $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
   # If we successfully authenticated return identities
   return [$ns_ldap_identity, $aleph_identity];
 };
@@ -357,6 +371,8 @@ sub load_login {
     my $aleph_identity = $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
     # Check if the Aleph identity exists
     if ($aleph_identity->exists) {
+      # Encrypt the Aleph identity's password
+      $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
       $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
       # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
       # or just got it from me.
@@ -385,6 +401,8 @@ sub sso {
       $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
     # Check if the Aleph identity exists
     if ($aleph_identity->exists) {
+      # Encrypt the Aleph identity's password
+      $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
       my $session = 
         $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
     }
