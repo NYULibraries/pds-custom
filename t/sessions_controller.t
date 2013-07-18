@@ -260,7 +260,7 @@ can_ok($controller, (qw(institute calling_system target_url current_url cleanup_
 is($controller->_login_screen(), NYU_LOGIN, "Unexpected login html");
 
 # Get another instance of SessionController
-$controller = NYU::Libraries::PDS::SessionsController->new($conf, "ns", "primo", "http://example.com");
+$controller = NYU::Libraries::PDS::SessionsController->new($conf, "NS", "primo", "http://example.com");
 
 is($controller->_login_screen(), "<!DOCTYPE html>
 <html>
