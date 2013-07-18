@@ -33,6 +33,7 @@ use NYU::Libraries::PDS::IdentitiesControllers::NsLdapController;
 use NYU::Libraries::PDS::IdentitiesControllers::AlephController;
 use NYU::Libraries::PDS::Session;
 use NYU::Libraries::PDS::Views::Login;
+use NYU::Libraries::PDS::Views::Logout;
 
 use base qw(Class::Accessor);
 __PACKAGE__->mk_accessors(qw(institute calling_system target_url current_url cleanup_url session_id error));
