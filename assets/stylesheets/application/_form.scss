@@ -3,14 +3,14 @@ label {
 }
 
 .shibboleth {
+  height: 150px;
+  width: 150px;
+  background-repeat: no-repeat;
   @include background-image(image-url("nyu.png"),linear-gradient(color-stops(#886EAE, lighten(#886EAE, 5%))));
   // background-color: #886EAE;
   border-color: #886EAE;
   background-position: 50% 50%;
   color: white;
-  height: 150px;
-  width: 150px;
-  background-repeat: no-repeat;
   &:hover {
     @include background-image(image-url("nyu.png"),linear-gradient(color-stops(lig=(#886EAE, 5%), #886EAE)));
     // background-color: #886EAE;
