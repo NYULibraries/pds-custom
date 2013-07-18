@@ -23,7 +23,7 @@ sub custom_load_login {
   my $session_controller = NYU::Libraries::PDS::controller($conf, $institute, 
     $calling_system, $target_url, $session_id);
 foreach my $key (sort keys(%ENV)) {
-  print "<p>$key = $ENV{$key}</p>";
+  print "Pragma: $key = $ENV{$key}\n";
 }
 
   print $session_controller->load_login();
