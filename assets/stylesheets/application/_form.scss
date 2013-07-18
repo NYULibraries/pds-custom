@@ -8,14 +8,14 @@ label {
   line-height: 150px;
   font-size: 20px;
   background-repeat: no-repeat;
-  @include background-image(image-url("nyu.png"),linear-gradient(color-stops(lighten(whitesmoke, 5%), whitesmoke)));
+  background-image: image-url("nyu.png");
   background-position: 50% 50%;
   &:hover, &:focus {
-    @include background-image(image-url("nyu.png"),linear-gradient(color-stops(darken(whitesmoke, 5%), whitesmoke)));
+    background-image: image-url("nyu.png");
     background-position: 50% 50%;
   }
   &:active {
-    @include background-image(image-url("nyu.png"));
+    background-image: image-url("nyu.png");
   }
   margin-bottom: 10px;
 }
