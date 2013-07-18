@@ -8,7 +8,6 @@ label {
   background-repeat: no-repeat;
   @include background-image(image-url("nyu.png"),linear-gradient(color-stops(whitesmoke, white)));
   background-color: white;
-  border-color: whitesmoke;
   background-position: 50% 50%;
   color: #886EAE;
   &:hover, &:focus {
