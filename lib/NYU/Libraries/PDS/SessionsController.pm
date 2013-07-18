@@ -354,7 +354,7 @@ sub load_login {
   # Do we have an identity? If so, let's get the associated Aleph identity
   if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
     my $aleph_controller = $self->$aleph_controller();
-    my $aleph_identity = $aleph_controller->create($nyu_shibboleth_identity->aleph_identifier);
+    my $aleph_identity = $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
     # Check if the Aleph identity exists
     if ($aleph_identity->exists) {
       $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
