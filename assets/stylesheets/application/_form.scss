@@ -3,7 +3,7 @@ label {
 }
 
 .shibboleth {
-  @include background-image(url(image-url("nyu.png")),linear-gradient(color-stops(darken(#886EAE, 5%), #886EAE)));
+  @include background-image(image-url("nyu.png"),linear-gradient(color-stops(darken(#886EAE, 5%), #886EAE)));
   background-color: #886EAE;
   border-color: #886EAE;
   // background-position: center center;
@@ -12,21 +12,21 @@ label {
   width: 150px;
   background-repeat: no-repeat;
   &:hover {
-    @include background-image(url(image-url("nyu.png")),linear-gradient(color-stops(darken(#886EAE, 5%), #886EAE)));
+    @include background-image(image-url("nyu.png"),linear-gradient(color-stops(darken(#886EAE, 5%), #886EAE)));
     background-color: #886EAE;
     border-color: #886EAE;
     // background-position: center center;
     color: white;
   }
   &:focus {
-    @include background-image(url(image-url("nyu.png")),linear-gradient(color-stops(darken(#886EAE, 5%), #886EAE)));
+    @include background-image(image-url("nyu.png"),linear-gradient(color-stops(darken(#886EAE, 5%), #886EAE)));
     background-color: #886EAE;
     border-color: #886EAE;
     // background-position: center center;
     color: white;
   }
   &:active {
-    @include background-image(url(image-url("nyu.png")),linear-gradient(color-stops(darken(#886EAE, 5%), #886EAE)));
+    @include background-image(image-url("nyu.png"),linear-gradient(color-stops(darken(#886EAE, 5%), #886EAE)));
     background-color: #886EAE;
     border-color: #886EAE;
     // background-position: center center;
