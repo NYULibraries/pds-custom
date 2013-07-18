@@ -10,15 +10,14 @@ label {
   background-repeat: no-repeat;
   background-color: darken(whitesmoke, 5%);
   @include background-image(image-url("nyu.png"),linear-gradient(color-stops(darken(whitesmoke, 5%), white)));
-  background-position: center 25px;
+  background-position: center 6px;
   &:hover, &:focus {
     background-image: image-url("nyu.png");
-    background-position: center 25px;
+    background-position: center 6px;
   }
   &:active {
     background-image: image-url("nyu.png");
   }
-  background-position: center 6px;
 }
 
 .popover {
