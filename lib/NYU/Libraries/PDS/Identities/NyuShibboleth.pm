@@ -23,9 +23,6 @@ my $shibboleth_identity = sub {
   my $identity;
   foreach my $attribute (keys %SHIBBOLETH_ATTRIBUTE_MAPPINGS) {
     my $shibboleth_env_var = $SHIBBOLETH_ATTRIBUTE_MAPPINGS{$attribute};
-    print STDERR "\n\nATTRIBUTE: $attribute";
-    print STDERR "\n\nENV Mapping: $shibboleth_env_var";
-    print STDERR "\n\nENV: ".$ENV{$shibboleth_env_var};
     $identity->{$attribute} = $ENV{$shibboleth_env_var} if defined($ENV{$shibboleth_env_var});
   }
   # Return identity if we found one
