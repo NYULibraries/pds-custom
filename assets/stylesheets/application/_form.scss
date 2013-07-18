@@ -3,21 +3,21 @@ label {
 }
 
 .shibboleth {
-  height: 150px;
+  height: 160px;
   width: 150px;
-  line-height: 150px;
+  line-height: 20px;
   font-size: 20px;
   background-repeat: no-repeat;
   @include background-image(image-url("nyu.png"),linear-gradient(color-stops(darken(whitesmoke, 5%), white)));
-  background-position: 50% 50%;
+  background-position: center 25px;
   &:hover, &:focus {
     background-image: image-url("nyu.png");
-    background-position: 50% 50%;
+    background-position: center 25px;
   }
   &:active {
     background-image: image-url("nyu.png");
   }
-  margin-bottom: 10px;
+  background-position: center 25px;
 }
 
 .popover {
