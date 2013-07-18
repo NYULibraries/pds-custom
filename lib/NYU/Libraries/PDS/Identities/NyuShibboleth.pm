@@ -8,7 +8,7 @@ use base qw(NYU::Libraries::PDS::Identities::Base);
 my @attributes = qw(aleph_identifier edupersonentitlement);
 __PACKAGE__->mk_ro_accessors(@attributes);
 
-my $shibboleth_attribute_mappings = {
+my %SHIBBOLETH_ATTRIBUTE_MAPPINGS = (
   'id' => 'uid',
   'email' => 'mail',
   'givenname' => 'givenName',
@@ -16,13 +16,13 @@ my $shibboleth_attribute_mappings = {
   'sn' => 'sn',
   'aleph_identifier' => 'nyuidn',
   'edupersonentitlement' => 'eduPersonEntitlement'
-};
+);
 
 # Private sub that gets the identity from the ShibbolethSP
 my $shibboleth_identity = sub {
   my $identity;
-  foreach my $attribute (keys %$shibboleth_attribute_mappings) {
-    my $shibboleth_env_var = $shibboleth_attribute_mappings->{$attribute};
+  foreach my $attribute (keys %SHIBBOLETH_ATTRIBUTE_MAPPINGS) {
+    my $shibboleth_env_var = $SHIBBOLETH_ATTRIBUTE_MAPPINGS{$attribute};
     $identity->{$attribute} = $ENV{$shibboleth_env_var} if defined($ENV{$shibboleth_env_var});
   }
   # Return identity if we found one

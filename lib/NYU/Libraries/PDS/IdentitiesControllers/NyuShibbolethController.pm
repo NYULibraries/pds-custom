@@ -74,7 +74,7 @@ my $wreck = sub {
 #   $controller->create($id, $password);
 sub create {
   my $self = shift;
-  my $identity = NYU::Libraries::PDS::Identities::NyuShibboleth->new();
+  my $identity = NYU::Libraries::PDS::Identities::NyuShibboleth->new($self->{'conf'});
   # If we have an identity, we've successfully created from the Shibboleth SP
   if ($identity->exists) {
     return $identity
