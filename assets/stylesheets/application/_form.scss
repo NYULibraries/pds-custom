@@ -5,8 +5,10 @@ label {
 .shibboleth {
   height: 150px;
   width: 150px;
+  line-height: 40px;
+  font-size: 30px;
   background-repeat: no-repeat;
-  @include background-image(image-url("nyu.png"),linear-gradient(color-stops(whitesmoke, white)));
+  @include background-image(image-url("nyu.png"),linear-gradient(color-stops(lighten(whitesmoke, 5%), whitesmoke)));
   background-position: 50% 50%;
   color: #886EAE;
   &:hover, &:focus {
@@ -16,7 +18,7 @@ label {
   }
   &:active {
     @include background-image(image-url("nyu.png"));
-    color: white;
+    color: #886EAE;
   }
   margin-bottom: 10px;
 }
