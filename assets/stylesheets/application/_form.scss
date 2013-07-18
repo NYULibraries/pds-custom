@@ -6,7 +6,7 @@ label {
   @include background-image(image-url("nyu.png"),linear-gradient(color-stops(darken(#886EAE, 5%), #886EAE)));
   background-color: #886EAE;
   border-color: #886EAE;
-  // background-position: center center;
+  background-position: 50% 50%;
   color: white;
   height: 150px;
   width: 150px;
@@ -15,21 +15,14 @@ label {
     @include background-image(image-url("nyu.png"),linear-gradient(color-stops(darken(#886EAE, 5%), #886EAE)));
     background-color: #886EAE;
     border-color: #886EAE;
-    // background-position: center center;
-    color: white;
-  }
-  &:focus {
-    @include background-image(image-url("nyu.png"),linear-gradient(color-stops(darken(#886EAE, 5%), #886EAE)));
-    background-color: #886EAE;
-    border-color: #886EAE;
-    // background-position: center center;
+    background-position: 49% 49%;
     color: white;
   }
   &:active {
     @include background-image(image-url("nyu.png"),linear-gradient(color-stops(darken(#886EAE, 5%), #886EAE)));
     background-color: #886EAE;
     border-color: #886EAE;
-    // background-position: center center;
+    background-position: 50% 50%;
     color: white;
   }
   margin-bottom: 10px;
