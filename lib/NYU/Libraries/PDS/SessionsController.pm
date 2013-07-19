@@ -353,8 +353,8 @@ sub _redirect_to_alumni_ezproxy {
 
 # Returns a redirect header to the EZBorrow URL for the given session and query
 sub _redirect_to_ezborrow {
-  my($self, $session, $target_url) = @_;
-  my $uri = URI->new($target_url);
+  my($self, $session, $current_url) = @_;
+  my $uri = URI->new($current_url);
   my $query =  $uri->query_param('query');
   my $barcode = $session->id;
   my $ezborrow_url =
@@ -614,7 +614,7 @@ sub ezborrow {
   if(defined($self->$current_session)) {
     if($self->$is_ezborrow_authorized($self->$current_session)) {
       # Redirect to EZ borrow
-      return $self->_redirect_to_ezborrow($self->$current_session, $self->current_url);
+      return $self->_redirect_to_ezborrow($self->$current_session, uri_unescape($self->current_url));
     } else {
       # Exit with Unauthorized Error
       $self->set('error', "EZBorrow Unauthorized");
@@ -638,7 +638,7 @@ sub ezborrow {
           $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
         if ($self->$is_ezborrow_authorized($session)) {
           # Redirect to EZ proxy
-          return $self->_redirect_to_ezborrow($session, $self->current_url);
+          return $self->_redirect_to_ezborrow($session, uri_unescape($self->current_url));
         } else {
           # Exit with Unauthorized Error
           $self->set('error', "EZBorrow Unauthorized");
