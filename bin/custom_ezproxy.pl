@@ -23,7 +23,7 @@ my $session_id = $cgi->cookie('PDS_HANDLE');
 # Institute from URL
 my $institute = PDSParamUtil::getAndFilterParam('institute');
 # Target URL is the current URL with the query
-my $target_url = $cgi->url(-query => 1)
+my $target_url = $cgi->url(-query => 1);
 # Calling system is ezproxy
 my $calling_system = "ezproxy";
 # Get the configuration
