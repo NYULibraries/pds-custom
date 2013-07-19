@@ -356,7 +356,7 @@ sub _redirect_to_ezborrow {
   my($self, $session, $current_url) = @_;
   my $uri = URI->new($current_url);
   my $query =  $uri->query_param('query');
-  my $barcode = $session->id;
+  my $barcode = $session->barcode;
   my $ezborrow_url =
     EZBORROW_URL_BASE."?command=mkauth&LS=TEST&PI=$barcode&query=$query";
   my $cgi = CGI->new();
