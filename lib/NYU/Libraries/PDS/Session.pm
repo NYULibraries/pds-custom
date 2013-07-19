@@ -22,7 +22,7 @@ use base qw(Class::Accessor);
 my @attributes = qw(id email givenname cn sn institute barcode bor_status 
   bor_type name uid verification nyuidn nyu_shibboleth ns_ldap 
     edupersonentitlement objectclass ill_permission college_code college_name 
-      dept_code dept_name major_code major session_id expiry_date remote_address);
+      dept_code dept_name major_code major ill_library session_id expiry_date remote_address);
 __PACKAGE__->mk_ro_accessors(@attributes);
 __PACKAGE__->mk_accessors(qw(calling_system target_url));
 use constant NYU_BOR_STATUSES => qw(03 04 05 06 07 50 52 53 51 54 55 56 57 58 59 60 61 62 
@@ -32,7 +32,7 @@ use constant NYUSH_BOR_STATUSES => qw(20 21 22 23);
 use constant CU_BOR_STATUSES => qw(10 11 12 15 16 17 18 20);
 use constant NS_BOR_STATUSES => qw(30 31 32 33 34 35 36 37 38 40 41 42 43);
 use constant NYSID_BOR_STATUSES => qw(90 95 96 97);
-use constant HSL_BOR_TYPES => qw();
+use constant HSL_ILL_LIBRARY => qw(ILL_MED);
 use constant DEFAULT_INSTITUTE => "NYU";
 
 # Private method returns an institution string for the session's bor status
@@ -56,12 +56,12 @@ my $institute_for_bor_status = sub {
   return undef;
 };
 
-# Private method returns an institution string for the session's bor type
+# Private method returns an institution string for the session's ILL library
 # Usage:
-#   $self->$institute_for_bor_type()
-my $institute_for_bor_type = sub {
+#   $self->$institute_for_ill_library()
+my $institute_for_ill_library = sub {
   my $self = shift;
-  if(grep { $_ eq $self->bor_type} HSL_BOR_TYPES) {
+  if(grep { $_ eq $self->ill_library} HSL_ILL_LIBRARY) {
     return "HSL";
   }
   return undef;
@@ -103,8 +103,8 @@ my $initialize = sub {
         next if $self->{$attribute};
         $self->set($attribute, $identity_hash->{$attribute});
       }
-      # Try to get institute from borrower type first, since it's more specific
-      $self->set('institute', $self->$institute_for_bor_type($self->bor_type));
+      # Try to get institute from ILL library first, since it's more specific
+      $self->set('institute', $self->$institute_for_ill_library($self->ill_library));
       $self->set('institute', $self->$institute_for_bor_status($self->bor_status)) unless $self->institute;
       $self->set('institute', DEFAULT_INSTITUTE) unless $self->institute;
     } else {

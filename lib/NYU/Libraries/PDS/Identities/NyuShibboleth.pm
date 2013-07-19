@@ -57,4 +57,9 @@ sub get_attributes {
   return @all_attributes;
 }
 
+# Yes, we are nyu shibboleth!
+sub nyu_shibboleth {
+  return 1;
+}
+
 1;

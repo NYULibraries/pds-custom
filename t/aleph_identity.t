@@ -23,8 +23,8 @@ isa_ok($identity, qw(NYU::Libraries::PDS::Identities::Aleph));
 # Verify methods
 can_ok($identity, (qw(error encrypt id email cn givenname sn bor_name
   verification barcode expiry_date bor_status bor_type ill_permission
-    college_code college_name dept_code dept_name major_code major plif_status
-      new authenticate set_attributes get_attributes to_h to_xml)));
+    college_code college_name dept_code dept_name major_code major ill_library
+      plif_status new authenticate set_attributes get_attributes to_h to_xml)));
 
 # Verify identity is defined
 ok(defined($identity->{'identity'}));
@@ -129,3 +129,9 @@ is($identity->email, undef, "Should not have email attribute");
 is($identity->bor_status, undef, "Should not have bor status attribute");
 is($identity->verification, undef, "Should not have verification");
 is($identity->error, "No identity set.", "Should have error");
+
+# Get a new instance of Aleph identity with an HSL patron
+$identity = NYU::Libraries::PDS::Identities::Aleph->new(
+  {shared_secret => 'EncryptThis', flat_file => "./t/support/patrons.dat", lookup_only => 1}, "N18545480");
+is($identity->ill_library, "ILL_MED", "Should be med ILL");
+

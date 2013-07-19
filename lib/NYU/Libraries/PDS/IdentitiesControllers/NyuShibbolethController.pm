@@ -18,15 +18,6 @@ __PACKAGE__->mk_accessors(qw(target_url current_url cleanup_url));
 # Been there done that cookie name
 use constant PDS_TARGET_COOKIE => 'pds_btdt_target_url';
 
-# Private method returns the target url
-# Checks the "been there done that" cookie first.
-# Usage:
-#   $self->$target_url();
-my $target_url = sub {
-  my $self = shift;
-  return ($self->been_there_done_that() || $self->target_url);
-};
-
 my $expire_been_there_done_that = sub {
   my $self = shift;
   my $cgi = CGI->new();
@@ -108,18 +99,29 @@ sub create {
 sub redirect_to_target {
   my $self = shift;
   my $cgi = CGI->new();
-  return $cgi->redirect($self->$target_url());
+  return $cgi->redirect($self->get_target_url());
 }
 
 sub redirect_to_cleanup {
   my $self = shift;
   return redirect_to_target unless $self->cleanup_url;
   my $cgi = CGI->new();
-  my $target_url = uri_escape($self->$target_url);
+  my $target_url = uri_escape($self->get_target_url());
   return $cgi->redirect($self->cleanup_url.$target_url);
 }
 
+# Method returns the target url
+# Checks the "been there done that" cookie first.
+# Usage:
+#   $controller->get_target_url();
+sub get_target_url {
+  my $self = shift;
+  return ($self->been_there_done_that() || $self->target_url);
+};
+
 # Method to get the "been there done that" cookie
+# Usage:
+#   $controller->been_there_done_that();
 sub been_there_done_that {
   # Get the "been there done that" cookie that says 
   # we've tried this and failed.  Get the target URL.

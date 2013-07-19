@@ -23,6 +23,9 @@ sub template_path {
 sub template_namespace { 'NYU::Libraries::PDS::Views'; };
 
 use constant DEFAULT_FORM_TITLE => 'Consortium & NYU Users without a NetID';
+use constant DEFAULT_FORM_ACTION => '/pds';
+use constant EZPROXY_FORM_ACTION => '/ezproxy';
+use constant EZBORROW_FORM_ACTION => '/ezborrow';
 use constant DEFAULT_USERNAME_LABEL => "Enter your ID Number";
 use constant DEFAULT_USERNAME_PLACEHOLDER => "e.g. N12345678";
 use constant DEFAULT_PASSWORD_LABEL => "Password or first four letters of your last name";
@@ -184,6 +187,11 @@ sub is_ezproxy {
   return ($self->calling_system eq "ezproxy");
 }
 
+sub is_ezborrow {
+  my $self = shift;
+  return ($self->calling_system eq "ezborrow");
+}
+
 sub is_form {
   my $self = shift;
   return (!$self->is_ezproxy);
@@ -243,6 +251,11 @@ sub form_title {
   my $self = shift;
   return (defined($self->form) && $self->form->{'title'}) ? 
     ($self->form->{'title'}) : DEFAULT_FORM_TITLE;
+}
+
+sub form_action {
+  my $self = shift;
+  return DEFAULT_FORM_ACTION;
 }
 
 sub username {

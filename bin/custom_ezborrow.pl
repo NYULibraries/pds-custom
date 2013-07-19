@@ -20,18 +20,18 @@ use PDSParamUtil;
 my $cgi = new CGI;
 # Get Session Id
 my $session_id = $cgi->cookie('PDS_HANDLE');
-# Target URL
-my $target_url = PDSParamUtil::getAndFilterParam('url');
+# Handle Query just like a target URL
+my $query = PDSParamUtil::getAndFilterParam('query');
 # Institute from URL
 my $institute = PDSParamUtil::getAndFilterParam('institute');
-# Calling system is ezproxy
-my $calling_system = "ezproxy";
+# Calling system is ezborrow
+my $calling_system = "ezborrow";
 # Get the configuration
 my $pds_directory = getEnvironmentParams('pds_directory');
 my $conf = parse_conf("$pds_directory/config/pds/nyu.conf");
 my $session_controller = NYU::Libraries::PDS::controller($conf, $institute,
-  $calling_system, $target_url, $session_id);
+  $calling_system, $query, $session_id);
 # Logout
-print $session_controller->ezprox();
+print $session_controller->ezborrow();
 # Get the hell out of dodge
 exit;

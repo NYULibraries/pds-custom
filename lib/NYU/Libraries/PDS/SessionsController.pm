@@ -36,16 +36,20 @@ use NYU::Libraries::PDS::Views::Login;
 use NYU::Libraries::PDS::Views::Logout;
 
 use base qw(Class::Accessor);
-__PACKAGE__->mk_accessors(qw(institute calling_system target_url current_url cleanup_url session_id error));
+__PACKAGE__->mk_accessors(qw(institute calling_system target_url current_url query cleanup_url session_id error));
 
 # Default constants
-use constant UNAUTHORIZED_URL => "http://library.nyu.edu/unauthorized";
-use constant EZPROXY_UNAUTHORIZED_URL => "http://library.nyu.edu/ezproxy_unauthorized";
+use constant UNAUTHORIZED_URL => "https://library.nyu.edu/errors/login-library-nyu-edu/unauthorized.html";
+use constant EZPROXY_UNAUTHORIZED_URL => "https://library.nyu.edu/errors/ezproxy-library-nyu-edu/login.html";
+use constant EZBORROW_UNAUTHORIZED_URL => "https://library.nyu.edu/errors/ezborrow-library-nyu-edu/login.html";
+use constant ALUMNI_EZPROXY_URL => "https://library.nyu.edu/alumni/eresources.html";
 use constant DEFAULT_INSTITUTE => "NYU";
 use constant DEFAULT_CALLING_SYSTEM => "primo";
 use constant DEFAULT_TARGET_URL => "http://bobcat.library.nyu.edu";
 use constant DEFAULT_FUNCTION => "sso";
 use constant GLOBAL_NYU_SHIBBOLETH_LOGOUT => "https://login.nyu.edu/sso/UI/Logout";
+use constant EZBORROW_AUTHORIZED_STATUSES => qw(50 51 52 53 54 55 56 57 58 60 61 62 63 65 66 80 81 82);
+use constant EZBORROW_URL_BASE => "https://e-zborrow.relaisd2d.com/service-proxy";
 
 # Private method to encrypt the Aleph identity
 # Usage:
@@ -69,6 +73,35 @@ my $current_session = sub {
       NYU::Libraries::PDS::Session::find($self->session_id);
   }
   return $self->{'current_session'};
+};
+
+my $is_ezproxy_authorized = sub {
+  my($self, $session) = @_;
+  # Not authorized if we're not signed on through NYU shibboleth
+  return 0 unless $session->nyu_shibboleth;
+  # Not authorized if we don't have an edupersonentitlement
+  return 0 unless $session->edupersonentitlement;
+  my $entitlements = $session->edupersonentitlement;
+  # Poly students have partial access which actually means full access
+  return 1 if ($entitlements =~ m/urn:mace:nyu.edu:entl:lib:partialeresources/);
+  # Everyone else has full access which actually means full access
+  return 1 if ($entitlements =~ m/urn:mace:nyu.edu:entl:lib:eresources/);
+  return 0;
+};
+
+my $is_ezborrow_authorized = sub {
+  my($self, $session) = @_;
+  return (grep { $_ eq $session->bor_status } EZBORROW_AUTHORIZED_STATUSES);
+};
+
+my $is_alumni = sub {
+  my($self, $session) = @_;
+  # Not alumni if we're not signed on through NYU shibboleth
+  return 0 unless $session->nyu_shibboleth;
+  # Not alumni if we don't have an edupersonentitlement
+  return 0 unless $session->edupersonentitlement;
+  my $entitlements = $session->edupersonentitlement;
+  return ($entitlements =~ m/alum/);
 };
 
 # Private method to create a session
@@ -228,7 +261,7 @@ sub new {
   return $self;
 }
 
-# Returns a rendered HTML login screen for presentation.
+# Returns a rendered HTML login screen for presentation
 # Usage:
 #   my $login_screen = $self->_login_screen();
 sub _login_screen {
@@ -238,7 +271,7 @@ sub _login_screen {
   return $template->render();
 }
 
-# Returns a rendered HTML logout screen for presentation.
+# Returns a rendered HTML logout screen for presentation
 # Usage:
 #   my $login_screen = $self->_logout_screen();
 sub _logout_screen {
@@ -248,7 +281,7 @@ sub _logout_screen {
   return $template->render();
 }
 
-# Returns a redirect header to the unauthorized message URL.
+# Returns a redirect header to the unauthorized message URL
 # Usage:
 #   my $redirect_header = $self->$_redirect_to_unauthorized();
 sub _redirect_to_unauthorized {
@@ -257,7 +290,7 @@ sub _redirect_to_unauthorized {
   return $cgi->redirect(UNAUTHORIZED_URL);
 }
 
-# Returns a redirect header to the EZProxy unauthorized message URL.
+# Returns a redirect header to the EZProxy unauthorized message URL
 # Usage:
 #   my $redirect_header = $self->$_redirect_to_ezproxy_unauthorized();
 sub _redirect_to_ezproxy_unauthorized {
@@ -266,7 +299,13 @@ sub _redirect_to_ezproxy_unauthorized {
   return $cgi->redirect(EZPROXY_UNAUTHORIZED_URL);
 }
 
-# Returns a redirect header to the target URL.
+sub _redirect_to_ezborrow_unauthorized {
+  my $self = shift;
+  my $cgi = CGI->new();
+  return $cgi->redirect(EZBORROW_UNAUTHORIZED_URL);
+}
+
+# Returns a redirect header to the target URL
 # Usage:
 #   my $redirect_header = $self->$_redirect_to_target_url();
 sub _redirect_to_target_url {
@@ -275,7 +314,7 @@ sub _redirect_to_target_url {
   return $cgi->redirect($self->target_url);
 }
 
-# Returns a redirect header to the cleanup URL.
+# Returns a redirect header to the cleanup URL
 # Usage:
 #   my $redirect_header = $self->$_redirect_to_cleanup_url();
 sub _redirect_to_cleanup_url {
@@ -285,6 +324,31 @@ sub _redirect_to_cleanup_url {
   my $target_url = uri_escape($self->target_url);
   return $cgi->redirect($self->cleanup_url.$target_url);
 }
+
+# Returns a redirect header to the EZProxy URL for the given resource
+# Usage:
+#   my $redirect_header = $self->$_redirect_to_ezproxy($resource_url);
+# TODO: Set the EZProxy redirect!
+sub _redirect_to_ezproxy {
+  my($self, $resource_url) = @_;
+  my $cgi = CGI->new();
+}
+
+# Returns a redirect header to the EZProxy URL
+sub _redirect_to_alumni_ezproxy {
+  my $self = shift;
+  my $cgi = CGI->new();
+  return $cgi->redirect(ALUMNI_EZPROXY_URL);
+}
+
+# Returns a redirect header to the EZBorrow URL for the given session and query
+sub _redirect_to_ezborrow {
+  my($self, $session, $query) = @_;
+  my $cgi = CGI->new();
+  my $patron_id = $session->id;
+  my $ezborrow_url =
+    EZBORROW_URL_BASE."?command=bdauth&LS=TEST&PI=$patron_id&query=$query";
+};
 
 # Authenticate against Aleph.
 # Returns an 1 element array of newly created identities.
@@ -355,7 +419,7 @@ sub _authenticate_ns_ldap {
   $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
   # If we successfully authenticated return identities
   return [$ns_ldap_identity, $aleph_identity];
-};
+}
 
 # Display the login screen, unless already signed in
 # Usage:
@@ -479,29 +543,109 @@ sub logout {
 # Otherwise, present unauthorized screen if unauthorized
 # or login screen in not logged in
 # Usage:
-#   $controller->bor_info();
+#   $controller->ezproxy();
 sub ezproxy {
   my $self = shift;
-  my $nyu_shibboleth_controller = $self->$nyu_shibboleth_controller();
-  # The Shibboleth controller can go "nuclear" and just exit at this point.
-  # It will redirect to the Shibboleth IdP for passive authentication.
-  my $nyu_shibboleth_identity = $nyu_shibboleth_controller->create();
-  # Do we have an identity? If so, let's get the associated Aleph identity
-  if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
-    my $aleph_controller = $self->$aleph_controller();
-    my $aleph_identity = $aleph_controller->create($nyu_shibboleth_identity->aleph_identifier);
-    # Check if the Aleph identity exists
-    if ($aleph_identity->exists) {
-      $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
-      # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
-      # or just got it from me.
-      return $nyu_shibboleth_controller->redirect_to_target();
+  # First check the current session
+  if(defined($self->$current_session)) {
+    if ($self->$is_ezproxy_authorized($self->$current_session)) {
+      # Redirect to ezproxy
+      return $self->_redirect_to_ezproxy($self->target_url);
+    } elsif($self->$is_alumni($self->$current_session)) {
+      # Redirect to alumnni EZ proxy
+      return $self->_redirect_to_alumni_ezproxy();
     } else {
       # Exit with Unauthorized Error
       $self->set('error', "EZProxy Unauthorized");
       return $self->_redirect_to_ezproxy_unauthorized();
     }
+  } else {
+    my $nyu_shibboleth_controller = $self->$nyu_shibboleth_controller();
+    # The Shibboleth controller can go "nuclear" and just exit at this point.
+    # It will redirect to the Shibboleth IdP for passive authentication.
+    my $nyu_shibboleth_identity = $nyu_shibboleth_controller->create();
+    # Do we have an Shibboleth identity? If so, let's check if it can ezproxy
+    if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
+      # Check if the Shibboleth user is authorized
+      # Were duck typing here, having an NYU shibboleth idenity
+      # quacking like a session
+      if ($self->$is_ezproxy_authorized($nyu_shibboleth_identity)) {
+        # Get the target URL from Shibboleth controller, 
+        # since it captured it on the previous pass,
+        # or just got it from me.
+        my $target_url = $nyu_shibboleth_controller->get_target_url();
+        # Redirect to EZ proxy
+        return $self->_redirect_to_ezproxy($target_url);
+      } elsif ($self->$is_alumni($self->$current_session)) {
+        # Redirect to alumnni EZ proxy
+        return $self->_redirect_to_alumni_ezproxy();
+      } else {
+        # Exit with Unauthorized Error
+        $self->set('error', "EZProxy Unauthorized");
+        return $self->_redirect_to_ezproxy_unauthorized();
+      }
+    }
   }
+  # Set up EZProxy as the target URL for the login screen
+  $self->set('target_url', "/ezproxy?institute=".$self->institute."&url=".uri_escape($self->target_url));
+  # Print the login screen
+  return $self->_login_screen();
+}
+
+# Redirect to ezborrow if authenticated and authorized
+# Otherwise, present unauthorized screen if unauthorized
+# or login screen in not logged in
+# Usage:
+#   $controller->ezborrow();
+sub ezborrow {
+  my $self = shift;
+  # First check the current session
+  if(defined($self->$current_session)) {
+    if($self->$is_ezborrow_authorized($self->$current_session)) {
+      # Redirect to EZ borrow
+      return $self->_redirect_to_ezborrow($self->$current_session, $self->target_url);
+    } else {
+      # Exit with Unauthorized Error
+      $self->set('error', "EZBorrow Unauthorized");
+      return $self->_redirect_to_ezborrow_unauthorized();
+    }
+  } else {
+    my $nyu_shibboleth_controller = $self->$nyu_shibboleth_controller();
+    # The Shibboleth controller can go "nuclear" and just exit at this point.
+    # It will redirect to the Shibboleth IdP for passive authentication.
+    my $nyu_shibboleth_identity = $nyu_shibboleth_controller->create();
+    # Do we have an identity? If so, let's get the associated Aleph identity
+    if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
+      my $aleph_controller = $self->$aleph_controller();
+      my $aleph_identity = 
+        $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
+      # Check if the Aleph identity exists
+      if ($aleph_identity->exists) {
+        # Encrypt the Aleph identity's password
+        $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
+        my $session = 
+          $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
+        if ($self->$is_ezborrow_authorized($session)) {
+          # Get the target URL from Shibboleth controller, 
+          # since it captured it on the previous pass,
+          # or just got it from me.
+          my $target_url = $nyu_shibboleth_controller->get_target_url();
+          # Redirect to EZ proxy
+          return $self->_redirect_to_ezborrow($session, $target_url);
+        } else {
+          # Exit with Unauthorized Error
+          $self->set('error', "Unauthorized");
+          return $self->_redirect_to_ezborrow_unauthorized();
+        }
+      } else {
+        # Exit with Unauthorized Error
+        $self->set('error', "Unauthorized");
+        return $self->_redirect_to_ezborrow_unauthorized();
+      }
+    }
+  }
+  # Set up EZBorrow as the target URL for the login screen
+  $self->set('target_url', "/ezborrow?institute=".$self->institute."&query=".uri_escape($self->target_url));
   # Print the login screen
   return $self->_login_screen();
 }

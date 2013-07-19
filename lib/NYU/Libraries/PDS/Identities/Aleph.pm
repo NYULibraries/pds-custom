@@ -19,7 +19,7 @@ use constant FAMILY_MEMBER_BOR_STATUS => "65";
 use base qw(NYU::Libraries::PDS::Identities::Base);
 my @attributes = qw(name bor_name verification barcode expiry_date bor_status
   bor_type ill_permission college_code college_name dept_code dept_name
-    major_code major plif_status);
+    major_code major ill_library plif_status);
 __PACKAGE__->mk_ro_accessors(@attributes);
 __PACKAGE__->mk_accessors(qw(encrypt));
 
@@ -49,7 +49,7 @@ my $lookup_from_flat_file = sub {
           $identity->{"email"}, $identity->{"ill_permission"}, $identity->{"plif_status"},
             $identity->{"college_code"}, $identity->{"college_name"}, 
               $identity->{"dept_code"}, $identity->{"dept_name"}, $identity->{"major_code"}, 
-                $identity->{"major"}) = split(/\t/, $line);
+                $identity->{"major"}, $identity->{"ill_library"}) = split(/\t/, $line);
       last;
     }
   }
@@ -85,6 +85,8 @@ my $lookup_from_xserver = sub {
   $identity->{"ill_permission"} = $bor_info->get_z305_photo_permission();
   # We're overridden the birthplace with a PLIF (Patron Load something something) status
   $identity->{"plif_status"} = $bor_info->get_z303_birthplace();
+  # HSL patrons have a different ILL library, so we need to grab it.
+  $identity->{"ill_library"} = $bor_info->get_z303_ill_library();
   # Return identity if we found one
   return ($identity->{"id"}) ? $identity : undef;
 };

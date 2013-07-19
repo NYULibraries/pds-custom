@@ -24,8 +24,8 @@ isa_ok($session, qw(NYU::Libraries::PDS::Session));
 # Verify methods
 can_ok($session, (qw(id institute barcode bor_status bor_type name uid email cn 
   givenname sn verification nyuidn nyu_shibboleth ns_ldap edupersonentitlement objectclass 
-    ill_permission college_code college_name dept_code dept_name major_code major session_id
-      calling_system target_url new find to_xml remote_address)));
+    ill_permission college_code college_name dept_code dept_name major_code major ill_library 
+      session_id calling_system target_url new find to_xml remote_address)));
 
 
 # Create a new session based on an Aleph Identity
@@ -71,3 +71,11 @@ is($new_session->to_xml(),
 
 # my $existing_session = NYU::Libraries::PDS::Session::find('27620139407145177581349399004532');
 # print $existing_session;
+
+# Test HSL patron session
+$conf->{xserver_host} = undef;
+$controller = NYU::Libraries::PDS::IdentitiesControllers::AlephController->new($conf);
+$identity = $controller->get("N18545480");
+$new_session = NYU::Libraries::PDS::Session->new($identity);
+is($new_session->ill_library, "ILL_MED", "Session should be have an HSL ILL library");
+is($new_session->institute, "HSL", "Session should be have an HSL institute");
