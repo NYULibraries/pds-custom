@@ -358,7 +358,7 @@ sub _redirect_to_ezborrow {
   my $query =  $uri->query_param('query');
   my $barcode = $session->id;
   my $ezborrow_url =
-    EZBORROW_URL_BASE."?command=bdauth&LS=TEST&PI=$barcode&query=$query";
+    EZBORROW_URL_BASE."?command=mkauth&LS=TEST&PI=$barcode&query=$query";
   my $cgi = CGI->new();
   return $cgi->redirect($self->cleanup_url.uri_escape($ezborrow_url));
 };
