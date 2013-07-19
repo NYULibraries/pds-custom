@@ -360,7 +360,7 @@ sub _redirect_to_ezborrow {
   my $ezborrow_url =
     EZBORROW_URL_BASE."?command=bdauth&LS=TEST&PI=$barcode&query=$query";
   my $cgi = CGI->new();
-  return $cgi->redirect($self->cleanup_url.$ezborrow_url);
+  return $cgi->redirect($self->cleanup_url.uri_escape($ezborrow_url));
 };
 
 # Authenticate against Aleph.
