@@ -351,7 +351,7 @@ sub _redirect_to_alumni_ezproxy {
 
 # Returns a redirect header to the EZBorrow URL for the given session and query
 sub _redirect_to_ezborrow {
-  my($self, $session, $query) = @_;
+  my($self, $session, $target_url) = @_;
   my $uri = URI->new($target_url);
   my $query =  $uri->query_param('query');
   my $barcode = $session->barcode;
