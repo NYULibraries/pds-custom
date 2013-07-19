@@ -94,7 +94,7 @@ my $is_ezproxy_authorized = sub {
 my $is_ezborrow_authorized = sub {
   my($self, $session) = @_;
   # Must have a barcode
-  return 0 unless $session->barcode;
+  # return 0 unless $session->barcode;
   # Must be an approved status
   return (grep { $_ eq $session->bor_status } EZBORROW_AUTHORIZED_STATUSES);
 };
@@ -356,7 +356,7 @@ sub _redirect_to_ezborrow {
   my($self, $session, $target_url) = @_;
   my $uri = URI->new($target_url);
   my $query =  $uri->query_param('query');
-  my $barcode = $session->barcode;
+  my $barcode = $session->id;
   my $ezborrow_url =
     EZBORROW_URL_BASE."?command=bdauth&LS=TEST&PI=$barcode&query=$query";
   my $cgi = CGI->new();
@@ -614,7 +614,7 @@ sub ezborrow {
   if(defined($self->$current_session)) {
     if($self->$is_ezborrow_authorized($self->$current_session)) {
       # Redirect to EZ borrow
-      return $self->_redirect_to_ezborrow($self->$current_session, $self->target_url);
+      return $self->_redirect_to_ezborrow($self->$current_session, $self->current_url);
     } else {
       # Exit with Unauthorized Error
       $self->set('error', "EZBorrow Unauthorized");
@@ -637,20 +637,16 @@ sub ezborrow {
         my $session = 
           $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
         if ($self->$is_ezborrow_authorized($session)) {
-          # Get the target URL from Shibboleth controller, 
-          # since it captured it on the previous pass,
-          # or just got it from me.
-          my $target_url = $nyu_shibboleth_controller->get_target_url();
           # Redirect to EZ proxy
-          return $self->_redirect_to_ezborrow($session, $target_url);
+          return $self->_redirect_to_ezborrow($session, $self->current_url);
         } else {
           # Exit with Unauthorized Error
-          $self->set('error', "Unauthorized");
+          $self->set('error', "EZBorrow Unauthorized");
           return $self->_redirect_to_ezborrow_unauthorized();
         }
       } else {
         # Exit with Unauthorized Error
-        $self->set('error', "Unauthorized");
+        $self->set('error', "EZBorrow Unauthorized");
         return $self->_redirect_to_ezborrow_unauthorized();
       }
     }
