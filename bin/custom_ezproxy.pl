@@ -32,6 +32,6 @@ my $conf = parse_conf("$pds_directory/config/pds/nyu.conf");
 my $session_controller = NYU::Libraries::PDS::controller($conf, $institute,
   $calling_system, $target_url, $session_id);
 # Logout
-print $session_controller->ezprox();
+print $session_controller->ezproxy();
 # Get the hell out of dodge
 exit;
