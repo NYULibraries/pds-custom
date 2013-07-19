@@ -30,7 +30,7 @@ my $calling_system = "ezborrow";
 my $pds_directory = getEnvironmentParams('pds_directory');
 my $conf = parse_conf("$pds_directory/config/pds/nyu.conf");
 my $session_controller = NYU::Libraries::PDS::controller($conf, $institute,
-  $calling_system, $query, $session_id);
+  $calling_system, $target_url, $session_id);
 # Logout
 print $session_controller->ezborrow();
 # Get the hell out of dodge
