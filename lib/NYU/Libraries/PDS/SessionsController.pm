@@ -355,9 +355,10 @@ sub _redirect_to_ezborrow {
   my $uri = URI->new($target_url);
   my $query =  $uri->query_param('query');
   my $barcode = $session->barcode;
-  my $cgi = CGI->new();
   my $ezborrow_url =
     EZBORROW_URL_BASE."?command=bdauth&LS=TEST&PI=$barcode&query=$query";
+  my $cgi = CGI->new();
+  return $cgi->redirect($self->cleanup_url.$ezborrow_url);
 };
 
 # Authenticate against Aleph.
