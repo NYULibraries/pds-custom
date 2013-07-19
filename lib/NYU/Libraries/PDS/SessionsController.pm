@@ -206,7 +206,7 @@ my $set_target_url = sub {
 # Usage:
 #   $self->$set_current_url();
 my $set_current_url = sub {
-  my($self, $current_url) = shift;
+  my($self, $current_url) = @_;
   unless ($current_url) {
     my $cgi = CGI->new();
     my $base = $cgi->url(-base => 1);
@@ -215,9 +215,9 @@ my $set_current_url = sub {
     my $calling_system = $self->calling_system;
     my $target_url = uri_escape($self->target_url);
     $current_url ||=
-      uri_escape("$base/pds?func=$function&institute=$institute&calling_system=$calling_system&url=$target_url");
+      "$base/pds?func=$function&institute=$institute&calling_system=$calling_system&url=$target_url";
   }
-  $self->set('current_url', $current_url);
+  $self->set('current_url', uri_escape($current_url));
 };
 
 # Private method to set the cleanup URL
