@@ -22,15 +22,16 @@ my $cgi = new CGI;
 my $session_id = $cgi->cookie('PDS_HANDLE');
 # Institute from URL
 my $institute = PDSParamUtil::getAndFilterParam('institute');
-# Target URL is the current URL with the query
-my $target_url = $cgi->url(-query => 1);
+# Get the current URL
+my $current_url = $cgi->url(-query => 1);
 # Calling system is ezproxy
 my $calling_system = "ezproxy";
 # Get the configuration
 my $pds_directory = getEnvironmentParams('pds_directory');
 my $conf = parse_conf("$pds_directory/config/pds/nyu.conf");
+# Target URL is the current URL with the query
 my $session_controller = NYU::Libraries::PDS::controller($conf, $institute,
-  $calling_system, $target_url, $session_id);
+  $calling_system, $current_url, $session_id, $current_url);
 # Logout
 print $session_controller->ezproxy();
 # Get the hell out of dodge

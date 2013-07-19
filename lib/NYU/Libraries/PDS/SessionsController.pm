@@ -206,15 +206,17 @@ my $set_target_url = sub {
 # Usage:
 #   $self->$set_current_url();
 my $set_current_url = sub {
-  my $self = shift;
-  my $cgi = CGI->new();
-  my $base = $cgi->url(-base => 1);
-  my $function = ($cgi->url_param('func') || DEFAULT_FUNCTION);
-  my $institute = $self->institute;
-  my $calling_system = $self->calling_system;
-  my $target_url = uri_escape($self->target_url);
-  my $current_url ||=
-    uri_escape("$base/pds?func=$function&institute=$institute&calling_system=$calling_system&url=$target_url");
+  my($self, $current_url) = shift;
+  unless ($current_url) {
+    my $cgi = CGI->new();
+    my $base = $cgi->url(-base => 1);
+    my $function = ($cgi->url_param('func') || DEFAULT_FUNCTION);
+    my $institute = $self->institute;
+    my $calling_system = $self->calling_system;
+    my $target_url = uri_escape($self->target_url);
+    $current_url ||=
+      uri_escape("$base/pds?func=$function&institute=$institute&calling_system=$calling_system&url=$target_url");
+  }
   $self->set('current_url', $current_url);
 };
 
@@ -234,9 +236,9 @@ my $set_cleanup_url = sub {
 # Private method to get the target_url
 # Private initialization method
 # Usage:
-#   $self->$initialize(configurations, institute, calling_system, target_url, session_id);
+#   $self->$initialize($configurations, $institute, $calling_system, $target_url, $session_id, $current_url);
 my $initialize = sub {
-  my($self, $conf, $institute, $calling_system, $target_url, $session_id) = @_;
+  my($self, $conf, $institute, $calling_system, $target_url, $session_id, $current_url) = @_;
   # Set configurations
   $self->set('conf', $conf);
   # Set institute
@@ -246,7 +248,7 @@ my $initialize = sub {
   # Set the target_url
   $self->$set_target_url($target_url);
   # Set current_url
-  $self->$set_current_url();
+  $self->$set_current_url($current_url);
   # Set cleanup_url
   $self->$set_cleanup_url();
   # Set session_id
