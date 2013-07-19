@@ -20,10 +20,10 @@ use PDSParamUtil;
 my $cgi = new CGI;
 # Get Session Id
 my $session_id = $cgi->cookie('PDS_HANDLE');
-# Handle Query just like a target URL
-my $query = PDSParamUtil::getAndFilterParam('query');
 # Institute from URL
 my $institute = PDSParamUtil::getAndFilterParam('institute');
+# Target URL is the current URL with the query
+my $target_url = $cgi->url(-query => 1)
 # Calling system is ezborrow
 my $calling_system = "ezborrow";
 # Get the configuration

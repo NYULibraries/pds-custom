@@ -387,3 +387,7 @@ is($controller->error, "There seems to have been a problem logging in. ".
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
 # Test logout screen
 is($controller->_logout_screen(), NYU_LOGOUT, "Should be logout screen.");
+
+# $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "ezproxy", "http://login.library.nyu.edu/ezproxy?url=http://example.com");
+# # Test logout screen
+# is($controller->_redirect_to_ezproxy("http://login.library.nyu.edu/ezproxy?url=http://example.com"), "", "Should be ezproxy redirect.");

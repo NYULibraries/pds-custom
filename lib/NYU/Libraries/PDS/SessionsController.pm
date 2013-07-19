@@ -20,8 +20,10 @@ use lib "vendor/lib";
 # CGI module for dealing with redirects, etc.
 use CGI qw/:standard/;
 
-# URI encoding module
+# URI module
+use URI;
 use URI::Escape;
+use URI::QueryParam;
 
 # PDS Logout module
 use PDSLogout;
@@ -36,7 +38,7 @@ use NYU::Libraries::PDS::Views::Login;
 use NYU::Libraries::PDS::Views::Logout;
 
 use base qw(Class::Accessor);
-__PACKAGE__->mk_accessors(qw(institute calling_system target_url current_url query cleanup_url session_id error));
+__PACKAGE__->mk_accessors(qw(institute calling_system target_url current_url cleanup_url session_id error));
 
 # Default constants
 use constant UNAUTHORIZED_URL => "https://library.nyu.edu/errors/login-library-nyu-edu/unauthorized.html";
@@ -91,6 +93,9 @@ my $is_ezproxy_authorized = sub {
 
 my $is_ezborrow_authorized = sub {
   my($self, $session) = @_;
+  # Must have a barcode
+  return 0 unless $session->barcode;
+  # Must be an approved status
   return (grep { $_ eq $session->bor_status } EZBORROW_AUTHORIZED_STATUSES);
 };
 
@@ -325,13 +330,16 @@ sub _redirect_to_cleanup_url {
   return $cgi->redirect($self->cleanup_url.$target_url);
 }
 
-# Returns a redirect header to the EZProxy URL for the given resource
+# Returns a redirect header to the EZProxy URL for the given target url
 # Usage:
-#   my $redirect_header = $self->$_redirect_to_ezproxy($resource_url);
+#   my $redirect_header = $self->$_redirect_to_ezproxy($target_url);
 # TODO: Set the EZProxy redirect!
 sub _redirect_to_ezproxy {
-  my($self, $resource_url) = @_;
+  my($self, $target_url) = @_;
+  my $uri = URI->new($target_url);
+  my $resource_url =  $uri->query_param('url');
   my $cgi = CGI->new();
+  return $cgi->redirect($resource_url);
 }
 
 # Returns a redirect header to the EZProxy URL
@@ -344,10 +352,12 @@ sub _redirect_to_alumni_ezproxy {
 # Returns a redirect header to the EZBorrow URL for the given session and query
 sub _redirect_to_ezborrow {
   my($self, $session, $query) = @_;
+  my $uri = URI->new($target_url);
+  my $query =  $uri->query_param('query');
+  my $barcode = $session->barcode;
   my $cgi = CGI->new();
-  my $patron_id = $session->id;
   my $ezborrow_url =
-    EZBORROW_URL_BASE."?command=bdauth&LS=TEST&PI=$patron_id&query=$query";
+    EZBORROW_URL_BASE."?command=bdauth&LS=TEST&PI=$barcode&query=$query";
 };
 
 # Authenticate against Aleph.
@@ -586,8 +596,6 @@ sub ezproxy {
       }
     }
   }
-  # Set up EZProxy as the target URL for the login screen
-  $self->set('target_url', "/ezproxy?institute=".$self->institute."&url=".uri_escape($self->target_url));
   # Print the login screen
   return $self->_login_screen();
 }
@@ -644,8 +652,6 @@ sub ezborrow {
       }
     }
   }
-  # Set up EZBorrow as the target URL for the login screen
-  $self->set('target_url', "/ezborrow?institute=".$self->institute."&query=".uri_escape($self->target_url));
   # Print the login screen
   return $self->_login_screen();
 }
