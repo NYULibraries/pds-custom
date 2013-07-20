@@ -23,8 +23,8 @@ isa_ok($identity, qw(Class::Accessor));
 isa_ok($identity, qw(NYU::Libraries::PDS::Identities::NsLdap));
 
 # Verify methods
-can_ok($identity, (qw(error id email cn givenname sn aleph_identifer role
-  new authenticate set_attributes get_attributes to_h to_xml)));
+can_ok($identity, (qw(error exists id email cn givenname sn aleph_identifer
+  role new authenticate set_attributes get_attributes to_h to_xml)));
 
 is($identity->error, "User bind failed. Invalid credentials", "Should have error");
 

@@ -81,7 +81,7 @@ sub set_attributes {
   }
 }
 
-# Returns a hash respresentatino of this identity
+# Returns a hash respresentation of this identity
 # Usage:
 #   $identity->to_h()
 sub to_h {

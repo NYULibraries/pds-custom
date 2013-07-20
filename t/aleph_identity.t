@@ -9,7 +9,9 @@ BEGIN { use_ok('NYU::Libraries::PDS::Identities::Aleph') };
 require_ok( 'NYU::Libraries::PDS::Identities::Aleph' );
 
 # Get an instance of Aleph identity
-my $identity = NYU::Libraries::PDS::Identities::Aleph->new({shared_secret => 'EncryptThis', lookup_only => 1}, "N12162279");
+my $identity = 
+  NYU::Libraries::PDS::Identities::Aleph->new({shared_secret => 'EncryptThis',
+    lookup_only => 1}, "N12162279");
 
 # Verify that this a Class::Accessor
 isa_ok($identity, qw(Class::Accessor));
@@ -21,7 +23,7 @@ isa_ok($identity, qw(NYU::Libraries::PDS::Identities::Base));
 isa_ok($identity, qw(NYU::Libraries::PDS::Identities::Aleph));
 
 # Verify methods
-can_ok($identity, (qw(error encrypt id email cn givenname sn bor_name
+can_ok($identity, (qw(error exists encrypt id email cn givenname sn bor_name
   verification barcode expiry_date bor_status bor_type ill_permission
     college_code college_name dept_code dept_name major_code major ill_library
       plif_status new authenticate set_attributes get_attributes to_h to_xml)));
