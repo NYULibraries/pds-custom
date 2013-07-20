@@ -9,9 +9,16 @@ BEGIN { use_ok('NYU::Libraries::PDS::Identities::Aleph') };
 require_ok( 'NYU::Libraries::PDS::Identities::Aleph' );
 
 # Get an instance of Aleph identity
-my $identity = 
+my $identity = NYU::Libraries::PDS::Identities::Aleph->new();
+is($identity->error, "No configuration set.", "Should be error on new");
+
+# Get an instance of Aleph identity
+$identity = 
   NYU::Libraries::PDS::Identities::Aleph->new({shared_secret => 'EncryptThis',
     lookup_only => 1}, "N12162279");
+
+# Verify no error
+is($identity->error, undef, "Should not be error on new");
 
 # Verify that this a Class::Accessor
 isa_ok($identity, qw(Class::Accessor));

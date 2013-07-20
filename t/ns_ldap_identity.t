@@ -11,10 +11,16 @@ BEGIN { use_ok('NYU::Libraries::PDS::Identities::NsLdap') };
 # Verify module can be included via "require" pragma
 require_ok( 'NYU::Libraries::PDS::Identities::NsLdap' );
 
+my $identity = NYU::Libraries::PDS::Identities::NsLdap->new();
+is($identity->error, "No configuration set.", "Should be error on new");
+
 # Get an instance of NsLdapIdentity
 my $conf = parse_conf("vendor/pds-core/config/pds/nyu.conf");
 $conf->{ssl_cert_path} = undef;
-my $identity = NYU::Libraries::PDS::Identities::NsLdap->new($conf, "jonesa", "FAIL");
+$identity = NYU::Libraries::PDS::Identities::NsLdap->new($conf, "jonesa", "FAIL");
+
+# Verify no error
+is($identity->error, undef, "Should not be error on new");
 
 # Verify that this a Class::Accessor
 isa_ok($identity, qw(Class::Accessor));

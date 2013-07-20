@@ -9,7 +9,14 @@ BEGIN { use_ok('NYU::Libraries::PDS::Identities::NyuShibboleth') };
 require_ok( 'NYU::Libraries::PDS::Identities::NyuShibboleth' );
 
 # Get an instance of NyuShibbolethIdentity
-my $identity = NYU::Libraries::PDS::Identities::NyuShibboleth->new({});
+my $identity = NYU::Libraries::PDS::Identities::NyuShibboleth->new();
+is($identity->error, "No configuration set.", "Should be error on new");
+
+# Get an instance of NyuShibbolethIdentity
+$identity = NYU::Libraries::PDS::Identities::NyuShibboleth->new({});
+
+# Verify no error
+is($identity->error, undef, "Should not be error on new");
 
 # Verify that this a Class::Accessor
 isa_ok($identity, qw(Class::Accessor));
