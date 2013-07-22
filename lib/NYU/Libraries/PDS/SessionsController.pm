@@ -3,6 +3,10 @@
 # A SessionsController instance has the following methods
 #   login:
 #     Renders the appropriate login screen unless the user is single signed on.
+#   ezproxy:
+#     Renders the appropriate login screen unless the user is authorized for ezproxy.
+#   ezborrow:
+#     Renders the appropriate login screen unless the user is authorized for ezborrow.
 #   sso:
 #     Redirects to the given url unless the user is single signed on
 #   authenticate:
