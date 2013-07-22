@@ -369,7 +369,8 @@ is($controller->_login_screen(), "<!DOCTYPE html>
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
 # Test authenticate
 is($controller->authenticate("DS03D", "TEST"), "Status: 302 Found$CGI::CRLF".
-  "Location: http://bobcatdev.library.nyu.edu/primo_library/libweb/custom/cleanup.jsp?url=http%3A%2F%2Fexample.com$CGI::CRLF$CGI::CRLF", "Authenticate should return redirect to target");
+  "Location: http://bobcatdev.library.nyu.edu/primo_library/libweb/custom/cleanup.jsp?url=http%3A%2F%2Fexample.com$CGI::CRLF$CGI::CRLF",
+    "Authenticate should return redirect to target");
 
 # Test error undefined after authenticate
 is($controller->error, undef, "Error should be undefined");
@@ -388,6 +389,18 @@ $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo"
 # Test logout screen
 is($controller->_logout_screen(), NYU_LOGOUT, "Should be alogout screen.");
 
-# $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "ezproxy", "http://login.library.nyu.edu/ezproxy?url=http://example.com");
-# # Test logout screen
-# is($controller->_redirect_to_ezproxy("http://login.library.nyu.edu/ezproxy?url=http://example.com"), "", "Should be ezproxy redirect.");
+$ENV{'uid'} = 'uid';
+$ENV{'mail'}='email@nyu.edu';
+$ENV{'entitlement'}='some:entitlements';
+$ENV{'nyuidn'}='N12162279';
+$controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "ezproxy", "http://login.library.nyu.edu/ezproxy?url=http://example.com");
+# Should redirect to EZ proxy unauthorized page
+is($controller->ezproxy, "Status: 302 Found$CGI::CRLF".
+  "Location: http://library.nyu.edu/errors/ezproxy-library-nyu-edu/login.html$CGI::CRLF$CGI::CRLF",
+    "Should redirect to ezproxy unauthorized");
+$ENV{'entitlement'}='urn:mace:nyu.edu:entl:lib:eresources';
+$conf->{ezproxy_secret} = "SecretSauce";
+$controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "ezproxy", "http://login.library.nyu.edu/ezproxy?url=http://example.com");
+my $crlf = $CGI::CRLF;
+like($controller->ezproxy, '/Location: https:\/\/ezproxydev\.library\.nyu\.edu\/login\?ticket=[a-z0-9]+%24u[0-9]+%24gDefault&user=uid&qurl=http%3A%2F%2Fexample.com/', "Should redirect to ezproxy");
+

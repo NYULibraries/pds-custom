@@ -21,6 +21,12 @@ use lib "vendor/lib";
 use CGI qw/:standard/;
 use CGI::Cookie;
 
+# Time functions
+use POSIX qw(strftime);
+
+# Hash functions
+use Digest::MD5 qw(md5_hex md5);
+
 # URI module
 use URI;
 use URI::Escape;
@@ -72,8 +78,11 @@ my $encrypt_aleph_identity = sub {
 my $current_session = sub {
   my $self = shift;
   unless ($self->{'current_session'}) {
-    $self->{'current_session'} = 
-      NYU::Libraries::PDS::Session::find($self->session_id);
+    # Testing environment differs
+    unless ($ENV{'CI'}) {
+      $self->{'current_session'} = 
+        NYU::Libraries::PDS::Session::find($self->session_id);
+    }
   }
   return $self->{'current_session'};
 };
