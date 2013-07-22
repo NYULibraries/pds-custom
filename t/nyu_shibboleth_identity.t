@@ -34,7 +34,7 @@ is($identity->exists, undef, "Identity should not exist");
 # Set the enviromnent variables
 $ENV{'uid'} = 'uid';
 $ENV{'mail'}='email@nyu.edu';
-$ENV{'eppn'}='some:entitlements';
+$ENV{'entitlement'}='some:entitlements';
 $ENV{'nyuidn'}='N123456789';
 
 # Get a new instance of NyuShibbolethIdentity

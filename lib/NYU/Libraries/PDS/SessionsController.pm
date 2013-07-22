@@ -19,6 +19,7 @@ use lib "vendor/lib";
 
 # CGI module for dealing with redirects, etc.
 use CGI qw/:standard/;
+use CGI::Cookie;
 
 # URI module
 use URI;

@@ -15,7 +15,7 @@ my %SHIBBOLETH_ATTRIBUTE_MAPPINGS = (
   'cn' => 'displayName',
   'sn' => 'sn',
   'aleph_identifier' => 'nyuidn',
-  'edupersonentitlement' => 'eppn'
+  'edupersonentitlement' => 'entitlement'
 );
 
 # Private sub that gets the identity from the ShibbolethSP

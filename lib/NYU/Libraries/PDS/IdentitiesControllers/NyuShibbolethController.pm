@@ -5,6 +5,7 @@ use warnings;
 
 # CGI module for dealing with redirects and cookies
 use CGI qw/:standard/;
+use CGI::Cookie;
 
 # URI encoding module
 use URI::Escape;

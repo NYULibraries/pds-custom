@@ -5,6 +5,7 @@ use Test::More qw(no_plan);
 # NYU Libraries modules
 use NYU::Libraries::Util qw(parse_conf);
 use NYU::Libraries::PDS::IdentitiesControllers::AlephController;
+use NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethController;
 
 # Verify module can be included via "use" pragma
 BEGIN { use_ok('NYU::Libraries::PDS::Session') };
@@ -79,3 +80,18 @@ $identity = $controller->get("N18545480");
 $new_session = NYU::Libraries::PDS::Session->new($identity);
 is($new_session->ill_library, "ILL_MED", "Session should be have an HSL ILL library");
 is($new_session->institute, "HSL", "Session should be have an HSL institute");
+
+# NYU Shibboleth session
+# Set the enviromnent variables
+$ENV{'uid'} = 'uid';
+$ENV{'mail'}='email@nyu.edu';
+$ENV{'entitlement'}='some:entitlements';
+$ENV{'nyuidn'}='N12162279';
+# Get a new instance of NyuShibbolethIdentity
+$controller = NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethController->new($conf);
+$identity = $controller->create();
+$controller = NYU::Libraries::PDS::IdentitiesControllers::AlephController->new($conf);
+my $aleph_identity = $controller->get($identity->aleph_identifier);
+$new_session = NYU::Libraries::PDS::Session->new($identity, $aleph_identity);
+is($new_session->edupersonentitlement, "some:entitlements", "Session should be have an edu person entitlement");
+is($new_session->{edupersonentitlement}, "some:entitlements", "Session should be have an edu person entitlement");
