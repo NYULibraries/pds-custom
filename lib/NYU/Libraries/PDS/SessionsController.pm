@@ -233,6 +233,17 @@ my $set_cleanup_url = sub {
   }
 };
 
+my $ezproxy_ticket = sub {
+  my ($self, $user, $groups) = @_;
+  $groups ||= "Default";
+  my $ezproxy_secret = $self->{'conf'}->{ezproxy_secret};
+  return undef unless $user && $groups && $ezproxy_secret;
+  my $packet = '$u'.time();
+  $packet .= '$g'.$groups;
+  my $ezproxy_ticket = md5_hex($ezproxy_secret.$user.$packet).$packet;
+  return ($ezproxy_ticket) ? CGI::escape($ezproxy_ticket) : undef;
+};
+
 # Private method to get the target_url
 # Private initialization method
 # Usage:
@@ -337,11 +348,14 @@ sub _redirect_to_cleanup_url {
 #   my $redirect_header = $self->$_redirect_to_ezproxy($target_url);
 # TODO: Set the EZProxy redirect!
 sub _redirect_to_ezproxy {
-  my($self, $target_url) = @_;
+  my($self, $user, $target_url) = @_;
   my $uri = URI->new($target_url);
-  my $resource_url =  $uri->query_param('url');
+  my $resource_url = uri_escape($uri->query_param('url'));
+  my $ezproxy_url = $self->{'conf'}->{ezproxy_url};
   my $cgi = CGI->new();
-  return $cgi->redirect($resource_url);
+  my $ezproxy_ticket = $self->$ezproxy_ticket($user);
+  $ezproxy_url .= "/login?ticket=$ezproxy_ticket&user=$user&qurl=$resource_url";
+  return $cgi->redirect($ezproxy_url);
 }
 
 # Returns a redirect header to the EZProxy URL
@@ -562,8 +576,10 @@ sub ezproxy {
   # First check the current session
   if(defined($self->$current_session)) {
     if ($self->$is_ezproxy_authorized($self->$current_session)) {
+      # Get the session's user id
+      my $uid = $self->$current_session->uid;
       # Redirect to ezproxy
-      return $self->_redirect_to_ezproxy($self->target_url);
+      return $self->_redirect_to_ezproxy($uid, $self->target_url);
     } elsif($self->$is_alumni($self->$current_session)) {
       # Redirect to alumnni EZ proxy
       return $self->_redirect_to_alumni_ezproxy();
@@ -583,12 +599,14 @@ sub ezproxy {
       # Were duck typing here, having an NYU shibboleth idenity
       # quacking like a session
       if ($self->$is_ezproxy_authorized($nyu_shibboleth_identity)) {
+        # Get the NYU Shibboleth identity's user id
+        my $uid = $nyu_shibboleth_identity->uid;
         # Get the target URL from Shibboleth controller, 
         # since it captured it on the previous pass,
         # or just got it from me.
         my $target_url = $nyu_shibboleth_controller->get_target_url();
         # Redirect to EZ proxy
-        return $self->_redirect_to_ezproxy($target_url);
+        return $self->_redirect_to_ezproxy($uid, $self->target_url);
       } elsif ($self->$is_alumni($self->$current_session)) {
         # Redirect to alumnni EZ proxy
         return $self->_redirect_to_alumni_ezproxy();
