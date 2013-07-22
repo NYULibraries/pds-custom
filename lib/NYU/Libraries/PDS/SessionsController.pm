@@ -607,7 +607,7 @@ sub ezproxy {
         my $target_url = $nyu_shibboleth_controller->get_target_url();
         # Redirect to EZ proxy
         return $self->_redirect_to_ezproxy($uid, $self->target_url);
-      } elsif ($self->$is_alumni($self->$current_session)) {
+      } elsif ($self->$is_alumni($nyu_shibboleth_identity)) {
         # Redirect to alumnni EZ proxy
         return $self->_redirect_to_alumni_ezproxy();
       } else {
