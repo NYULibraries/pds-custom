@@ -401,6 +401,19 @@ is($controller->ezproxy, "Status: 302 Found$CGI::CRLF".
 $ENV{'entitlement'}='urn:mace:nyu.edu:entl:lib:eresources';
 $conf->{ezproxy_secret} = "SecretSauce";
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "ezproxy", "http://login.library.nyu.edu/ezproxy?url=http://example.com");
-my $crlf = $CGI::CRLF;
-like($controller->ezproxy, '/Location: https:\/\/ezproxydev\.library\.nyu\.edu\/login\?ticket=[a-z0-9]+%24u[0-9]+%24gDefault&user=uid&qurl=http%3A%2F%2Fexample.com/', "Should redirect to ezproxy");
+like($controller->ezproxy, '/Status: 302 Found\s\sLocation: https:\/\/ezproxydev\.library\.nyu\.edu\/login\?ticket=[a-z0-9]+%24u[0-9]+%24gDefault&user=uid&qurl=http%3A%2F%2Fexample.com\s\s\s\s/', "Should redirect to ezproxy");
+
+$ENV{'nyuidn'}='DS03D';
+$controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "ezborrow", "http://login.library.nyu.edu/ezborrow?query=ezborrow");
+is($controller->ezborrow, "Status: 302 Found$CGI::CRLF".
+  "Location: http://library.nyu.edu/errors/ezborrow-library-nyu-edu/login.html$CGI::CRLF$CGI::CRLF",
+    "Should redirect to ezborrow unauthorized");
+
+$ENV{'nyuidn'}='N18158418';
+$conf->{flat_file} = "./t/support/patrons.dat";
+$controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "ezborrow", "http://login.library.nyu.edu/ezborrow?query=ezborrow");
+is($controller->ezborrow, "Status: 302 Found$CGI::CRLF".
+  "Location: http://bobcatdev.library.nyu.edu/primo_library/libweb/custom/cleanup.jsp?url=https%3A%2F%2Fe-zborrow.relaisd2d.com%2Fservice-proxy".
+    "%2F%3Fcommand%3Dmkauth%26LS%3DNYU%26PI%3D21142226710882%26query%3D$CGI::CRLF$CGI::CRLF",
+    "Should redirect to ezborrow");
 
