@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 use base qw(NYU::Libraries::PDS::Identities::Base);
-my @attributes = qw(aleph_identifier edupersonentitlement);
+my @attributes = qw(uid aleph_identifier edupersonentitlement);
 __PACKAGE__->mk_ro_accessors(@attributes);
 
 my %SHIBBOLETH_ATTRIBUTE_MAPPINGS = (
