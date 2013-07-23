@@ -31,7 +31,7 @@ isa_ok($controller, qw(NYU::Libraries::PDS::IdentitiesControllers::NyuShibboleth
 can_ok($controller, (qw(target_url current_url cleanup_url new create
   redirect_to_target redirect_to_cleanup been_there_done_that)));
 
-is($controller->create(), '', 'Should short circuit for passive login');
+is($controller->create(), undef, 'Should short circuit for passive login');
 
 # Set the enviromnent variables
 $ENV{'uid'} = 'uid';

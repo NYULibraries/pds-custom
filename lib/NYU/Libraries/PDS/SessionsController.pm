@@ -352,9 +352,11 @@ sub _redirect_to_target_url {
 sub _redirect_to_cleanup_url {
   my $self = shift;
   return _redirect_to_target_url unless $self->cleanup_url;
-  my $cgi = CGI->new();
   my $target_url = uri_escape($self->target_url);
-  return $cgi->redirect($self->cleanup_url.$target_url);
+  my $cleanup_url = uri_escape($self->cleanup_url.$target_url);
+  my $eshelf_url = $self->{'conf'}->{eshelf_url};
+  my $cgi = CGI->new();
+  return $cgi->redirect("$eshelf_url/validate?return_url=$cleanup_url");
 }
 
 # Returns a redirect header to the EZProxy URL for the given target url
@@ -366,9 +368,9 @@ sub _redirect_to_ezproxy {
   my $uri = URI->new($target_url);
   my $resource_url = uri_escape($uri->query_param('url'));
   my $ezproxy_url = $self->{'conf'}->{ezproxy_url};
-  my $cgi = CGI->new();
   my $ezproxy_ticket = $self->$ezproxy_ticket($user);
   $ezproxy_url .= "/login?ticket=$ezproxy_ticket&user=$user&qurl=$resource_url";
+  my $cgi = CGI->new();
   return $cgi->redirect($ezproxy_url);
 }
 
@@ -387,8 +389,10 @@ sub _redirect_to_ezborrow {
   my $barcode = $session->barcode;
   my $ezborrow_url =
     EZBORROW_URL_BASE."?command=mkauth&LS=NYU&PI=$barcode&query=$query";
+  $ezborrow_url = uri_escape($self->cleanup_url.uri_escape($ezborrow_url));
+  my $eshelf_url = $self->{'conf'}->{eshelf_url};
   my $cgi = CGI->new();
-  return $cgi->redirect($self->cleanup_url.uri_escape($ezborrow_url));
+  return $cgi->redirect("$eshelf_url/validate?return_url=$ezborrow_url");
 };
 
 # Authenticate against Aleph.

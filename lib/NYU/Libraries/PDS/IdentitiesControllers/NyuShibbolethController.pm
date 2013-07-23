@@ -108,7 +108,9 @@ sub redirect_to_cleanup {
   return redirect_to_target unless $self->cleanup_url;
   my $cgi = CGI->new();
   my $target_url = uri_escape($self->get_target_url());
-  return $cgi->redirect($self->cleanup_url.$target_url);
+  my $cleanup_url = uri_escape($self->cleanup_url.$target_url);
+  my $eshelf_url = $self->{'conf'}->{eshelf_url};
+  return $cgi->redirect("$eshelf_url/validate?return_url=$cleanup_url");
 }
 
 # Method returns the target url
