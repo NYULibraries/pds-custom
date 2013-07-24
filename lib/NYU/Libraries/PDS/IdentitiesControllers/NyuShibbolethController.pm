@@ -106,10 +106,21 @@ sub redirect_to_target {
 sub redirect_to_cleanup {
   my $self = shift;
   return redirect_to_target unless $self->cleanup_url;
-  my $cgi = CGI->new();
   my $target_url = uri_escape($self->get_target_url());
-  my $cleanup_url = uri_escape($self->cleanup_url.$target_url);
+  my $cgi = CGI->new();
+  return $cgi->redirect($self->cleanup_url.$target_url);
+}
+
+# Returns a redirect header to the eshelf
+# Usage:
+#   my $redirect_header = $controller->redirect_to_eshelf();
+sub redirect_to_eshelf {
+  my $self = shift;
   my $eshelf_url = $self->{'conf'}->{eshelf_url};
+  return redirect_to_cleanup unless $eshelf_url;
+  my $target_url = uri_escape($self->target_url);
+  my $cleanup_url = uri_escape($self->cleanup_url.$target_url);
+  my $cgi = CGI->new();
   return $cgi->redirect("$eshelf_url/validate?return_url=$cleanup_url");
 }
 

@@ -315,7 +315,7 @@ sub _logout_screen {
 
 # Returns a redirect header to the unauthorized message URL
 # Usage:
-#   my $redirect_header = $self->$_redirect_to_unauthorized();
+#   my $redirect_header = $self->_redirect_to_unauthorized();
 sub _redirect_to_unauthorized {
   my $self = shift;
   my $cgi = CGI->new();
@@ -324,7 +324,7 @@ sub _redirect_to_unauthorized {
 
 # Returns a redirect header to the EZProxy unauthorized message URL
 # Usage:
-#   my $redirect_header = $self->$_redirect_to_ezproxy_unauthorized();
+#   my $redirect_header = $self->_redirect_to_ezproxy_unauthorized();
 sub _redirect_to_ezproxy_unauthorized {
   my $self = shift;
   my $cgi = CGI->new();
@@ -339,8 +339,8 @@ sub _redirect_to_ezborrow_unauthorized {
 
 # Returns a redirect header to the target URL
 # Usage:
-#   my $redirect_header = $self->$_redirect_to_target_url();
-sub _redirect_to_target_url {
+#   my $redirect_header = $self->_redirect_to_target();
+sub _redirect_to_target {
   my $self = shift;
   my $cgi = CGI->new();
   return $cgi->redirect($self->target_url);
@@ -348,20 +348,31 @@ sub _redirect_to_target_url {
 
 # Returns a redirect header to the cleanup URL
 # Usage:
-#   my $redirect_header = $self->$_redirect_to_cleanup_url();
-sub _redirect_to_cleanup_url {
+#   my $redirect_header = $self->_redirect_to_cleanup();
+sub _redirect_to_cleanup {
   my $self = shift;
-  return _redirect_to_target_url unless $self->cleanup_url;
+  return _redirect_to_target unless $self->cleanup_url;
+  my $target_url = uri_escape($self->target_url);
+  my $cgi = CGI->new();
+  return $cgi->redirect($self->cleanup_url.$target_url);
+}
+
+# Returns a redirect header to the eshelf
+# Usage:
+#   my $redirect_header = $self->_redirect_to_eshelf();
+sub _redirect_to_eshelf {
+  my $self = shift;
+  my $eshelf_url = $self->{'conf'}->{eshelf_url};
+  return _redirect_to_cleanup unless $eshelf_url;
   my $target_url = uri_escape($self->target_url);
   my $cleanup_url = uri_escape($self->cleanup_url.$target_url);
-  my $eshelf_url = $self->{'conf'}->{eshelf_url};
   my $cgi = CGI->new();
   return $cgi->redirect("$eshelf_url/validate?return_url=$cleanup_url");
 }
 
 # Returns a redirect header to the EZProxy URL for the given target url
 # Usage:
-#   my $redirect_header = $self->$_redirect_to_ezproxy($target_url);
+#   my $redirect_header = $self->_redirect_to_ezproxy($target_url);
 # TODO: Set the EZProxy redirect!
 sub _redirect_to_ezproxy {
   my($self, $user, $target_url) = @_;
@@ -542,8 +553,8 @@ sub authenticate {
   # Otherwise, present the login screen or redirect to unauthorized
   if (defined($identities)) {
     my $session = $self->$create_session(@$identities);
-    # return $self->_redirect_to_target_url();
-    return $self->_redirect_to_cleanup_url();
+    # Need to force login to eshelf
+    return $self->_redirect_to_eshelf();
   } else {
     # Redirect to unauthorized page
     return $self->_redirect_to_unauthorized() if ($self->error eq "Unauthorized");
