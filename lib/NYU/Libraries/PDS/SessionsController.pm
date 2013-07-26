@@ -47,6 +47,7 @@ use NYU::Libraries::PDS::IdentitiesControllers::AlephController;
 use NYU::Libraries::PDS::Session;
 use NYU::Libraries::PDS::Views::Login;
 use NYU::Libraries::PDS::Views::Logout;
+use NYU::Libraries::PDS::Views::Redirect;
 
 use base qw(Class::Accessor);
 __PACKAGE__->mk_accessors(qw(institute calling_system target_url current_url cleanup_url session_id error));
@@ -197,6 +198,7 @@ my $nyu_shibboleth_controller = sub {
     $nyu_shibboleth_controller->target_url($self->target_url);
     $nyu_shibboleth_controller->current_url($self->current_url);
     $nyu_shibboleth_controller->cleanup_url($self->cleanup_url);
+    $nyu_shibboleth_controller->institute($self->institute);
     $self->{'nyu_shibboleth_controller'} = $nyu_shibboleth_controller;
   }
   return $self->{'nyu_shibboleth_controller'};
@@ -256,6 +258,14 @@ my $ezproxy_ticket = sub {
   $packet .= '$g'.$groups;
   my $ezproxy_ticket = md5_hex($ezproxy_secret.$user.$packet).$packet;
   return ($ezproxy_ticket) ? CGI::escape($ezproxy_ticket) : undef;
+};
+
+my $redirect = sub {
+  my($self, $target_url) = @_;
+  # Present Redirect Screen
+  my $template = NYU::Libraries::PDS::Views::Redirect->new($self->{'conf'}, $self);
+  $template->{target_url} = $target_url;
+  return $template->render();
 };
 
 # Private method to get the target_url
@@ -327,14 +337,12 @@ sub _redirect_to_unauthorized {
 #   my $redirect_header = $self->_redirect_to_ezproxy_unauthorized();
 sub _redirect_to_ezproxy_unauthorized {
   my $self = shift;
-  my $cgi = CGI->new();
-  return $cgi->redirect(EZPROXY_UNAUTHORIZED_URL);
+  return $self->$redirect(EZPROXY_UNAUTHORIZED_URL);
 }
 
 sub _redirect_to_ezborrow_unauthorized {
   my $self = shift;
-  my $cgi = CGI->new();
-  return $cgi->redirect(EZBORROW_UNAUTHORIZED_URL);
+  return $self->$redirect(EZBORROW_UNAUTHORIZED_URL);
 }
 
 # Returns a redirect header to the target URL
@@ -342,8 +350,7 @@ sub _redirect_to_ezborrow_unauthorized {
 #   my $redirect_header = $self->_redirect_to_target();
 sub _redirect_to_target {
   my $self = shift;
-  my $cgi = CGI->new();
-  return $cgi->redirect($self->target_url);
+  return $self->$redirect($self->target_url);
 }
 
 # Returns a redirect header to the cleanup URL
@@ -353,8 +360,7 @@ sub _redirect_to_cleanup {
   my $self = shift;
   return _redirect_to_target unless $self->cleanup_url;
   my $target_url = uri_escape($self->target_url);
-  my $cgi = CGI->new();
-  return $cgi->redirect($self->cleanup_url.$target_url);
+  return $self->$redirect($self->cleanup_url.$target_url);
 }
 
 # Returns a redirect header to the eshelf
@@ -366,8 +372,7 @@ sub _redirect_to_eshelf {
   return _redirect_to_cleanup unless $eshelf_url;
   my $target_url = uri_escape($self->target_url);
   my $cleanup_url = uri_escape($self->cleanup_url.$target_url);
-  my $cgi = CGI->new();
-  return $cgi->redirect("$eshelf_url/validate?return_url=$cleanup_url");
+  return $self->$redirect("$eshelf_url/validate?return_url=$cleanup_url");
 }
 
 # Returns a redirect header to the EZProxy URL for the given target url
@@ -381,15 +386,13 @@ sub _redirect_to_ezproxy {
   my $ezproxy_url = $self->{'conf'}->{ezproxy_url};
   my $ezproxy_ticket = $self->$ezproxy_ticket($user);
   $ezproxy_url .= "/login?ticket=$ezproxy_ticket&user=$user&qurl=$resource_url";
-  my $cgi = CGI->new();
-  return $cgi->redirect($ezproxy_url);
+  return $self->$redirect($ezproxy_url);
 }
 
 # Returns a redirect header to the EZProxy URL
 sub _redirect_to_alumni_ezproxy {
   my $self = shift;
-  my $cgi = CGI->new();
-  return $cgi->redirect(ALUMNI_EZPROXY_URL);
+  return $self->$redirect(ALUMNI_EZPROXY_URL);
 }
 
 # Returns a redirect header to the EZBorrow URL for the given session and query
@@ -402,8 +405,7 @@ sub _redirect_to_ezborrow {
     EZBORROW_URL_BASE."?command=mkauth&LS=NYU&PI=$barcode&query=$query";
   $ezborrow_url = uri_escape($self->cleanup_url.uri_escape($ezborrow_url));
   my $eshelf_url = $self->{'conf'}->{eshelf_url};
-  my $cgi = CGI->new();
-  return $cgi->redirect("$eshelf_url/validate?return_url=$ezborrow_url");
+  return $self->$redirect("$eshelf_url/validate?return_url=$ezborrow_url");
 };
 
 # Authenticate against Aleph.
@@ -588,11 +590,10 @@ sub logout {
     # Logout
     $self->$destroy_session();
   }
-  my $cgi = CGI->new();
   my $target_url = ($nyu_shibboleth) ? GLOBAL_NYU_SHIBBOLETH_LOGOUT : $self->target_url;
   $target_url = uri_escape($target_url) if $target_url;
   my $return = ($target_url) ? "return=$target_url" : "";
-  return $cgi->redirect("/Shibboleth.sso/Logout?$return");
+  return $self->$redirect("/Shibboleth.sso/Logout?$return");
 }
 
 # Redirect to ezproxy if authenticated and authorized

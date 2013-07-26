@@ -12,9 +12,10 @@ use URI::Escape;
 
 # NYU Libraries Shibboleth Identity
 use NYU::Libraries::PDS::Identities::NyuShibboleth;
+use NYU::Libraries::PDS::Views::Redirect;
 
 use base qw(NYU::Libraries::PDS::IdentitiesControllers::BaseController);
-__PACKAGE__->mk_accessors(qw(target_url current_url cleanup_url));
+__PACKAGE__->mk_accessors(qw(target_url current_url cleanup_url institute));
 
 # Been there done that cookie name
 use constant PDS_TARGET_COOKIE => 'pds_btdt_target_url';
@@ -56,6 +57,14 @@ my $check = sub {
   }
 };
 
+my $redirect = sub {
+  my($self, $target_url) = @_;
+  # Present Redirect Screen
+  my $template = NYU::Libraries::PDS::Views::Redirect->new($self->{'conf'}, $self);
+  $template->{target_url} = $target_url;
+  return $template->render();
+};
+
 # Private method exits the running program and immediately redirects
 # to the Shibboleth IdP
 # Method name is a dumb reference to 
@@ -64,10 +73,9 @@ my $check = sub {
 #   $self->$wreck();
 my $wreck = sub {
   my $self = shift;
-  my $cgi = CGI->new();
   my $current_url = $self->current_url();
   # Redirect to the Shib IdP and exit
-  print $cgi->redirect("/Shibboleth.sso/Login?isPassive=true&target=$current_url");
+  print $self->$redirect("/Shibboleth.sso/Login?isPassive=true&target=$current_url");
   # Stop, collabortate and listen!
   exit;
 };
@@ -99,16 +107,14 @@ sub create {
 
 sub redirect_to_target {
   my $self = shift;
-  my $cgi = CGI->new();
-  return $cgi->redirect($self->get_target_url());
+  return $self->$redirect($self->get_target_url());
 }
 
 sub redirect_to_cleanup {
   my $self = shift;
   return redirect_to_target unless $self->cleanup_url;
   my $target_url = uri_escape($self->get_target_url());
-  my $cgi = CGI->new();
-  return $cgi->redirect($self->cleanup_url.$target_url);
+  return $self->$redirect($self->cleanup_url.$target_url);
 }
 
 # Returns a redirect header to the eshelf
@@ -120,8 +126,7 @@ sub redirect_to_eshelf {
   return redirect_to_cleanup unless $eshelf_url;
   my $target_url = uri_escape($self->target_url);
   my $cleanup_url = uri_escape($self->cleanup_url.$target_url);
-  my $cgi = CGI->new();
-  return $cgi->redirect("$eshelf_url/validate?return_url=$cleanup_url");
+  return $self->$redirect("$eshelf_url/validate?return_url=$cleanup_url");
 }
 
 # Method returns the target url
