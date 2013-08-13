@@ -250,7 +250,6 @@ sub redirect_html {
     <meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1\" />
     <link rel=\"stylesheet\" type=\"text/css\" href=\"/assets/css/nyu.css\" />
     <script src=\"/assets/javascripts/application.js\" type=\"text/javascript\"></script>
-    <meta http-equiv=\"Refresh\" content=\"0;url=$target_url\">
     <script type=\"text/javascript\">
       window.location = \"$target_url\";
     </script>
