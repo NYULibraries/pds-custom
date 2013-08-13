@@ -25,7 +25,7 @@ my $expire_been_there_done_that = sub {
   my $cgi = CGI->new();
   # Unset the cookie!
   my $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE,
-    -expires => '-10Y', -value => '');
+    -expires => 'Thu, 01-Jan-1970 00:00:01 GMT');
   print $cgi->header(-cookie => [$pds_target]);
 };
 
@@ -33,9 +33,9 @@ my $set_been_there_done_that = sub {
   my $self = shift;
   my $cgi = CGI->new();
   # Set the cookie to the current target URL
-  # Set the session cookie
+  # It expires in 5 minutes
   my $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE, 
-    -value => $self->target_url);
+    -expires => '+5m', -value => $self->target_url);
   print $cgi->header(-cookie => [$pds_target]);
 };
 
@@ -75,7 +75,7 @@ my $wreck = sub {
   my $self = shift;
   my $current_url = $self->current_url();
   # Redirect to the Shib IdP and exit
-  print $self->$redirect("/Shibboleth.sso/Login?isPassive=true&target=$current_url");
+  print $self->$redirect("/Shibboleth.sso/Login?isPassive=true;target=$current_url");
   # Stop, collabortate and listen!
   exit;
 };

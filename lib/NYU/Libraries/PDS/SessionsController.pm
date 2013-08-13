@@ -140,7 +140,7 @@ my $create_session = sub {
     $session->save();
     # Set the session cookie
     my $pds_handle = CGI::Cookie->new(-name=>'PDS_HANDLE',
-      -value=>$session->session_id,-domain=>'.library.nyu.edu');
+      -value=>$session->session_id, -domain=>'.library.nyu.edu');
     my $cgi = CGI->new();
     print $cgi->header(-cookie=>[$pds_handle]);
   }
