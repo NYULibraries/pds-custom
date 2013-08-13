@@ -12,6 +12,7 @@ use URI::Escape;
 
 # NYU Libraries Shibboleth Identity
 use NYU::Libraries::PDS::Identities::NyuShibboleth;
+use NYU::Libraries::PDS::Views::Redirect;
 use NYU::Libraries::PDS::Views::ShibbolethRedirect;
 
 use base qw(NYU::Libraries::PDS::IdentitiesControllers::BaseController);
@@ -60,6 +61,14 @@ my $check = sub {
 my $redirect = sub {
   my($self, $target_url) = @_;
   # Present Redirect Screen
+  my $template = NYU::Libraries::PDS::Views::Redirect->new($self->{'conf'}, $self);
+  $template->{target_url} = $target_url;
+  return $template->render();
+};
+
+my $redirect_to_shibboleth = sub {
+  my($self, $target_url) = @_;
+  # Present Redirect Screen
   my $template = NYU::Libraries::PDS::Views::ShibbolethRedirect->new($self->{'conf'}, $self);
   $template->{target_url} = $target_url;
   return $template->render();
@@ -75,7 +84,7 @@ my $wreck = sub {
   my $self = shift;
   my $current_url = $self->current_url();
   # Redirect to the Shib IdP and exit
-  print $self->$redirect($current_url);
+  print $self->$redirect_to_shibboleth($current_url);
   # Stop, collabortate and listen!
   exit;
 };
