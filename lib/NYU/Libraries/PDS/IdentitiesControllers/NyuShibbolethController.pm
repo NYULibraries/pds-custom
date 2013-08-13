@@ -75,7 +75,7 @@ my $wreck = sub {
   my $self = shift;
   my $current_url = $self->current_url();
   # Redirect to the Shib IdP and exit
-  print $self->$redirect("/Shibboleth.sso/Login?isPassive=true;target=$current_url");
+  print $self->$redirect("/Shibboleth.sso/Login?isPassive=true&target=$current_url");
   # Stop, collabortate and listen!
   exit;
 };
