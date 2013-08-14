@@ -21,6 +21,10 @@ __PACKAGE__->mk_accessors(qw(target_url current_url cleanup_url institute));
 # Been there done that cookie name
 use constant PDS_TARGET_COOKIE => 'pds_btdt_target_url';
 
+# Private method expires the cookie that specifies that 
+# we've been here done that
+# Usage:
+#   $self->$expire_been_there_done_that();
 my $expire_been_there_done_that = sub {
   my $self = shift;
   my $cgi = CGI->new();
@@ -30,6 +34,10 @@ my $expire_been_there_done_that = sub {
   print $cgi->header(-cookie => [$pds_target]);
 };
 
+# Private method sets the cookie that specifies that 
+# we've been here done that
+# Usage:
+#   $self->$set_been_there_done_that();
 my $set_been_there_done_that = sub {
   my $self = shift;
   my $cgi = CGI->new();
@@ -58,6 +66,12 @@ my $check = sub {
   }
 };
 
+# Private method to redirect via JavaScript (via a template)
+# since Safari won't set our cookie if we send as
+# a redirect (302)
+# http://stackoverflow.com/questions/1144894/safari-doesnt-set-cookie-but-ie-ff-does
+# Usage:
+#   $self->$redirect($target_url);
 my $redirect = sub {
   my($self, $target_url) = @_;
   # Present Redirect Screen
@@ -66,6 +80,12 @@ my $redirect = sub {
   return $template->render();
 };
 
+# Private method to redirect to Shibboleth via JavaScript (via a template)
+# since Safari won't set our cookie if we send as
+# a redirect (302)
+# http://stackoverflow.com/questions/1144894/safari-doesnt-set-cookie-but-ie-ff-does
+# Usage:
+#   $self->$redirect($target_url);
 my $redirect_to_shibboleth = sub {
   my($self, $target_url) = @_;
   # Present Redirect Screen

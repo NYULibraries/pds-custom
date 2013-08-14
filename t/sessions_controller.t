@@ -267,7 +267,7 @@ sub redirect_html {
         <li>Login</li>
       </ul>
     </nav>
-    <h1><a href=\"$target_url\">Click to continue</a></h1>
+    <h1 class=\"container-fluid\"><a href=\"$target_url\">Click to continue</a></h1>
     <footer>NYU Division of Libraries.  BobCat.  Powered by Ex Libris Primo</footer>
   </body>
 </html>

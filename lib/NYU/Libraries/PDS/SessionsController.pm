@@ -92,6 +92,10 @@ my $current_session = sub {
   return $self->{'current_session'};
 };
 
+# Private method to determine if the given session is 
+# authorized for EZproxy
+# Usage:
+#   $self->$is_ezproxy_authorized($session)
 my $is_ezproxy_authorized = sub {
   my($self, $session) = @_;
   # Not authorized if we're not signed on through NYU shibboleth
@@ -106,6 +110,10 @@ my $is_ezproxy_authorized = sub {
   return 0;
 };
 
+# Private method to determine if the given session is 
+# authorized for EZ Borrow
+# Usage:
+#   $self->$is_ezborrow_authorized($session)
 my $is_ezborrow_authorized = sub {
   my($self, $session) = @_;
   # Must have a barcode
@@ -114,6 +122,10 @@ my $is_ezborrow_authorized = sub {
   return (grep { $_ eq $session->bor_status } EZBORROW_AUTHORIZED_STATUSES);
 };
 
+# Private method to determine if the given session is 
+# an alumnus
+# Usage:
+#   $self->$is_alumni($session)
 my $is_alumni = sub {
   my($self, $session) = @_;
   # Not alumni if we're not signed on through NYU shibboleth
@@ -249,6 +261,9 @@ my $set_cleanup_url = sub {
   }
 };
 
+# Private method to get the EZProxy ticket
+# Usage:
+#   $self->$ezproxy_ticket($user, $groups);
 my $ezproxy_ticket = sub {
   my ($self, $user, $groups) = @_;
   $groups ||= "Default";
@@ -260,6 +275,12 @@ my $ezproxy_ticket = sub {
   return ($ezproxy_ticket) ? CGI::escape($ezproxy_ticket) : undef;
 };
 
+# Private method to redirect via JavaScript (via a template)
+# since Safari won't set our cookie if we send as
+# a redirect (302)
+# http://stackoverflow.com/questions/1144894/safari-doesnt-set-cookie-but-ie-ff-does
+# Usage:
+#   $self->$redirect($target_url);
 my $redirect = sub {
   my($self, $target_url) = @_;
   # Present Redirect Screen
@@ -340,6 +361,9 @@ sub _redirect_to_ezproxy_unauthorized {
   return $self->$redirect(EZPROXY_UNAUTHORIZED_URL);
 }
 
+# Returns a redirect header to the EZ Borrow unauthorized message URL
+# Usage:
+#   my $redirect_header = $self->_redirect_to_ezborrow_unauthorized();
 sub _redirect_to_ezborrow_unauthorized {
   my $self = shift;
   return $self->$redirect(EZBORROW_UNAUTHORIZED_URL);
@@ -568,6 +592,8 @@ sub authenticate {
   }
 }
 
+# Destroy the session, handle cookie maintenance and
+# redirect to the Shibboleth local logout
 sub logout {
   my $self = shift;
   my $session = $self->$current_session;
