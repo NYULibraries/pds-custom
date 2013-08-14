@@ -132,7 +132,7 @@ use constant NYU_LOGOUT => "<!DOCTYPE html>
         <li>Logout</li>
       </ul>
     </nav>
-    <h1><a href=\"http://example.com\">Logout</a></h1>
+    <h1 class=\"container-fluid\"><a href=\"http://example.com\">Logout</a></h1>
     <footer>NYU Division of Libraries.  BobCat.  Powered by Ex Libris Primo</footer>
   </body>
 </html>
