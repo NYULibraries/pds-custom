@@ -114,11 +114,17 @@ sub create {
   return undef;
 }
 
+# Returns a redirect header to the target
+# Usage:
+#   my $redirect_header = $controller->redirect_to_target();
 sub redirect_to_target {
   my $self = shift;
   return $self->$redirect($self->get_target_url());
 }
 
+# Returns a redirect header to the Primo cleanup page
+# Usage:
+#   my $redirect_header = $controller->redirect_to_cleanup();
 sub redirect_to_cleanup {
   my $self = shift;
   return redirect_to_target unless $self->cleanup_url;

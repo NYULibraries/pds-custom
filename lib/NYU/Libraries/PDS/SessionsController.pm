@@ -404,8 +404,9 @@ sub _redirect_to_ezborrow {
   my $ezborrow_url =
     EZBORROW_URL_BASE."?command=mkauth&LS=NYU&PI=$barcode&query=$query";
   $ezborrow_url = uri_escape($self->cleanup_url.uri_escape($ezborrow_url));
-  my $eshelf_url = $self->{'conf'}->{eshelf_url};
-  return $self->$redirect("$eshelf_url/validate?return_url=$ezborrow_url");
+  return $self->$redirect($ezborrow_url);
+  # my $eshelf_url = $self->{'conf'}->{eshelf_url};
+  # return $self->$redirect("$eshelf_url/validate?return_url=$ezborrow_url");
 };
 
 # Authenticate against Aleph.
@@ -499,8 +500,8 @@ sub load_login {
       $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
       # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
       # or just got it from me.
-      # return $nyu_shibboleth_controller->redirect_to_target();
       return $nyu_shibboleth_controller->redirect_to_cleanup();
+      # return $nyu_shibboleth_controller->redirect_to_eshelf();
     } else {
       # Exit with Unauthorized Error
       $self->set('error', "Unauthorized");
@@ -532,8 +533,8 @@ sub sso {
   }
   # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
   # or just got it from me.
-  # return $nyu_shibboleth_controller->redirect_to_target();
   return $nyu_shibboleth_controller->redirect_to_cleanup();
+  # return $nyu_shibboleth_controller->redirect_to_eshelf();
 }
 
 # Authenticate based on the given id and password
@@ -555,8 +556,9 @@ sub authenticate {
   # Otherwise, present the login screen or redirect to unauthorized
   if (defined($identities)) {
     my $session = $self->$create_session(@$identities);
-    # Need to force login to eshelf
-    return $self->_redirect_to_eshelf();
+    # Redirect to whence we came (with some processing)
+    return $nyu_shibboleth_controller->redirect_to_cleanup();
+    # return $self->_redirect_to_eshelf();
   } else {
     # Redirect to unauthorized page
     return $self->_redirect_to_unauthorized() if ($self->error eq "Unauthorized");
