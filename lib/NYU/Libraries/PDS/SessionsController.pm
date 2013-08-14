@@ -403,7 +403,7 @@ sub _redirect_to_ezborrow {
   my $barcode = $session->barcode;
   my $ezborrow_url =
     EZBORROW_URL_BASE."?command=mkauth&LS=NYU&PI=$barcode&query=$query";
-  $ezborrow_url = uri_escape($self->cleanup_url.uri_escape($ezborrow_url));
+  $ezborrow_url = $self->cleanup_url.uri_escape($ezborrow_url);
   return $self->$redirect($ezborrow_url);
   # my $eshelf_url = $self->{'conf'}->{eshelf_url};
   # return $self->$redirect("$eshelf_url/validate?return_url=$ezborrow_url");

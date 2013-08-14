@@ -405,9 +405,9 @@ is($controller->_login_screen(), "<!DOCTYPE html>
 
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
 # Test authenticate
-is($controller->authenticate("DS03D", "TEST"), redirect_html("https://dev.eshelf.library.nyu.edu/validate?return_url=".
-  "http%3A%2F%2Fbobcatdev.library.nyu.edu%2Fprimo_library%2Flibweb%2Fcustom%2Fcleanup.jsp%3Furl%3D".
-    "http%253A%252F%252Fexample.com"),
+is($controller->authenticate("DS03D", "TEST"), 
+  redirect_html("http://bobcatdev.library.nyu.edu/primo_library/libweb/custom/cleanup.jsp?url=".
+    "http%3A%2F%2Fexample.com"),
       "Authenticate should return redirect to target");
 
 # Test error undefined after authenticate
@@ -450,8 +450,8 @@ is($controller->ezborrow, redirect_html("http://library.nyu.edu/errors/ezborrow-
 $ENV{'nyuidn'}='N18158418';
 $conf->{flat_file} = "./t/support/patrons.dat";
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "ezborrow", "http://login.library.nyu.edu/ezborrow?query=ezborrow");
-is($controller->ezborrow, redirect_html("https://dev.eshelf.library.nyu.edu/validate?return_url=".
-  "http%3A%2F%2Fbobcatdev.library.nyu.edu%2Fprimo_library%2Flibweb%2Fcustom%2Fcleanup.jsp%3Furl%3D".
-    "https%253A%252F%252Fe-zborrow.relaisd2d.com%252Fservice-proxy%252F%253Fcommand%253Dmkauth%2526LS%253DNYU%2526PI%253D21142226710882%2526query%253D"),
+is($controller->ezborrow, 
+  redirect_html("http://bobcatdev.library.nyu.edu/primo_library/libweb/custom/cleanup.jsp?url=".
+    "https%3A%2F%2Fe-zborrow.relaisd2d.com%2Fservice-proxy%2F%3Fcommand%3Dmkauth%26LS%3DNYU%26PI%3D21142226710882%26query%3D"),
       "Should redirect to ezborrow");
 
