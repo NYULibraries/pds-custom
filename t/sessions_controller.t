@@ -454,4 +454,3 @@ is($controller->ezborrow,
   redirect_html("http://bobcatdev.library.nyu.edu/primo_library/libweb/custom/cleanup.jsp?url=".
     "https%3A%2F%2Fe-zborrow.relaisd2d.com%2Fservice-proxy%2F%3Fcommand%3Dmkauth%26LS%3DNYU%26PI%3D21142226710882%26query%3D"),
       "Should redirect to ezborrow");
-

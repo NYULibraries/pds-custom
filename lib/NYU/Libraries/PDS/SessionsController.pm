@@ -557,7 +557,7 @@ sub authenticate {
   if (defined($identities)) {
     my $session = $self->$create_session(@$identities);
     # Redirect to whence we came (with some processing)
-    return $nyu_shibboleth_controller->redirect_to_cleanup();
+    return $self->_redirect_to_cleanup();
     # return $self->_redirect_to_eshelf();
   } else {
     # Redirect to unauthorized page
