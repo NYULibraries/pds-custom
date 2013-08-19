@@ -597,7 +597,7 @@ sub authenticate {
 sub logout {
   my $self = shift;
   my $cgi = CGI->new();
-  print $cgi->header(-type=>'text/xml', -charset =>'UTF-8');
+  print $cgi->header(-type=>'text/html', -charset =>'UTF-8');
   my $session = $self->$current_session;
   my $nyu_shibboleth;
   if($session) {
@@ -634,7 +634,7 @@ sub logout {
 sub ezproxy {
   my $self = shift;
   my $cgi = CGI->new();
-  print $cgi->header(-type=>'text/xml', -charset =>'UTF-8');
+  print $cgi->header(-type=>'text/html', -charset =>'UTF-8');
   # First check the current session
   if(defined($self->$current_session)) {
     if ($self->$is_ezproxy_authorized($self->$current_session)) {
@@ -691,7 +691,7 @@ sub ezproxy {
 sub ezborrow {
   my $self = shift;
   my $cgi = CGI->new();
-  print $cgi->header(-type=>'text/xml', -charset =>'UTF-8');
+  print $cgi->header(-type=>'text/html', -charset =>'UTF-8');
   # First check the current session
   if(defined($self->$current_session)) {
     if($self->$is_ezborrow_authorized($self->$current_session)) {
