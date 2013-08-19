@@ -24,7 +24,7 @@ isa_ok($session, qw(NYU::Libraries::PDS::Session));
 
 # Verify methods
 can_ok($session, (qw(id institute barcode bor_status bor_type name uid email cn 
-  givenname sn verification nyuidn nyu_shibboleth ns_ldap edupersonentitlement objectclass 
+  givenname sn verification nyuidn nyu_shibboleth ns_ldap entitlements objectclass 
     ill_permission college_code college_name dept_code dept_name major_code major ill_library 
       session_id calling_system target_url new find to_xml remote_address)));
 
@@ -93,5 +93,5 @@ $identity = $controller->create();
 $controller = NYU::Libraries::PDS::IdentitiesControllers::AlephController->new($conf);
 my $aleph_identity = $controller->get($identity->aleph_identifier);
 $new_session = NYU::Libraries::PDS::Session->new($identity, $aleph_identity);
-is($new_session->edupersonentitlement, "some:entitlements", "Session should be have an edu person entitlement");
-is($new_session->{edupersonentitlement}, "some:entitlements", "Session should be have an edu person entitlement");
+is($new_session->entitlements, "some:entitlements", "Session should be have an edu person entitlement");
+is($new_session->{entitlements}, "some:entitlements", "Session should be have an edu person entitlement");

@@ -21,7 +21,7 @@ use base qw(Class::Accessor);
 # Assumes the same names as the identities
 my @attributes = qw(id email givenname cn sn institute barcode bor_status
   bor_type name uid verification nyuidn nyu_shibboleth ns_ldap
-    edupersonentitlement objectclass ill_permission college_code college_name
+    entitlements objectclass ill_permission college_code college_name
       dept_code dept_name major_code major ill_library session_id expiry_date remote_address);
 __PACKAGE__->mk_ro_accessors(@attributes);
 __PACKAGE__->mk_accessors(qw(calling_system target_url));
@@ -294,7 +294,7 @@ sub destroy {
 #         <sn>Surname</sn>
 #         <email>nyu_shibboleth_email@nyu.edu</email>
 #         <aleph_identifier>ALEPH_ID</aleph_identifier>
-#         <edupersonentitlement>
+#         <entitlements>
 #           <value>urn:mace:nyu.edu:entl:its:wikispriv</value>
 #           <value>urn:mace:nyu.edu:entl:its:classes</value>
 #           <value>urn:mace:nyu.edu:entl:its:qualtrics</value>
@@ -305,7 +305,7 @@ sub destroy {
 #           <value>urn:mace:nyu.edu:entl:its:projmgmt</value>
 #           <value>urn:mace:nyu.edu:entl:its:files</value>
 #           <value>urn:mace:incommon:entitlement:common:1</value>
-#         </edupersonentitlement>
+#         </entitlements>
 #       </nyu_shibboleth>
 #       <!-- NS LDAP Identity Information (Optional) -->
 #       <ns_ldap>

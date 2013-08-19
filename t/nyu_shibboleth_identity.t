@@ -26,7 +26,7 @@ isa_ok($identity, qw(NYU::Libraries::PDS::Identities::NyuShibboleth));
 
 # Verify methods
 can_ok($identity, (qw(error exists id email givenname cn sn aleph_identifier
-  edupersonentitlement new authenticate set_attributes get_attributes to_h
+  entitlements new authenticate set_attributes get_attributes to_h
     to_xml)));
 
 is($identity->exists, undef, "Identity should not exist");
@@ -42,6 +42,6 @@ $identity = NYU::Libraries::PDS::Identities::NyuShibboleth->new({});
 is($identity->exists, 1, "Identity should exist");
 is($identity->id, "uid", "Should have id attribute");
 is($identity->email, "email\@nyu.edu", "Should have email attribute");
-is($identity->edupersonentitlement, "some:entitlements", "Should have edupersonentitlement attribute");
+is($identity->entitlements, "some:entitlements", "Should have entitlements attribute");
 is($identity->aleph_identifier, "N123456789", "Should have aleph identifier attribute");
 

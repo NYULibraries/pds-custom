@@ -100,9 +100,9 @@ my $is_ezproxy_authorized = sub {
   my($self, $session) = @_;
   # Not authorized if we're not signed on through NYU shibboleth
   return 0 unless $session->nyu_shibboleth;
-  # Not authorized if we don't have an edupersonentitlement
-  return 0 unless $session->edupersonentitlement;
-  my $entitlements = $session->edupersonentitlement;
+  # Not authorized if we don't have an entitlements
+  return 0 unless $session->entitlements;
+  my $entitlements = $session->entitlements;
   # Poly students have partial access which actually means full access
   return 1 if ($entitlements =~ m/urn:mace:nyu.edu:entl:lib:partialeresources/);
   # Everyone else has full access which actually means full access
@@ -130,9 +130,9 @@ my $is_alumni = sub {
   my($self, $session) = @_;
   # Not alumni if we're not signed on through NYU shibboleth
   return 0 unless $session->nyu_shibboleth;
-  # Not alumni if we don't have an edupersonentitlement
-  return 0 unless $session->edupersonentitlement;
-  my $entitlements = $session->edupersonentitlement;
+  # Not alumni if we don't have an entitlements
+  return 0 unless $session->entitlements;
+  my $entitlements = $session->entitlements;
   return ($entitlements =~ m/alum/);
 };
 
@@ -596,6 +596,7 @@ sub authenticate {
 # redirect to the Shibboleth local logout
 sub logout {
   my $self = shift;
+  print $cgi->header(-type=>'text/xml', -charset =>'UTF-8');
   my $session = $self->$current_session;
   my $nyu_shibboleth;
   if($session) {
@@ -631,6 +632,7 @@ sub logout {
 #   $controller->ezproxy();
 sub ezproxy {
   my $self = shift;
+  print $cgi->header(-type=>'text/xml', -charset =>'UTF-8');
   # First check the current session
   if(defined($self->$current_session)) {
     if ($self->$is_ezproxy_authorized($self->$current_session)) {
@@ -686,6 +688,7 @@ sub ezproxy {
 #   $controller->ezborrow();
 sub ezborrow {
   my $self = shift;
+  print $cgi->header(-type=>'text/xml', -charset =>'UTF-8');
   # First check the current session
   if(defined($self->$current_session)) {
     if($self->$is_ezborrow_authorized($self->$current_session)) {
