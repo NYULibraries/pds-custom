@@ -596,6 +596,7 @@ sub authenticate {
 # redirect to the Shibboleth local logout
 sub logout {
   my $self = shift;
+  my $cgi = CGI->new();
   print $cgi->header(-type=>'text/xml', -charset =>'UTF-8');
   my $session = $self->$current_session;
   my $nyu_shibboleth;
@@ -632,6 +633,7 @@ sub logout {
 #   $controller->ezproxy();
 sub ezproxy {
   my $self = shift;
+  my $cgi = CGI->new();
   print $cgi->header(-type=>'text/xml', -charset =>'UTF-8');
   # First check the current session
   if(defined($self->$current_session)) {
@@ -688,6 +690,7 @@ sub ezproxy {
 #   $controller->ezborrow();
 sub ezborrow {
   my $self = shift;
+  my $cgi = CGI->new();
   print $cgi->header(-type=>'text/xml', -charset =>'UTF-8');
   # First check the current session
   if(defined($self->$current_session)) {
