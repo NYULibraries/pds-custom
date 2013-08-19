@@ -32,8 +32,7 @@ my $conf = parse_conf("$pds_directory/config/pds/nyu.conf");
 # Target URL is the current URL with the query
 my $session_controller = NYU::Libraries::PDS::controller($conf, $institute,
   $calling_system, $current_url, $session_id, $current_url);
-# EZBorrow
-print header(-type=>'text/html', -charset =>'UTF-8');
+# EZ Borrow
 print $session_controller->ezborrow();
 # Get the hell out of dodge
 exit;

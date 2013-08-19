@@ -233,14 +233,14 @@ sub destroy {
 #     <nyuidn>ALEPH_ID</nyuidn>
 #     <nyu_shibboleth>true|false</nyu_shibboleth>
 #     <ns_ldap>true|false</ns_ldap>
+#     <entitlements>
+#       urn:mace:nyu.edu:entl:its:wikispriv;urn:mace:nyu.edu:entl:its:classes;urn:mace:nyu.edu:entl:its:qualtrics;urn:mace:nyu.edu:entl:lib:eresources;urn:mace:nyu.edu:entl:its:projmgmt;urn:mace:nyu.edu:entl:its:files;urn:mace:incommon:entitlement:common:1
+#     </entitlements>
 #     <edupersonentitlement>
 #       <value>urn:mace:nyu.edu:entl:its:wikispriv</value>
 #       <value>urn:mace:nyu.edu:entl:its:classes</value>
 #       <value>urn:mace:nyu.edu:entl:its:qualtrics</value>
 #       <value>urn:mace:nyu.edu:entl:lib:eresources</value>
-#       <value>urn:mace:nyu.edu:entl:its:wikispub</value>
-#       <value>urn:mace:nyu.edu:entl:its:webspace</value>
-#       <value>urn:mace:nyu.edu:entl:lib:ideaexchange</value>
 #       <value>urn:mace:nyu.edu:entl:its:projmgmt</value>
 #       <value>urn:mace:nyu.edu:entl:its:files</value>
 #       <value>urn:mace:incommon:entitlement:common:1</value>
@@ -294,18 +294,7 @@ sub destroy {
 #         <sn>Surname</sn>
 #         <email>nyu_shibboleth_email@nyu.edu</email>
 #         <aleph_identifier>ALEPH_ID</aleph_identifier>
-#         <entitlements>
-#           <value>urn:mace:nyu.edu:entl:its:wikispriv</value>
-#           <value>urn:mace:nyu.edu:entl:its:classes</value>
-#           <value>urn:mace:nyu.edu:entl:its:qualtrics</value>
-#           <value>urn:mace:nyu.edu:entl:lib:eresources</value>
-#           <value>urn:mace:nyu.edu:entl:its:wikispub</value>
-#           <value>urn:mace:nyu.edu:entl:its:webspace</value>
-#           <value>urn:mace:nyu.edu:entl:lib:ideaexchange</value>
-#           <value>urn:mace:nyu.edu:entl:its:projmgmt</value>
-#           <value>urn:mace:nyu.edu:entl:its:files</value>
-#           <value>urn:mace:incommon:entitlement:common:1</value>
-#         </entitlements>
+#         <entitlements>urn:mace:nyu.edu:entl:its:wikispriv;urn:mace:nyu.edu:entl:its:classes;urn:mace:nyu.edu:entl:its:qualtrics;urn:mace:nyu.edu:entl:lib:eresources;urn:mace:nyu.edu:entl:its:projmgmt;urn:mace:nyu.edu:entl:its:files;urn:mace:incommon:entitlement:common:1</entitlements>
 #       </nyu_shibboleth>
 #       <!-- NS LDAP Identity Information (Optional) -->
 #       <ns_ldap>
@@ -326,6 +315,12 @@ sub to_xml {
   $xml .= "<$root>";
   foreach my $attribute (@attributes) {
     $xml .= "<$attribute>".xml_encode(trim($self->{$attribute}))."</$attribute>" if $self->{$attribute};
+  }
+  if($self->{'entitlements'}) {
+    my $entitlements = $self->{'entitlements'};
+    $entitlements =~ s/;/<\/value><value>/g;
+    my $edupersonentitlements = "<value>$entitlements</value>";
+    $xml .= "<edupersonentitlement>$edupersonentitlements</edupersonentitlement>";
   }
   $xml .= "</$root>";
   return $xml;
