@@ -29,7 +29,7 @@ isa_ok($controller, qw(NYU::Libraries::PDS::IdentitiesControllers::NyuShibboleth
 
 # Verify methods
 can_ok($controller, (qw(target_url current_url cleanup_url new create
-  redirect_to_target redirect_to_cleanup been_there_done_that)));
+  redirect_to_target redirect_to_cleanup been_there_done_that institute)));
 
 is($controller->create(), undef, 'Should short circuit for passive login');
 

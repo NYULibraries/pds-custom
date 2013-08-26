@@ -135,7 +135,7 @@ sub controller {
 
 sub institute_key {
   my $self = shift;
-  return lc($self->controller->institute);
+  return lc(($self->controller->institute || "NYU"));
 }
 
 sub institute_key_uc {
