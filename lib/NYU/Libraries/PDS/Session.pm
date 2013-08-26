@@ -21,7 +21,7 @@ use base qw(Class::Accessor);
 # Assumes the same names as the identities
 my @attributes = qw(id email givenname cn sn institute barcode bor_status
   bor_type name uid verification nyuidn nyu_shibboleth ns_ldap
-    edupersonentitlement objectclass ill_permission college_code college_name
+    entitlements objectclass ill_permission college_code college_name
       dept_code dept_name major_code major ill_library session_id expiry_date remote_address);
 __PACKAGE__->mk_ro_accessors(@attributes);
 __PACKAGE__->mk_accessors(qw(calling_system target_url));
@@ -233,14 +233,14 @@ sub destroy {
 #     <nyuidn>ALEPH_ID</nyuidn>
 #     <nyu_shibboleth>true|false</nyu_shibboleth>
 #     <ns_ldap>true|false</ns_ldap>
+#     <entitlements>
+#       urn:mace:nyu.edu:entl:its:wikispriv;urn:mace:nyu.edu:entl:its:classes;urn:mace:nyu.edu:entl:its:qualtrics;urn:mace:nyu.edu:entl:lib:eresources;urn:mace:nyu.edu:entl:its:projmgmt;urn:mace:nyu.edu:entl:its:files;urn:mace:incommon:entitlement:common:1
+#     </entitlements>
 #     <edupersonentitlement>
 #       <value>urn:mace:nyu.edu:entl:its:wikispriv</value>
 #       <value>urn:mace:nyu.edu:entl:its:classes</value>
 #       <value>urn:mace:nyu.edu:entl:its:qualtrics</value>
 #       <value>urn:mace:nyu.edu:entl:lib:eresources</value>
-#       <value>urn:mace:nyu.edu:entl:its:wikispub</value>
-#       <value>urn:mace:nyu.edu:entl:its:webspace</value>
-#       <value>urn:mace:nyu.edu:entl:lib:ideaexchange</value>
 #       <value>urn:mace:nyu.edu:entl:its:projmgmt</value>
 #       <value>urn:mace:nyu.edu:entl:its:files</value>
 #       <value>urn:mace:incommon:entitlement:common:1</value>
@@ -294,18 +294,7 @@ sub destroy {
 #         <sn>Surname</sn>
 #         <email>nyu_shibboleth_email@nyu.edu</email>
 #         <aleph_identifier>ALEPH_ID</aleph_identifier>
-#         <edupersonentitlement>
-#           <value>urn:mace:nyu.edu:entl:its:wikispriv</value>
-#           <value>urn:mace:nyu.edu:entl:its:classes</value>
-#           <value>urn:mace:nyu.edu:entl:its:qualtrics</value>
-#           <value>urn:mace:nyu.edu:entl:lib:eresources</value>
-#           <value>urn:mace:nyu.edu:entl:its:wikispub</value>
-#           <value>urn:mace:nyu.edu:entl:its:webspace</value>
-#           <value>urn:mace:nyu.edu:entl:lib:ideaexchange</value>
-#           <value>urn:mace:nyu.edu:entl:its:projmgmt</value>
-#           <value>urn:mace:nyu.edu:entl:its:files</value>
-#           <value>urn:mace:incommon:entitlement:common:1</value>
-#         </edupersonentitlement>
+#         <entitlements>urn:mace:nyu.edu:entl:its:wikispriv;urn:mace:nyu.edu:entl:its:classes;urn:mace:nyu.edu:entl:its:qualtrics;urn:mace:nyu.edu:entl:lib:eresources;urn:mace:nyu.edu:entl:its:projmgmt;urn:mace:nyu.edu:entl:its:files;urn:mace:incommon:entitlement:common:1</entitlements>
 #       </nyu_shibboleth>
 #       <!-- NS LDAP Identity Information (Optional) -->
 #       <ns_ldap>
@@ -326,6 +315,12 @@ sub to_xml {
   $xml .= "<$root>";
   foreach my $attribute (@attributes) {
     $xml .= "<$attribute>".xml_encode(trim($self->{$attribute}))."</$attribute>" if $self->{$attribute};
+  }
+  if($self->{'entitlements'}) {
+    my $entitlements = $self->{'entitlements'};
+    $entitlements =~ s/;/<\/value><value>/g;
+    my $edupersonentitlements = "<value>$entitlements</value>";
+    $xml .= "<edupersonentitlement>$edupersonentitlements</edupersonentitlement>";
   }
   $xml .= "</$root>";
   return $xml;

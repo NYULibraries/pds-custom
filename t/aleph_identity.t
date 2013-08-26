@@ -76,7 +76,7 @@ is($identity->to_xml(),
     "<name>SCOT THOMAS</name>".
     "<bor_name>DALTON,SCOT THOMAS</bor_name>".
     "<verification>DALT</verification>".
-    "<expiry_date>20131031</expiry_date>".
+    "<expiry_date>20141031</expiry_date>".
     "<bor_status>51</bor_status>".
     "<bor_type>CB</bor_type>".
     "<ill_permission>N</ill_permission>".

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    {{> ./common/meta}}
+    <script type="text/javascript">
+      window.location = "{{target_url}}";
+    </script>
+  </head>
+  <body>
+    {{> ./common/header }}
+    {{> ./common/nav }}
+    <h1 class="container-fluid"><a href="{{target_url}}">Click to continue</a></h1>
+    {{> ./common/footer }}
+  </body>
+</html>
