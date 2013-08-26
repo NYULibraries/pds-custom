@@ -64,6 +64,10 @@ use constant DEFAULT_FUNCTION => "sso";
 use constant GLOBAL_NYU_SHIBBOLETH_LOGOUT => "https://login.nyu.edu/sso/UI/Logout";
 use constant EZBORROW_AUTHORIZED_STATUSES => qw(50 51 52 53 54 55 56 57 58 60 61 62 63 65 66 80 81 82);
 use constant EZBORROW_URL_BASE => "https://e-zborrow.relaisd2d.com/service-proxy/";
+# library dot nyu cookies to delete on logout
+use constant LIBRARY_DOT_NYU_COOKIES => qw(_getit_session _eshelf_session _umbra_session
+  _privileges_guide_session _room_reservation_session _room_reservation_session 
+    _marli_session xerxessession_);
 
 # Private method to encrypt the Aleph identity
 # Usage:
@@ -173,6 +177,11 @@ my $destroy_session = sub {
     -expires => '-10Y', -value=>'', -domain=>'.library.nyu.edu');
   my $cgi = CGI->new();
   print $cgi->header(-cookie=>[$pds_handle]);
+  foreach my $library_cookie_name (LIBRARY_DOT_NYU_COOKIES) {
+    my $library_cookie = CGI::Cookie->new(-name=>$library_cookie_name,
+      -expires => '-10Y', -value=>'', -domain=>'.library.nyu.edu');
+    print $cgi->header(-cookie=>[$library_cookie]);
+  }
 };
 
 # Private method to get a new Aleph Controller
@@ -611,10 +620,10 @@ sub logout {
       # Hack for dealing with the fact that we can't call primo logout from the 
       # pds server since they are the same box and the load balancer doesn't like it.
       if ($remote_one[2] eq "primo") {
-        PDSLogout::logout_application($remote_one[0], $session_id, $session->institute, $remote_one[2], , "");
-      } else {
         my $url = uri_escape($remote_one[0]);
         CallHttpd::call_httpd('GET',"$bobcat_logout_url?bobcat_url=$url&pds_handle=$session_id");
+      } else {
+        PDSLogout::logout_application($remote_one[0], $session_id, $session->institute, $remote_one[2], , "");
       }
     }
     # Logout
