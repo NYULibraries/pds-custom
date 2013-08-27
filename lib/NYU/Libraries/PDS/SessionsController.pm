@@ -40,7 +40,7 @@ use URI::QueryParam;
 use PDSLogout;
 
 # NYU Libraries modules
-use NYU::Libraries::Util qw(trim whitelist_institution);
+use NYU::Libraries::Util qw(trim whitelist_institution save_permanent_eshelf_records);
 use NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethController;
 use NYU::Libraries::PDS::IdentitiesControllers::NsLdapController;
 use NYU::Libraries::PDS::IdentitiesControllers::AlephController;
@@ -140,6 +140,19 @@ my $is_alumni = sub {
   return ($entitlements =~ m/alum/);
 };
 
+# Private method to save eshelf records
+# Usage:
+#   $self->$tsetse($session_id)
+my $tsetse = sub {
+  my ($self, $session_id) = @_;
+  my $conf = $self->{'conf'};
+  my $cgi = CGI->new;
+  my $tsetse_handle = $cgi->cookie('tsetse_handle');
+  my $tsetse_credentials = $cgi->cookie('tsetse_credentials');
+  my $eshelf_success = save_permanent_eshelf_records($conf, $session_id, 
+    $tsetse_handle, $tsetse_credentials);
+};
+
 # Private method to create a session
 # Usage:
 #   $self->$create_session($identity1, $identity2)
@@ -159,6 +172,8 @@ my $create_session = sub {
       -value=>$session->session_id, -domain=>'.library.nyu.edu');
     my $cgi = CGI->new();
     print $cgi->header(-cookie=>[$pds_handle]);
+    # Save the eshelf records
+    $self->$tsetse($session->session_id);
   }
   return $session;
 };
