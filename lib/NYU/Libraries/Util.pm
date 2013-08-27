@@ -92,10 +92,8 @@ sub save_permanent_eshelf_records {
     # PUT the request to the eshelf and get the response.
     my $user_agent = LWP::UserAgent->new();
     my $url = URI::URL->new($tsetse_save_permanent_url);
-      my $headers = HTTP::Headers->new(
-      'Content-Type' => 'application/json',
-      'Cache-Control' => 'no-cache',
-      'Cookie' => $cookies);
+    my $headers = HTTP::Headers->new('Content-Type' => 'application/json',
+      'Cache-Control' => 'no-cache', 'Cookie' => $cookies);
     my $request = HTTP::Request->new("PUT", $url, $headers);
     my $response = $user_agent->request($request);
     return 0 unless ($response->is_success);
