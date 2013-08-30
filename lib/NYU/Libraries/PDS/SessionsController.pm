@@ -548,8 +548,8 @@ sub load_login {
       $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
       # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
       # or just got it from me.
-      return $nyu_shibboleth_controller->redirect_to_cleanup();
-      # return $nyu_shibboleth_controller->redirect_to_eshelf();
+      # return $nyu_shibboleth_controller->redirect_to_cleanup();
+      return $nyu_shibboleth_controller->redirect_to_eshelf();
     } else {
       # Exit with Unauthorized Error
       $self->set('error', "Unauthorized");
@@ -581,8 +581,8 @@ sub sso {
   }
   # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
   # or just got it from me.
-  return $nyu_shibboleth_controller->redirect_to_cleanup();
-  # return $nyu_shibboleth_controller->redirect_to_eshelf();
+  # return $nyu_shibboleth_controller->redirect_to_cleanup();
+  return $nyu_shibboleth_controller->redirect_to_eshelf();
 }
 
 # Authenticate based on the given id and password
@@ -605,8 +605,8 @@ sub authenticate {
   if (defined($identities)) {
     my $session = $self->$create_session(@$identities);
     # Redirect to whence we came (with some processing)
-    return $self->_redirect_to_cleanup();
-    # return $self->_redirect_to_eshelf();
+    # return $self->_redirect_to_cleanup();
+    return $self->_redirect_to_eshelf();
   } else {
     # Redirect to unauthorized page
     return $self->_redirect_to_unauthorized() if ($self->error eq "Unauthorized");
