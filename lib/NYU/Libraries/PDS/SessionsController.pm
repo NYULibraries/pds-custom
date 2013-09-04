@@ -563,12 +563,13 @@ sub sso {
       $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
       my $session = 
         $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
+      # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
+      # or just got it from me.
+      # return $nyu_shibboleth_controller->redirect_to_cleanup();
+      return $nyu_shibboleth_controller->redirect_to_eshelf();
     }
   }
-  # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
-  # or just got it from me.
-  # return $nyu_shibboleth_controller->redirect_to_cleanup();
-  return $nyu_shibboleth_controller->redirect_to_eshelf();
+  return $nyu_shibboleth_controller->redirect_to_target();
 }
 
 # Authenticate based on the given id and password

@@ -68,9 +68,10 @@ my $lookup_from_xserver = sub {
   my $bor_info = NYU::Libraries::XService::Aleph::BorInfo->new(
     "Host" => $conf->{xserver_host}, "Port" => $conf->{xserver_port},
       "BorID" => $id, "Library" => $conf->{ adm },
-        "Loans" => "N", "Cash" => "N", "Holds" => "N", "Translate" => "N",
-          "UserName" => $conf->{ xserver_user }, 
-            "UserPassword" => $conf->{ xserver_password });
+        "SubLibrary" => $conf->{ default_sub_library }, "Loans" => "N",
+          "Cash" => "N", "Holds" => "N", "Translate" => "N",
+            "UserName" => $conf->{ xserver_user },
+              "UserPassword" => $conf->{ xserver_password });
   # Return empty if the xservice call was unsuccessful or if it returned errors
   return undef if (!($bor_info->success) || $bor_info->get_error);
   # Set identity hash reference from xservice.
@@ -244,6 +245,11 @@ sub set_attributes {
   }
   # Set the name from Aleph
   $self->set('name', $self->givenname);
+}
+
+sub encrypt {
+  my($self, $verification) = @_;
+  return $self->$encrypt_verification($verification);
 }
 
 1;
