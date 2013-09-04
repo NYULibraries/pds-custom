@@ -63,7 +63,7 @@ is($identity->{'identity'}->{'bor_status'}, "51", "Should have identity bor stat
 is($identity->id, "N12162279", "Should have id attribute");
 is($identity->email, "std5\@nyu.edu", "Should have email attribute");
 is($identity->plif_status, "PLIF LOADED", "Should have plif status attribute");
-is($identity->verification, "DALT", "Should have encrypted verification");
+is($identity->verification, "85db3f2529a3e4e9a28135491006ce3f", "Should have encrypted verification");
 
 # Verify XML
 is($identity->to_xml(), 
@@ -75,7 +75,7 @@ is($identity->to_xml(),
     "<sn>DALTON</sn>".
     "<name>SCOT THOMAS</name>".
     "<bor_name>DALTON,SCOT THOMAS</bor_name>".
-    "<verification>DALT</verification>".
+    "<verification>85db3f2529a3e4e9a28135491006ce3f</verification>".
     "<expiry_date>20141031</expiry_date>".
     "<bor_status>51</bor_status>".
     "<bor_type>CB</bor_type>".

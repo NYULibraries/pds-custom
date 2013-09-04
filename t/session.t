@@ -65,7 +65,7 @@ is($new_session->to_xml(),
     "<bor_status>51</bor_status>".
     "<bor_type>CB</bor_type>".
     "<name>SCOT THOMAS</name>".
-    "<verification>DALT</verification>".
+    "<verification>d4465aacaa645f2164908cd4184c09f0</verification>".
     "<ill_permission>N</ill_permission>".
     "<expiry_date>20141031</expiry_date>".
   "</session>", "Unexpected session xml");
