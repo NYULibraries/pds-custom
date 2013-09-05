@@ -38,6 +38,7 @@ is($new_session->to_xml(),
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".
   "<session>".
     "<id>DS03D</id>".
+    "<email>DS03D\@nyu.edu</email>".
     "<givenname>TEST-RECORD</givenname>".
     "<cn>DS03D, TEST-RECORD</cn>".
     "<sn>DS03D</sn>".
