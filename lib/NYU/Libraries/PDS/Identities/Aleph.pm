@@ -25,7 +25,7 @@ __PACKAGE__->mk_accessors(qw(encrypt));
 
 # Private method returns an identity from the flat file for the given id
 # Usage:
-#   $self->$lookup_from_xserver(id)
+#   $self->$lookup_from_flat_file(id)
 my $lookup_from_flat_file = sub {
   my($self, $id) = @_;
   my $conf = $self->{'conf'};
@@ -107,16 +107,16 @@ my $aleph_authenticate = sub {
   my $bor_auth = NYU::Libraries::XService::Aleph::BorAuth->new(
     "Host" => $conf->{xserver_host}, "Port" => $conf->{xserver_port},
       "BorID" => $id, "Verification" => $password, "Library" => $conf->{ adm },
-        "Translate" => "N", "UserName" => $conf->{ xserver_user }, 
-            "UserPassword" => $conf->{ xserver_password });
+        "Translate" => "N", "UserName" => $conf->{ xserver_user },
+          "UserPassword" => $conf->{ xserver_password });
   # Set error and return undef if the xservice call was unsuccessful or if it returned errors
   $self->set('error', "Authentication was unsuccessful.") and return undef unless $bor_auth->success();
   $self->set('error', "Authentication error: ".$bor_auth->get_error()) and return undef if $bor_auth->get_error();
-  # Set identity hash reference from xservice.
-  my $identity;
+  # Get base attributes from flat file
+  my $identity = $self->$lookup_from_flat_file($id);
+  # Reset identity hash attributes from xservice.
   $identity->{"verification"} = $password;
   $identity->{"id"} = $bor_auth->get_z303_id();
-  $identity->{"barcode"} =  "";
   $identity->{"expiry_date"} = $bor_auth->get_z305_expiry_date();
   $identity->{"bor_status"} = $bor_auth->get_z305_borstatus();
   $identity->{"bor_type"} = $bor_auth->get_z305_bortype();
