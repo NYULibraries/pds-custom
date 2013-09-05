@@ -125,6 +125,8 @@ my $aleph_authenticate = sub {
   $identity->{"ill_permission"} = $bor_auth->get_z305_photo_permission();
   # We're overridden the birthplace with a PLIF (Patron Load something something) status
   $identity->{"plif_status"} = $bor_auth->get_z303_birthplace();
+  # Set a dummy email, just in case
+  $identity->{"email"} ||= "$id\@nyu.edu";
   # Return identity if we found one
   return ($identity->{"id"}) ? $identity : undef;
 };
