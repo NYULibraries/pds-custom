@@ -251,6 +251,8 @@ sub redirect_html {
     <link rel=\"stylesheet\" type=\"text/css\" href=\"/assets/css/nyu.css\" />
     <script src=\"/assets/javascripts/application.js\" type=\"text/javascript\"></script>
     <script type=\"text/javascript\">
+      // Unescape the HTML entities that mustache escaped
+      var target_url = \$(\"<var/>\").html\"($target_url\").text();
       window.location = \"$target_url\";
     </script>
   </head>

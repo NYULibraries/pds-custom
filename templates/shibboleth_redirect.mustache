@@ -3,7 +3,9 @@
   <head>
     {{> ./common/meta}}
     <script type="text/javascript">
-      window.location = "/Shibboleth.sso/Login?isPassive=true&target={{target_url}}";
+      // Unescape the HTML entities that mustache escaped
+      var target_url = $("<var/>").html("{{target_url}}").text();
+      window.location = "/Shibboleth.sso/Login?isPassive=true&target=" + target_url;
     </script>
   </head>
   <body>
