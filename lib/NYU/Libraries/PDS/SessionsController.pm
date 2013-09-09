@@ -81,6 +81,20 @@ my $encrypt_aleph_identity = sub {
   return $aleph_identity;
 };
 
+# Private method to deal with Primo's stupidity
+# Usage:
+#   $primo_target_url = $self->$handle_primo_target_url($target_url)
+my $handle_primo_target_url = sub {
+  my($self, $target_url) = @_;
+  my $bobcat_url = $self->{'conf'}->{bobcat_url};
+  if($target_url =~ /$bobcat_url\/primo_library\/libweb/) {
+    my $institute = $self->institute;
+    $target_url = uri_escape($target_url);
+    $target_url = "$bobcat_url/primo_library/libweb/action/login.do?loginFn=signin&vid=$institute&targetURL=$target_url";
+  }
+  return $target_url;
+};
+
 # Private method to find the current session
 # Usage:
 #   $self->$current_session()
@@ -229,6 +243,8 @@ my $nyu_shibboleth_controller = sub {
 #   $self->$set_target_url($target_url);
 my $set_target_url = sub {
   my($self, $target_url) = @_;
+  # Primo sucks!
+  $target_url = $self->$handle_primo_target_url($target_url);
   # Set target_url from either the given target URL, the shibboleth controller stored
   # "been there done that cookie" or the default
   $target_url ||= 
