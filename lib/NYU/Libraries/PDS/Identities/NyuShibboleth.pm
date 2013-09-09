@@ -11,8 +11,7 @@ __PACKAGE__->mk_ro_accessors(@attributes);
 my %SHIBBOLETH_ATTRIBUTE_MAPPINGS = (
   'id' => 'uid',
   'uid' => 'uid',
-  'email' => 'mail',
-  'email' => 'email',
+  'email' => 'MAIL',
   'givenname' => 'givenName',
   'cn' => 'displayName',
   'sn' => 'sn',

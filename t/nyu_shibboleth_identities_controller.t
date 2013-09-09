@@ -35,6 +35,6 @@ is($controller->create(), undef, 'Should short circuit for passive login');
 
 # Set the enviromnent variables
 $ENV{'uid'} = 'uid';
-$ENV{'mail'}='email@nyu.edu';
+$ENV{'MAIL'}='email@nyu.edu';
 $ENV{'entitlement'}='some:entitlements';
 $ENV{'nyuidn'}='N123456789';
