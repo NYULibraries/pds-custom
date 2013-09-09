@@ -386,13 +386,20 @@ sub _redirect_to_eshelf {
 #   my $redirect_header = $self->_redirect_to_ezproxy($target_url);
 # TODO: Set the EZProxy redirect!
 sub _redirect_to_ezproxy {
-  my($self, $user, $target_url) = @_;
+  my($self, $user, $target_url, $session) = @_;
   my $uri = URI->new($target_url);
   my $resource_url = uri_escape($uri->query_param('url'));
   my $ezproxy_url = $self->{'conf'}->{ezproxy_url};
   my $ezproxy_ticket = $self->$ezproxy_ticket($user);
   $ezproxy_url .= "/login?ticket=$ezproxy_ticket&user=$user&qurl=$resource_url";
-  return $self->$redirect($ezproxy_url);
+  # Go through the eshelf if we have a session.
+   if ($session) {
+     $ezproxy_url = uri_escape($ezproxy_url);
+     my $eshelf_url = $self->{'conf'}->{eshelf_url};
+     return $self->$redirect("$eshelf_url/validate?return_url=$ezproxy_url");
+   } else {
+     return $self->$redirect($ezproxy_url);
+   }
 }
 
 # Returns a redirect header to the EZProxy URL
@@ -636,8 +643,20 @@ sub ezproxy {
     my $nyu_shibboleth_identity = $nyu_shibboleth_controller->create();
     # Do we have an Shibboleth identity? If so, let's check if it can ezproxy
     if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
+      # Try to create a PDS session, since we have the opportunity.
+      my $aleph_controller = $self->$aleph_controller();
+      my $aleph_identity = 
+        $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
+      my $session;
+      # Check if the Aleph identity exists
+      if ($aleph_identity->exists) {
+        # Encrypt the Aleph identity's password
+        $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
+        $session = 
+          $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
+      }
       # Check if the Shibboleth user is authorized
-      # Were duck typing here, having an NYU shibboleth idenity
+      # Were duck typing here, having an NYU shibboleth identity
       # quacking like a session
       if ($self->$is_ezproxy_authorized($nyu_shibboleth_identity)) {
         # Get the NYU Shibboleth identity's user id
@@ -647,7 +666,7 @@ sub ezproxy {
         # or just got it from me.
         my $target_url = $nyu_shibboleth_controller->get_target_url();
         # Redirect to EZ proxy
-        return $self->_redirect_to_ezproxy($uid, $self->target_url);
+        return $self->_redirect_to_ezproxy($uid, $self->target_url, $session);
       } elsif ($self->$is_alumni($nyu_shibboleth_identity)) {
         # Redirect to alumnni EZ proxy
         return $self->_redirect_to_alumni_ezproxy();
