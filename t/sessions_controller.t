@@ -406,14 +406,22 @@ is($controller->_login_screen(), "<!DOCTYPE html>
 ", "Unexpected login NS html");
 
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
-# Test authenticate
+# Should redirect to example.com through eshelf
 is($controller->authenticate("DS03D", "TEST"), 
   redirect_html("https://dev.eshelf.library.nyu.edu/validate?return_url=http%3A%2F%2Fexample.com"),
-      "Authenticate should return redirect to target");
+      "Authenticate should return redirect to example dot com through eshelf");
 
 # Test error undefined after authenticate
 is($controller->error, undef, "Error should be undefined");
 is(defined($controller->error), '', "Error should be undefined");
+
+$controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://bobcatdev.library.nyu.edu/primo_library/libweb/action/search.do");
+# Should redirect to BobCat login through eshelf
+is($controller->authenticate("DS03D", "TEST"),
+  redirect_html("https://dev.eshelf.library.nyu.edu/validate?return_url=".
+    "http%3A%2F%2Fbobcatdev.library.nyu.edu%2Fprimo_library%2Flibweb%2Faction%2Flogin.do%3FloginFn%3Dsignin%26vid%3DNYU%26targetURL%3D".
+      "http%253A%252F%252Fbobcatdev.library.nyu.edu%252Fprimo_library%252Flibweb%252Faction%252Fsearch.do"),
+        "Authenticate should redirect to BobCat login through eshelf");
 
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
 # Test authenticate
@@ -435,7 +443,7 @@ $ENV{'nyuidn'}='N12162279';
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "ezproxy", "http://login.library.nyu.edu/ezproxy?url=http://example.com");
 # Should redirect to EZ proxy unauthorized page
 is($controller->ezproxy, redirect_html("http://library.nyu.edu/errors/ezproxy-library-nyu-edu/login.html"),
-    "Should redirect to ezproxy unauthorized");
+  "Should redirect to ezproxy unauthorized");
 
 # Need to revisit
 # $ENV{'entitlement'}='urn:mace:nyu.edu:entl:lib:eresources';
@@ -453,7 +461,7 @@ $conf->{flat_file} = "./t/support/patrons.dat";
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "ezborrow", "http://login.library.nyu.edu/ezborrow?query=ezborrow");
 is($controller->ezborrow, 
   redirect_html("https://dev.eshelf.library.nyu.edu/validate?return_url=https%3A%2F%2Fe-zborrow.relaisd2d.com%2Fservice-proxy%2F%3Fcommand%3Dmkauth%26LS%3DNYU%26PI%3D21142226710882%26query%3D"),
-      "Should redirect to ezborrow");
+    "Should redirect to ezborrow through eshelf");
 
 $ENV{'uid'} = 'uid';
 $ENV{'mail'}='email@nyu.edu';
@@ -463,23 +471,26 @@ $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo"
 # Should redirect to example.com through eshelf
 is($controller->sso,
   redirect_html("https://dev.eshelf.library.nyu.edu/validate?return_url=http%3A%2F%2Fexample.com"),
-    "Should redirect to example dot com through eshelf");
+    "SSO should redirect to example dot com through eshelf");
+
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
 # Should redirect to example.com through eshelf
 is($controller->load_login,
   redirect_html("https://dev.eshelf.library.nyu.edu/validate?return_url=http%3A%2F%2Fexample.com"),
-    "Should redirect to example dot com through eshelf");
+    "Load login should redirect to example dot com through eshelf");
+
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://bobcatdev.library.nyu.edu/primo_library/libweb/action/search.do");
 # Should redirect to BobCat login through eshelf
 is($controller->sso,
   redirect_html("https://dev.eshelf.library.nyu.edu/validate?return_url=".
     "http%3A%2F%2Fbobcatdev.library.nyu.edu%2Fprimo_library%2Flibweb%2Faction%2Flogin.do%3FloginFn%3Dsignin%26vid%3DNYU%26targetURL%3D".
       "http%253A%252F%252Fbobcatdev.library.nyu.edu%252Fprimo_library%252Flibweb%252Faction%252Fsearch.do"),
-        "Should redirect to BobCat login through eshelf");
+        "SSO should redirect to BobCat login through eshelf");
+
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://bobcatdev.library.nyu.edu/primo_library/libweb/action/search.do");
 # Should redirect to BobCat login through eshelf
 is($controller->load_login,
   redirect_html("https://dev.eshelf.library.nyu.edu/validate?return_url=".
     "http%3A%2F%2Fbobcatdev.library.nyu.edu%2Fprimo_library%2Flibweb%2Faction%2Flogin.do%3FloginFn%3Dsignin%26vid%3DNYU%26targetURL%3D".
       "http%253A%252F%252Fbobcatdev.library.nyu.edu%252Fprimo_library%252Flibweb%252Faction%252Fsearch.do"),
-        "Should redirect to BobCat login through eshelf");
+        "Load login should redirect to BobCat login through eshelf");
