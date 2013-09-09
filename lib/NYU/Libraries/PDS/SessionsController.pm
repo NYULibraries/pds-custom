@@ -50,7 +50,7 @@ use NYU::Libraries::PDS::Views::Logout;
 use NYU::Libraries::PDS::Views::Redirect;
 
 use base qw(Class::Accessor);
-__PACKAGE__->mk_accessors(qw(institute calling_system target_url current_url cleanup_url session_id error));
+__PACKAGE__->mk_accessors(qw(institute calling_system target_url current_url session_id error));
 
 # Default constants
 use constant UNAUTHORIZED_URL => "http://library.nyu.edu/errors/login-library-nyu-edu/unauthorized.html";
@@ -218,7 +218,6 @@ my $nyu_shibboleth_controller = sub {
       NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethController->new($self->{'conf'});
     $nyu_shibboleth_controller->target_url($self->target_url);
     $nyu_shibboleth_controller->current_url($self->current_url);
-    $nyu_shibboleth_controller->cleanup_url($self->cleanup_url);
     $nyu_shibboleth_controller->institute($self->institute);
     $self->{'nyu_shibboleth_controller'} = $nyu_shibboleth_controller;
   }
@@ -255,19 +254,6 @@ my $set_current_url = sub {
       "$base/pds?func=$function&institute=$institute&calling_system=$calling_system&url=$target_url";
   }
   $self->set('current_url', uri_escape($current_url));
-};
-
-# Private method to set the cleanup URL
-# Usage:
-#   $self->$set_cleanup_url();
-my $set_cleanup_url = sub {
-  my $self = shift;
-  my $conf = $self->{'conf'};
-  my $base = $conf->{bobcat_url};
-  if($base) {
-    my $cleanup_url ||= "$base/primo_library/libweb/custom/cleanup.jsp?url=";
-    $self->set('cleanup_url', $cleanup_url);
-  }
 };
 
 # Private method to get the EZProxy ticket
@@ -314,8 +300,6 @@ my $initialize = sub {
   $self->$set_target_url($target_url);
   # Set current_url
   $self->$set_current_url($current_url);
-  # Set cleanup_url
-  $self->$set_cleanup_url();
   # Set session_id
   $self->set('session_id', $session_id) if $session_id;
 };
@@ -386,26 +370,15 @@ sub _redirect_to_target {
   return $self->$redirect($self->target_url);
 }
 
-# Returns a redirect header to the cleanup URL
-# Usage:
-#   my $redirect_header = $self->_redirect_to_cleanup();
-sub _redirect_to_cleanup {
-  my $self = shift;
-  return _redirect_to_target unless $self->cleanup_url;
-  my $target_url = uri_escape($self->target_url);
-  return $self->$redirect($self->cleanup_url.$target_url);
-}
-
 # Returns a redirect header to the eshelf
 # Usage:
 #   my $redirect_header = $self->_redirect_to_eshelf();
 sub _redirect_to_eshelf {
   my $self = shift;
   my $eshelf_url = $self->{'conf'}->{eshelf_url};
-  return _redirect_to_cleanup unless $eshelf_url;
+  return _redirect_to_target unless $eshelf_url;
   my $target_url = uri_escape($self->target_url);
-  my $cleanup_url = uri_escape($self->cleanup_url.$target_url);
-  return $self->$redirect("$eshelf_url/validate?return_url=$cleanup_url");
+  return $self->$redirect("$eshelf_url/validate?return_url=$target_url");
 }
 
 # Returns a redirect header to the EZProxy URL for the given target url
@@ -436,8 +409,6 @@ sub _redirect_to_ezborrow {
   my $barcode = $session->barcode;
   my $ezborrow_url =
     EZBORROW_URL_BASE."?command=mkauth&LS=NYU&PI=$barcode&query=$query";
-  $ezborrow_url = $self->cleanup_url.uri_escape($ezborrow_url);
-  # return $self->$redirect($ezborrow_url);
   $ezborrow_url = uri_escape($ezborrow_url);
   my $eshelf_url = $self->{'conf'}->{eshelf_url};
   return $self->$redirect("$eshelf_url/validate?return_url=$ezborrow_url");
@@ -534,7 +505,6 @@ sub load_login {
       $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
       # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
       # or just got it from me.
-      # return $nyu_shibboleth_controller->redirect_to_cleanup();
       return $nyu_shibboleth_controller->redirect_to_eshelf();
     } else {
       # Exit with Unauthorized Error
@@ -565,7 +535,6 @@ sub sso {
         $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
       # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
       # or just got it from me.
-      # return $nyu_shibboleth_controller->redirect_to_cleanup();
       return $nyu_shibboleth_controller->redirect_to_eshelf();
     }
   }
@@ -592,7 +561,6 @@ sub authenticate {
   if (defined($identities)) {
     my $session = $self->$create_session(@$identities);
     # Redirect to whence we came (with some processing)
-    # return $self->_redirect_to_cleanup();
     return $self->_redirect_to_eshelf();
   } else {
     # Redirect to unauthorized page
@@ -633,7 +601,7 @@ sub logout {
   }
   my $target_url = ($nyu_shibboleth) ? GLOBAL_NYU_SHIBBOLETH_LOGOUT : $self->target_url;
   $target_url = uri_escape($target_url) if $target_url;
-  my $return = ($target_url) ? "return=$target_url" : "";
+  my $return = ($self->target_url) ? "return=$target_url" : "";
   return $self->$redirect("/Shibboleth.sso/Logout?$return");
 }
 
