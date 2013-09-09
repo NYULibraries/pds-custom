@@ -12,6 +12,7 @@ my %SHIBBOLETH_ATTRIBUTE_MAPPINGS = (
   'id' => 'uid',
   'uid' => 'uid',
   'email' => 'mail',
+  'email' => 'email',
   'givenname' => 'givenName',
   'cn' => 'displayName',
   'sn' => 'sn',
