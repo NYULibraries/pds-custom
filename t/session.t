@@ -85,7 +85,7 @@ is($new_session->institute, "HSL", "Session should be have an HSL institute");
 # NYU Shibboleth session
 # Set the enviromnent variables
 $ENV{'uid'} = 'uid';
-$ENV{'MAIL'}='email@nyu.edu';
+$ENV{'mail'}='email@nyu.edu';
 $ENV{'entitlement'}='some:entitlements';
 $ENV{'nyuidn'}='N12162279';
 # Get a new instance of NyuShibbolethIdentity

@@ -437,7 +437,7 @@ $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo"
 is($controller->_logout_screen(), NYU_LOGOUT, "Should be a logout screen.");
 
 $ENV{'uid'} = 'uid';
-$ENV{'MAIL'}='email@nyu.edu';
+$ENV{'mail'}='email@nyu.edu';
 $ENV{'entitlement'}='some:entitlements';
 $ENV{'nyuidn'}='N12162279';
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "ezproxy", "http://login.library.nyu.edu/ezproxy?url=http://example.com");
@@ -464,7 +464,7 @@ is($controller->ezborrow,
     "Should redirect to ezborrow through eshelf");
 
 $ENV{'uid'} = 'uid';
-$ENV{'MAIL'}='email@nyu.edu';
+$ENV{'mail'}='email@nyu.edu';
 $ENV{'entitlement'}='some:entitlements';
 $ENV{'nyuidn'}='N12162279';
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
