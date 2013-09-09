@@ -499,6 +499,5 @@ $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo"
 # Should redirect to BobCat login through eshelf
 is($controller->load_login,
   redirect_html("https://dev.eshelf.library.nyu.edu/validate?return_url=".
-    "http%3A%2F%2Fbobcatdev.library.nyu.edu%2Fprimo_library%2Flibweb%2Faction%2Flogin.do%3FloginFn%3Dsignin%26vid%3DNYU%26targetURL%3D".
-      "http%253A%252F%252Fbobcatdev.library.nyu.edu%253A80%252Fprimo_library%252Flibweb%252Faction%252Flogin.do"),
+    "http%3A%2F%2Fbobcatdev.library.nyu.edu%3A80%2Fprimo_library%2Flibweb%2Faction%2Flogin.do"),
         "Load login should redirect to BobCat login through eshelf");
