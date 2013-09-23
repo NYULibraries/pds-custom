@@ -34,6 +34,7 @@ sub get_session_id {
 sub get_error {
   my $self = shift;
   my $xml = $self->get_xml();
+  return "Couldn't get a session id" unless $self->get_session_id();
   my $content = $self->get_content($xml->{"error"}->[0]);
   return (ref $content) ? '' : $content;
 }

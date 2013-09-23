@@ -138,7 +138,9 @@ use constant NYU_LOGOUT => "<!DOCTYPE html>
 </html>
 ";
 
-use constant NYU_LOGIN_WITH_ERROR => "<!DOCTYPE html>
+sub nyu_login_screen_with_errors {
+  my $error = shift;
+  return "<!DOCTYPE html>
 <html>
   <head>
     <title>BobCat</title>
@@ -197,7 +199,9 @@ use constant NYU_LOGIN_WITH_ERROR => "<!DOCTYPE html>
           </h2>
           <form id=\"nyu_pds_login_form\" action=\"/pds\" method=\"post\">
             <fieldset>
-              <div class=\"alert alert-error\">There seems to have been a problem logging in. Please check your credentials.</div>
+              <div class=\"alert alert-error\">
+                $error
+              </div>
               <input type=\"hidden\" name=\"func\" value=\"login\" />
               <input type=\"hidden\" name=\"calling_system\" value=\"primo\" />
               <input type=\"hidden\" name=\"institute\" value=\"NYU\" />
@@ -235,7 +239,8 @@ use constant NYU_LOGIN_WITH_ERROR => "<!DOCTYPE html>
     <footer>NYU Division of Libraries.  BobCat.  Powered by Ex Libris Primo</footer>
   </body>
 </html>
-";
+"
+}
 
 sub redirect_html {
   my $target_url = shift;
@@ -294,7 +299,7 @@ isa_ok($controller, qw(Class::Accessor));
 isa_ok($controller, qw(NYU::Libraries::PDS::SessionsController));
 
 # Verify methods
-can_ok($controller, (qw(institute calling_system target_url current_url session_id error)));
+can_ok($controller, (qw(institute calling_system target_url current_url cleanup_url session_id error)));
 
 # The following tests will only pass if the CI environment variable is set.
 unless($ENV{'CI'}) {
@@ -406,26 +411,27 @@ is($controller->_login_screen(), "<!DOCTYPE html>
 ", "Unexpected login NS html");
 
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
-# Should redirect to example.com through eshelf
+# Should redirect to example.com through cleanup
 is($controller->authenticate("DS03D", "TEST"), 
-  redirect_html("https://dev.eshelf.library.nyu.edu/validate?return_url=http%3A%2F%2Fexample.com"),
-      "Authenticate should return redirect to example dot com through eshelf");
+  redirect_html("http://bobcatdev.library.nyu.edu/primo_library/libweb/custom/cleanup.jsp?url=http%3A%2F%2Fexample.com"),
+      "Authenticate should return redirect to example dot com through cleanup");
 
 # Test error undefined after authenticate
 is($controller->error, undef, "Error should be undefined");
 is(defined($controller->error), '', "Error should be undefined");
 
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://bobcatdev.library.nyu.edu/primo_library/libweb/action/search.do");
-# Should redirect to BobCat login through eshelf
+# Should redirect to BobCat login through cleanup
 is($controller->authenticate("DS03D", "TEST"),
-  redirect_html("https://dev.eshelf.library.nyu.edu/validate?return_url=".
-    "http%3A%2F%2Fbobcatdev.library.nyu.edu%2Fprimo_library%2Flibweb%2Faction%2Flogin.do%3FloginFn%3Dsignin%26vid%3DNYU%26targetURL%3D".
-      "http%253A%252F%252Fbobcatdev.library.nyu.edu%252Fprimo_library%252Flibweb%252Faction%252Fsearch.do"),
-        "Authenticate should redirect to BobCat login through eshelf");
+  redirect_html("http://bobcatdev.library.nyu.edu/primo_library/libweb/custom/cleanup.jsp?url=".
+    "http%3A%2F%2Fbobcatdev.library.nyu.edu%2Fprimo_library%2Flibweb%2Faction%2Fsearch.do"),
+      "Authenticate should redirect to BobCat login through cleanup");
 
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
 # Test authenticate
-is($controller->authenticate("DS03D", "FAIL"), NYU_LOGIN_WITH_ERROR, "Authenticate should be login screen");
+is($controller->authenticate("DS03D", "FAIL"),
+  nyu_login_screen_with_errors("There seems to have been a problem logging in. Please check your credentials."),
+    "Authenticate should be login screen");
 # Test error undefined after authenticate
 isnt($controller->error, undef, "Error should be defined");
 isnt(defined($controller->error), '', "Error should be defined");
@@ -460,44 +466,55 @@ $ENV{'nyuidn'}='N18158418';
 $conf->{flat_file} = "./t/support/patrons.dat";
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "ezborrow", "http://login.library.nyu.edu/ezborrow?query=ezborrow");
 is($controller->ezborrow, 
-  redirect_html("https://dev.eshelf.library.nyu.edu/validate?return_url=https%3A%2F%2Fe-zborrow.relaisd2d.com%2Fservice-proxy%2F%3Fcommand%3Dmkauth%26LS%3DNYU%26PI%3D21142226710882%26query%3D"),
-    "Should redirect to ezborrow through eshelf");
+  redirect_html("http://bobcatdev.library.nyu.edu/primo_library/libweb/custom/cleanup.jsp?url=".
+    "https%3A%2F%2Fe-zborrow.relaisd2d.com%2Fservice-proxy%2F%3Fcommand%3Dmkauth%26LS%3DNYU%26PI%3D21142226710882%26query%3D"),
+      "Should redirect to ezborrow through cleanup");
 
 $ENV{'uid'} = 'uid';
 $ENV{'email'}='email@nyu.edu';
 $ENV{'entitlement'}='some:entitlements';
 $ENV{'nyuidn'}='N12162279';
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
-# Should redirect to example.com through eshelf
+# Should redirect to example.com through cleanup
 is($controller->sso,
-  redirect_html("https://dev.eshelf.library.nyu.edu/validate?return_url=http%3A%2F%2Fexample.com"),
-    "SSO should redirect to example dot com through eshelf");
+  redirect_html("http://bobcatdev.library.nyu.edu/primo_library/libweb/custom/cleanup.jsp?url=http%3A%2F%2Fexample.com"),
+    "SSO should redirect to example dot com through cleanup");
 
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
-# Should redirect to example.com through eshelf
+# Should redirect to example.com through cleanup
 is($controller->load_login,
-  redirect_html("https://dev.eshelf.library.nyu.edu/validate?return_url=http%3A%2F%2Fexample.com"),
-    "Load login should redirect to example dot com through eshelf");
+  redirect_html("http://bobcatdev.library.nyu.edu/primo_library/libweb/custom/cleanup.jsp?url=http%3A%2F%2Fexample.com"),
+    "Load login should redirect to example dot com through cleanup");
 
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://bobcatdev.library.nyu.edu/primo_library/libweb/action/search.do");
-# Should redirect to BobCat login through eshelf
+# Should redirect to BobCat login through cleanup
 is($controller->sso,
-  redirect_html("https://dev.eshelf.library.nyu.edu/validate?return_url=".
-    "http%3A%2F%2Fbobcatdev.library.nyu.edu%2Fprimo_library%2Flibweb%2Faction%2Flogin.do%3FloginFn%3Dsignin%26vid%3DNYU%26targetURL%3D".
-      "http%253A%252F%252Fbobcatdev.library.nyu.edu%252Fprimo_library%252Flibweb%252Faction%252Fsearch.do"),
-        "SSO should redirect to BobCat login through eshelf");
+  redirect_html("http://bobcatdev.library.nyu.edu/primo_library/libweb/custom/cleanup.jsp?url=".
+    "http%3A%2F%2Fbobcatdev.library.nyu.edu%2Fprimo_library%2Flibweb%2Faction%2Fsearch.do"),
+      "SSO should redirect to BobCat login through cleanup");
 
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://bobcatdev.library.nyu.edu/primo_library/libweb/action/search.do");
-# Should redirect to BobCat login through eshelf
+# Should redirect to BobCat login through cleanup
 is($controller->load_login,
-  redirect_html("https://dev.eshelf.library.nyu.edu/validate?return_url=".
-    "http%3A%2F%2Fbobcatdev.library.nyu.edu%2Fprimo_library%2Flibweb%2Faction%2Flogin.do%3FloginFn%3Dsignin%26vid%3DNYU%26targetURL%3D".
-      "http%253A%252F%252Fbobcatdev.library.nyu.edu%252Fprimo_library%252Flibweb%252Faction%252Fsearch.do"),
-        "Load login should redirect to BobCat login through eshelf");
+  redirect_html("http://bobcatdev.library.nyu.edu/primo_library/libweb/custom/cleanup.jsp?url=".
+    "http%3A%2F%2Fbobcatdev.library.nyu.edu%2Fprimo_library%2Flibweb%2Faction%2Fsearch.do"),
+      "Load login should redirect to BobCat login through cleanup");
 
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://bobcatdev.library.nyu.edu:80/primo_library/libweb/action/login.do");
-# Should redirect to BobCat login through eshelf
+# Should redirect to BobCat login through cleanup
 is($controller->load_login,
-  redirect_html("https://dev.eshelf.library.nyu.edu/validate?return_url=".
+  redirect_html("http://bobcatdev.library.nyu.edu/primo_library/libweb/custom/cleanup.jsp?url=".
     "http%3A%2F%2Fbobcatdev.library.nyu.edu%3A80%2Fprimo_library%2Flibweb%2Faction%2Flogin.do"),
-        "Load login should redirect to BobCat login through eshelf");
+      "Load login should redirect to BobCat login through cleanup");
+
+# What about if Aleph is down.
+$conf->{ xserver_host } = "http://library.nyu.edu/errors/bobcatstandard-library-nyu-edu/?";
+$conf->{lookup_only} = 0;
+$controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
+# Should notify users that Aleph is down
+is($controller->authenticate("DS03D", "TEST"), 
+  nyu_login_screen_with_errors("We&#39;re sorry for the inconvenience, but BobCat login services are down at the moment.
+                <a href=\"http://library.nyu.edu/ask/\" target=\"_blank\">
+                  Please contact Ask a Librarian for more information.
+                </a>"),
+  "Authenticate should present login screen with Aleph down message.");

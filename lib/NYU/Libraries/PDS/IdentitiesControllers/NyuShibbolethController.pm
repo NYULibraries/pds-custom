@@ -16,7 +16,7 @@ use NYU::Libraries::PDS::Views::Redirect;
 use NYU::Libraries::PDS::Views::ShibbolethRedirect;
 
 use base qw(NYU::Libraries::PDS::IdentitiesControllers::BaseController);
-__PACKAGE__->mk_accessors(qw(target_url current_url institute));
+__PACKAGE__->mk_accessors(qw(target_url current_url cleanup_url institute));
 
 # Been there done that cookie name
 use constant PDS_TARGET_COOKIE => 'pds_btdt_target_url';
@@ -142,15 +142,26 @@ sub redirect_to_target {
   return $self->$redirect($self->get_target_url());
 }
 
+# Returns a redirect header to the Primo cleanup page
+# Usage:
+#   my $redirect_header = $controller->redirect_to_cleanup();
+sub redirect_to_cleanup {
+  my $self = shift;
+  return redirect_to_target unless $self->cleanup_url;
+  my $target_url = uri_escape($self->get_target_url());
+  return $self->$redirect($self->cleanup_url.$target_url);
+}
+
 # Returns a redirect header to the eshelf
 # Usage:
 #   my $redirect_header = $controller->redirect_to_eshelf();
 sub redirect_to_eshelf {
   my $self = shift;
   my $eshelf_url = $self->{'conf'}->{eshelf_url};
-  return redirect_to_target unless $eshelf_url;
+  return redirect_to_cleanup unless $eshelf_url;
   my $target_url = uri_escape($self->target_url);
-  return $self->$redirect("$eshelf_url/validate?return_url=$target_url");
+  my $cleanup_url = uri_escape($self->cleanup_url.$target_url);
+  return $self->$redirect("$eshelf_url/validate?return_url=$cleanup_url");
 }
 
 # Method returns the target url

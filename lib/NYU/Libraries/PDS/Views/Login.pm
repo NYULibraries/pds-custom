@@ -182,6 +182,11 @@ sub error {
   return $self->controller->error;
 }
 
+sub aleph_down_error {
+  my $self = shift;
+  return $self->error eq "We're sorry for the inconvenience, but BobCat login services are down at the moment.";
+}
+
 sub is_ezproxy {
   my $self = shift;
   return ($self->calling_system eq "ezproxy");

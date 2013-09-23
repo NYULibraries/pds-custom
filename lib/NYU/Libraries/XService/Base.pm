@@ -23,8 +23,12 @@ BEGIN {
 my $set_xml = sub {
   my $self = shift;
   my $xs = new XML::Simple();
-  my $ref = $xs->XMLin($self->{"Body"},ForceArray =>1);
-  $self->{"XML"} = $ref;
+  my $ref;
+  eval {
+    $self->{"XML"} = $xs->XMLin($self->{"Body"},ForceArray =>1);
+  };
+  return unless $@;
+  $self->{"XML"} = $xs->XMLin('<root><error>Aleph may be down.</error></root>',ForceArray =>1) if $@;
 };
 
 sub new {
@@ -116,5 +120,4 @@ sub success {
   my $self = shift;
   return $self->{"Success"};
 }
-
 1;
