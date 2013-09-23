@@ -7,7 +7,12 @@
 <form id="nyu_pds_login_form" action="{{form_action}}" method="post">
   <fieldset>
     {{#error}}
-    <div class="alert alert-error">{{error}}</div>
+    <div class="alert alert-error">
+      {{error}}{{#aleph_down_error}}
+      <a href="http://library.nyu.edu/ask/" target="_blank">
+        Please contact Ask a Librarian for more information.
+      </a>{{/aleph_down_error}}
+    </div>
     {{/error}}
     <input type="hidden" name="func" value="login" />
     <input type="hidden" name="calling_system" value="{{calling_system}}" />
