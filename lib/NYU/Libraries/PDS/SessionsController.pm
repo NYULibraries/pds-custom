@@ -87,13 +87,14 @@ my $encrypt_aleph_identity = sub {
 my $handle_primo_target_url = sub {
   my($self, $target_url) = @_;
   my $bobcat_url = $self->{'conf'}->{bobcat_url};
-  if($target_url =~ /$bobcat_url(:[0-9]+)?\/primo_library\/libweb/) {
-    if($target_url !~ /login.do/) {
-      my $institute = $self->institute;
-      $target_url = uri_escape($target_url);
-      $target_url = "$bobcat_url/primo_library/libweb/action/login.do?loginFn=signin&vid=$institute&targetURL=$target_url";
-    }
-  }
+  # Skip for now
+  # if($target_url =~ /$bobcat_url(:[0-9]+)?\/primo_library\/libweb/) {
+  #   if($target_url !~ /login.do/) {
+  #     my $institute = $self->institute;
+  #     $target_url = uri_escape($target_url);
+  #     $target_url = "$bobcat_url/primo_library/libweb/action/login.do?loginFn=signin&vid=$institute&targetURL=$target_url";
+  #   }
+  # }
   return $target_url;
 };
 
