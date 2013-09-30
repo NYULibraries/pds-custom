@@ -78,7 +78,7 @@ sub trim {
 }
 
 sub save_permanent_eshelf_records {
-  my ($self, $conf, $pds_handle, $tsetse_handle, $tsetse_credentials) = @_;
+  my ($conf, $pds_handle, $tsetse_handle, $tsetse_credentials) = @_;
   return 0 if !defined $conf;
   if ($tsetse_handle && $pds_handle) {
     my $tsetse_url = $conf->{'tsetse_url'};
