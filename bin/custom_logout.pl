@@ -9,7 +9,7 @@ use lib "/exlibris/primo/p3_1/pds/custom/vendor/lib";
 use lib "/exlibris/primo/p3_1/pds/program";
 
 # NYU Libraries modules
-use NYU::Libraries::Util qw(parse_conf);
+use NYU::Libraries::Util qw(parse_conf, fix_target_url);
 use NYU::Libraries::PDS;
 
 # PDS Core modules
@@ -21,8 +21,7 @@ my $cgi = new CGI;
 # Get Session Id
 my $session_id = $cgi->cookie('PDS_HANDLE');
 # Target URL
-my $target_url = PDSParamUtil::queryUrl();
-$target_url = '' if $target_url eq '?';
+my $target_url = fix_target_url(PDSParamUtil::queryUrl());
 # Institute from URL
 my $institute = PDSParamUtil::getAndFilterParam('institute');
 # Calling system from URL

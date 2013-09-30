@@ -8,7 +8,8 @@ use LWP::UserAgent;
 # Export these methods
 require Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(trim xml_encode parse_conf save_permanent_eshelf_records whitelist_institution);
+our @EXPORT_OK = qw(trim xml_encode parse_conf fix_target_url
+  save_permanent_eshelf_records whitelist_institution);
 
 # global lookup hash
 my %ESCAPES = ('&' => '&amp;', '"' => '&quot;');
@@ -75,6 +76,16 @@ sub trim {
   $string =~ s/^\s+//;
   $string =~ s/\s+$//;
   return $string;
+}
+
+# Function to fix a given target url
+# Usage:
+#   $target_url = fix_target_url($target_url);
+sub fix_target_url {
+  my ($target_url) = @_;
+  $target_url =~ s/\&amp;/\&/g;
+  $target_url = '' if $target_url eq '?';
+  return $target_url;
 }
 
 sub save_permanent_eshelf_records {

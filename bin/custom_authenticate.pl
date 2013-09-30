@@ -8,7 +8,7 @@ use lib "/exlibris/primo/p3_1/pds/custom/vendor/lib";
 use lib "/exlibris/primo/p3_1/pds/program";
 
 # NYU Libraries modules
-use NYU::Libraries::Util qw(parse_conf);
+use NYU::Libraries::Util qw(parse_conf, fix_target_url);
 use NYU::Libraries::PDS;
 
 # PDS Core modules
@@ -20,8 +20,7 @@ sub custom_authenticate {
   my $pds_directory = getEnvironmentParams('pds_directory');
   my $conf = parse_conf("$pds_directory/config/pds/nyu.conf");
   my $calling_system = PDSParamUtil::getAndFilterParam('calling_system');
-  my $target_url = PDSParamUtil::queryUrl();
-  $target_url = '' if $target_url eq '?';
+  my $target_url = fix_target_url(PDSParamUtil::queryUrl());
   my $session_controller = NYU::Libraries::PDS::controller($conf, $institute, 
     $calling_system, $target_url, $session_id);
   print $session_controller->authenticate($id, $password);
