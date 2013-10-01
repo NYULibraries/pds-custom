@@ -595,21 +595,24 @@ sub load_login {
 sub sso {
   my $self = shift;
   my $nyu_shibboleth_controller = $self->$nyu_shibboleth_controller();
-  my $nyu_shibboleth_identity = $nyu_shibboleth_controller->create();
-  if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
-    my $aleph_controller = $self->$aleph_controller();
-    my $aleph_identity = 
-      $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
-    # Check if the Aleph identity exists
-    if ($aleph_identity->exists) {
-      # Encrypt the Aleph identity's password
-      $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
-      my $session = 
-        $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
-      # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
-      # or just got it from me.
-      # return $nyu_shibboleth_controller->redirect_to_eshelf();
-      return $nyu_shibboleth_controller->redirect_to_cleanup();
+  # Only SSO if we don't already have a session
+  unless($self->$current_session) {
+    my $nyu_shibboleth_identity = $nyu_shibboleth_controller->create();
+    if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
+      my $aleph_controller = $self->$aleph_controller();
+      my $aleph_identity = 
+        $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
+      # Check if the Aleph identity exists
+      if ($aleph_identity->exists) {
+        # Encrypt the Aleph identity's password
+        $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
+        my $session = 
+          $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
+        # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
+        # or just got it from me.
+        # return $nyu_shibboleth_controller->redirect_to_eshelf();
+        return $nyu_shibboleth_controller->redirect_to_cleanup();
+      }
     }
   }
   return $nyu_shibboleth_controller->redirect_to_cleanup();
