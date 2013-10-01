@@ -25,7 +25,7 @@ sub custom_authenticate {
   my $conf = parse_conf("$pds_directory/config/pds/nyu.conf");
   my %cookies = CGI::Cookie->fetch;
   my $pds_handle = $cookies{'PDS_HANDLE'};
-  $session_id = $pds_handle->value;
+  $session_id = $pds_handle->value if $pds_handle;
   my $calling_system = PDSParamUtil::getAndFilterParam('calling_system');
   my $target_url = fix_target_url(PDSParamUtil::queryUrl());
   my $session_controller = NYU::Libraries::PDS::controller($conf, $institute, 
