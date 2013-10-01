@@ -612,7 +612,7 @@ sub sso {
       return $nyu_shibboleth_controller->redirect_to_cleanup();
     }
   }
-  return $nyu_shibboleth_controller->redirect_to_target();
+  return $nyu_shibboleth_controller->redirect_to_cleanup();
 }
 
 # Authenticate based on the given id and password
