@@ -93,6 +93,7 @@ my $handle_primo_target_url = sub {
   if($target_url =~ /$bobcat_url(:[0-9]+)?\/primo_library\/libweb/) {
     if($target_url !~ /\/goto\/logon\//) {
       my $institute = $self->institute;
+      $target_url = uri_escape($target_url);
       $target_url = $PDSUtil::server_httpsd."/goto/logon/$target_url";
     }
   }
@@ -264,7 +265,7 @@ my $nyu_shibboleth_controller = sub {
 my $set_target_url = sub {
   my($self, $target_url) = @_;
   # Primo sucks!
-  $target_url = $self->$handle_primo_target_url($target_url);
+  # $target_url = $self->$handle_primo_target_url($target_url);
   # Set target_url from either the given target URL, the shibboleth controller stored
   # "been there done that cookie" or the default
   $target_url ||= 
