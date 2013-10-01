@@ -21,6 +21,7 @@ sub custom_load_sso {
   my $conf = parse_conf("$pds_directory/config/pds/nyu.conf");
   $calling_system ||= PDSParamUtil::getAndFilterParam('calling_system');
   $target_url = fix_target_url($target_url);
+  $target_url = $PDSUtil::server_httpsd."/goto/logon/$target_url";
   my $session_controller = NYU::Libraries::PDS::controller($conf, $institute, 
     $calling_system, $target_url, $session_id);
   print $session_controller->sso();
