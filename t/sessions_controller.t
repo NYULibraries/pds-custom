@@ -424,9 +424,8 @@ $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo"
 # Should redirect to BobCat login through cleanup
 is($controller->authenticate("DS03D", "TEST"),
   redirect_html("http://bobcatdev.library.nyu.edu/primo_library/libweb/custom/cleanup.jsp?url=".
-    "http%3A%2F%2Fbobcatdev.library.nyu.edu%2Fprimo_library%2Flibweb%2Faction%2Flogin.do%3FloginFn%3Dsignin%26vid%3DNYU%26targetURL%3D".
-      "http%253A%252F%252Fbobcatdev.library.nyu.edu%252Fprimo_library%252Flibweb%252Faction%252Fsearch.do"),
-        "Authenticate should redirect to BobCat login through cleanup");
+    "https%3A%2F%2Flogindev.library.nyu.edu%2Fgoto%2Flogon%2Fhttp%3A%2F%2Fbobcatdev.library.nyu.edu%2Fprimo_library%2Flibweb%2Faction%2Fsearch.do"),
+      "Authenticate should redirect to 'goto URL' through cleanup");
 
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
 # Test authenticate
@@ -491,23 +490,21 @@ $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo"
 # Should redirect to BobCat login through cleanup
 is($controller->sso,
   redirect_html("http://bobcatdev.library.nyu.edu/primo_library/libweb/custom/cleanup.jsp?url=".
-    "http%3A%2F%2Fbobcatdev.library.nyu.edu%2Fprimo_library%2Flibweb%2Faction%2Flogin.do%3FloginFn%3Dsignin%26vid%3DNYU%26targetURL%3D".
-      "http%253A%252F%252Fbobcatdev.library.nyu.edu%252Fprimo_library%252Flibweb%252Faction%252Fsearch.do"),
-        "SSO should redirect to BobCat login through cleanup");
+    "https%3A%2F%2Flogindev.library.nyu.edu%2Fgoto%2Flogon%2Fhttp%3A%2F%2Fbobcatdev.library.nyu.edu%2Fprimo_library%2Flibweb%2Faction%2Fsearch.do"),
+      "SSO should redirect to 'goto URL' through cleanup");
 
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://bobcatdev.library.nyu.edu/primo_library/libweb/action/search.do");
 # Should redirect to BobCat login through cleanup
 is($controller->load_login,
   redirect_html("http://bobcatdev.library.nyu.edu/primo_library/libweb/custom/cleanup.jsp?url=".
-    "http%3A%2F%2Fbobcatdev.library.nyu.edu%2Fprimo_library%2Flibweb%2Faction%2Flogin.do%3FloginFn%3Dsignin%26vid%3DNYU%26targetURL%3D".
-      "http%253A%252F%252Fbobcatdev.library.nyu.edu%252Fprimo_library%252Flibweb%252Faction%252Fsearch.do"),
-        "Load login should redirect to BobCat login through cleanup");
+    "https%3A%2F%2Flogindev.library.nyu.edu%2Fgoto%2Flogon%2Fhttp%3A%2F%2Fbobcatdev.library.nyu.edu%2Fprimo_library%2Flibweb%2Faction%2Fsearch.do"),
+      "Load login should redirect to 'goto URL' through cleanup");
 
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://bobcatdev.library.nyu.edu:80/primo_library/libweb/action/login.do");
 # Should redirect to BobCat login through cleanup
 is($controller->load_login,
   redirect_html("http://bobcatdev.library.nyu.edu/primo_library/libweb/custom/cleanup.jsp?url=".
-    "http%3A%2F%2Fbobcatdev.library.nyu.edu%3A80%2Fprimo_library%2Flibweb%2Faction%2Flogin.do"),
+    "https%3A%2F%2Flogindev.library.nyu.edu%2Fgoto%2Flogon%2Fhttp%3A%2F%2Fbobcatdev.library.nyu.edu%3A80%2Fprimo_library%2Flibweb%2Faction%2Flogin.do"),
       "Load login should redirect to BobCat login through cleanup");
 
 # What about if Aleph is down.
