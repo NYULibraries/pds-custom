@@ -93,7 +93,6 @@ my $handle_primo_target_url = sub {
   if($target_url =~ /$bobcat_url(:[0-9]+)?\/primo_library\/libweb/) {
     if($target_url !~ /\/goto\/logon\//) {
       my $institute = $self->institute;
-      $target_url = uri_escape($target_url);
       $target_url = $PDSUtil::server_httpsd."/goto/logon/$target_url";
     }
   }
