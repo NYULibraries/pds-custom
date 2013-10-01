@@ -47,7 +47,7 @@ is($new_session->to_xml(),
     "<name>TEST-RECORD</name>".
     "<verification>TEST</verification>".
     "<ill_permission>N</ill_permission>".
-    "<expiry_date>20330319</expiry_date>".
+    "<expiry_date>20330930</expiry_date>".
   "</session>", "Unexpected session xml");
 
 $conf->{xserver_host} = undef;
