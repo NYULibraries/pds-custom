@@ -8,7 +8,7 @@ use lib "/exlibris/primo/p3_1/pds/custom/vendor/lib";
 use lib "/exlibris/primo/p3_1/pds/program";
 
 # NYU Libraries modules
-use NYU::Libraries::Util qw(parse_conf, fix_target_url);
+use NYU::Libraries::Util qw(parse_conf fix_target_url);
 use NYU::Libraries::PDS;
 
 # PDS Core modules
