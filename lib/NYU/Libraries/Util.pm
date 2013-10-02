@@ -2,14 +2,22 @@ package NYU::Libraries::Util;
 use strict;
 use warnings;
 
+# URI module
+use URI;
 use URI::URL;
+use URI::Escape;
+use URI::QueryParam;
+
 use LWP::UserAgent;
+
+# PDS Util module
+use PDSUtil;
 
 # Export these methods
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(trim xml_encode parse_conf fix_target_url
-  save_permanent_eshelf_records whitelist_institution);
+  save_permanent_eshelf_records whitelist_institution handle_primo_target_url);
 
 # global lookup hash
 my %ESCAPES = ('&' => '&amp;', '"' => '&quot;');
@@ -87,6 +95,23 @@ sub fix_target_url {
   $target_url = '' if $target_url eq '?';
   return $target_url;
 }
+
+# Private method to deal with Primo's stupidity
+# Usage:
+#   $primo_target_url = $self->$handle_primo_target_url($target_url)
+sub handle_primo_target_url {
+  my($conf, $target_url, $session) = @_;
+  if($session) {
+    my $session_id = $session->session_id;
+    my $bobcat_url = $conf->{bobcat_url};
+    if($target_url =~ /$bobcat_url(:[0-9]+)?\/primo_library\/libweb/) {
+      if($target_url !~ /\/goto\/logon\//) {
+        $target_url = $PDSUtil::server_httpsd."/goto/logon/$target_url&pds_handle=$session_id";
+      }
+    }
+  }
+  return $target_url;
+};
 
 sub save_permanent_eshelf_records {
   my ($conf, $pds_handle, $tsetse_handle, $tsetse_credentials) = @_;

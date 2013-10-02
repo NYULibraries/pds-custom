@@ -10,7 +10,8 @@ use CGI::Cookie;
 # URI encoding module
 use URI::Escape;
 
-# NYU Libraries Shibboleth Identity
+# NYU Libraries modules
+use NYU::Libraries::Util qw(handle_primo_target_url);
 use NYU::Libraries::PDS::Identities::NyuShibboleth;
 use NYU::Libraries::PDS::Views::Redirect;
 use NYU::Libraries::PDS::Views::ShibbolethRedirect;
@@ -71,7 +72,7 @@ my $check = sub {
 # a redirect (302)
 # http://stackoverflow.com/questions/1144894/safari-doesnt-set-cookie-but-ie-ff-does
 # Usage:
-#   $self->$redirect($target_url);
+#   $self->$redirect($target_url, $session);
 my $redirect = sub {
   my($self, $target_url) = @_;
   # Present Redirect Screen
@@ -85,9 +86,9 @@ my $redirect = sub {
 # a redirect (302)
 # http://stackoverflow.com/questions/1144894/safari-doesnt-set-cookie-but-ie-ff-does
 # Usage:
-#   $self->$redirect($target_url);
+#   $self->$redirect_to_shibboleth($target_url, $session);
 my $redirect_to_shibboleth = sub {
-  my($self, $target_url) = @_;
+  my($self, $target_url, $session) = @_;
   # Present Redirect Screen
   my $template = NYU::Libraries::PDS::Views::ShibbolethRedirect->new($self->{'conf'}, $self);
   $template->{target_url} = $target_url;
@@ -136,30 +137,39 @@ sub create {
 
 # Returns a redirect header to the target
 # Usage:
-#   my $redirect_header = $controller->redirect_to_target();
+#   my $redirect_header = $controller->redirect_to_target($session);
 sub redirect_to_target {
-  my $self = shift;
-  return $self->$redirect($self->get_target_url());
+  my ($self, $session) = @_;
+  my $target_url = $self->get_target_url();
+  # Primo sucks!
+  $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
+  return $self->$redirect($target_url);
 }
 
 # Returns a redirect header to the Primo cleanup page
 # Usage:
-#   my $redirect_header = $controller->redirect_to_cleanup();
+#   my $redirect_header = $controller->redirect_to_cleanup($session);
 sub redirect_to_cleanup {
-  my $self = shift;
+  my ($self, $session) = @_;
   return redirect_to_target unless $self->cleanup_url;
-  my $target_url = uri_escape($self->get_target_url());
+  my $target_url = $self->get_target_url();
+  # Primo sucks!
+  $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
+  $target_url = uri_escape($target_url);
   return $self->$redirect($self->cleanup_url.$target_url);
 }
 
 # Returns a redirect header to the eshelf
 # Usage:
-#   my $redirect_header = $controller->redirect_to_eshelf();
+#   my $redirect_header = $controller->redirect_to_eshelf($session);
 sub redirect_to_eshelf {
-  my $self = shift;
+  my ($self, $session) = @_;
   my $eshelf_url = $self->{'conf'}->{eshelf_url};
   return redirect_to_cleanup unless $eshelf_url;
-  my $target_url = uri_escape($self->target_url);
+  my $target_url = $self->get_target_url();
+  # Primo sucks!
+  $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
+  $target_url = uri_escape($target_url);
   my $cleanup_url = uri_escape($self->cleanup_url.$target_url);
   return $self->$redirect("$eshelf_url/validate?return_url=$cleanup_url");
 }

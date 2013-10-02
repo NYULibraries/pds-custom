@@ -39,11 +39,8 @@ use URI::QueryParam;
 # PDS Logout module
 use PDSLogout;
 
-# PDS Util module
-use PDSUtil;
-
 # NYU Libraries modules
-use NYU::Libraries::Util qw(trim whitelist_institution save_permanent_eshelf_records);
+use NYU::Libraries::Util qw(trim whitelist_institution save_permanent_eshelf_records handle_primo_target_url);
 use NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethController;
 use NYU::Libraries::PDS::IdentitiesControllers::NsLdapController;
 use NYU::Libraries::PDS::IdentitiesControllers::AlephController;
@@ -82,22 +79,6 @@ my $encrypt_aleph_identity = sub {
   # And reset the attributes
   $aleph_identity->set_attributes(1);
   return $aleph_identity;
-};
-
-# Private method to deal with Primo's stupidity
-# Usage:
-#   $primo_target_url = $self->$handle_primo_target_url($target_url)
-my $handle_primo_target_url = sub {
-  my($self, $target_url) = @_;
-  my $bobcat_url = $self->{'conf'}->{bobcat_url};
-  if($target_url =~ /$bobcat_url(:[0-9]+)?\/primo_library\/libweb/) {
-    if($target_url !~ /\/goto\/logon\//) {
-      my $institute = $self->institute;
-      $target_url = uri_escape($target_url);
-      $target_url = $PDSUtil::server_httpsd."/goto/logon/$target_url";
-    }
-  }
-  return $target_url;
 };
 
 # Private method to find the current session
@@ -193,6 +174,8 @@ my $create_session = sub {
     print $cgi->header(-cookie=>[$pds_handle]);
     # Save the eshelf records
     $self->$tsetse($session->session_id);
+  } else {
+    $session->{session_id} = "0123456789"
   }
   return $session;
 };
@@ -264,8 +247,6 @@ my $nyu_shibboleth_controller = sub {
 #   $self->$set_target_url($target_url);
 my $set_target_url = sub {
   my($self, $target_url) = @_;
-  # Primo sucks!
-  # $target_url = $self->$handle_primo_target_url($target_url);
   # Set target_url from either the given target URL, the shibboleth controller stored
   # "been there done that cookie" or the default
   $target_url ||= 
@@ -325,7 +306,7 @@ my $ezproxy_ticket = sub {
 # a redirect (302)
 # http://stackoverflow.com/questions/1144894/safari-doesnt-set-cookie-but-ie-ff-does
 # Usage:
-#   $self->$redirect($target_url);
+#   $self->$redirect($target_url, $session);
 my $redirect = sub {
   my($self, $target_url) = @_;
   # Present Redirect Screen
@@ -416,30 +397,39 @@ sub _redirect_to_ezborrow_unauthorized {
 
 # Returns a redirect header to the target URL
 # Usage:
-#   my $redirect_header = $self->_redirect_to_target();
+#   my $redirect_header = $self->_redirect_to_target($session);
 sub _redirect_to_target {
-  my $self = shift;
-  return $self->$redirect($self->target_url);
+  my ($self, $session) = @_;
+  my $target_url = $self->target_url;
+  # Primo sucks!
+  $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
+  return $self->$redirect($target_url);
 }
 
 # Returns a redirect header to the cleanup URL
 # Usage:
-#   my $redirect_header = $self->_redirect_to_cleanup();
+#   my $redirect_header = $self->_redirect_to_cleanup($session);
 sub _redirect_to_cleanup {
-  my $self = shift;
+  my ($self, $session) = @_;
   return _redirect_to_target unless $self->cleanup_url;
-  my $target_url = uri_escape($self->target_url);
+  my $target_url = $self->target_url;
+  # Primo sucks!
+  $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
+  $target_url = uri_escape($target_url);
   return $self->$redirect($self->cleanup_url.$target_url);
 }
 
 # Returns a redirect header to the eshelf
 # Usage:
-#   my $redirect_header = $self->_redirect_to_eshelf();
+#   my $redirect_header = $self->_redirect_to_eshelf($session);
 sub _redirect_to_eshelf {
-  my $self = shift;
+  my ($self, $session) = @_;
   my $eshelf_url = $self->{'conf'}->{eshelf_url};
   return _redirect_to_cleanup unless $eshelf_url;
-  my $target_url = uri_escape($self->target_url);
+  my $target_url = $self->target_url;
+  # Primo sucks!
+  $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
+  $target_url = uri_escape($target_url);
   my $cleanup_url = uri_escape($self->cleanup_url.$target_url);
   return $self->$redirect("$eshelf_url/validate?return_url=$cleanup_url");
 }
@@ -577,11 +567,12 @@ sub load_login {
     if ($aleph_identity->exists) {
       # Encrypt the Aleph identity's password
       $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
-      $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
+      my $session = 
+        $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
       # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
       # or just got it from me.
       # return $nyu_shibboleth_controller->redirect_to_eshelf();
-      return $nyu_shibboleth_controller->redirect_to_cleanup();
+      return $nyu_shibboleth_controller->redirect_to_cleanup($session);
     } else {
       # Exit with Unauthorized Error
       $self->set('error', "Unauthorized");
@@ -612,7 +603,7 @@ sub sso {
       # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
       # or just got it from me.
       # return $nyu_shibboleth_controller->redirect_to_eshelf();
-      return $nyu_shibboleth_controller->redirect_to_cleanup();
+      return $nyu_shibboleth_controller->redirect_to_cleanup($session);
     }
   }
   return $nyu_shibboleth_controller->redirect_to_target();
@@ -639,7 +630,7 @@ sub authenticate {
     my $session = $self->$create_session(@$identities);
     # Redirect to whence we came (with some processing)
     # return $self->_redirect_to_eshelf();
-    return $self->_redirect_to_cleanup();
+    return $self->_redirect_to_cleanup($session);
   } else {
     # Redirect to unauthorized page
     return $self->_redirect_to_unauthorized() if ($self->error eq "Unauthorized");
