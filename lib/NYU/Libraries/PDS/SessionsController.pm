@@ -65,9 +65,9 @@ use constant GLOBAL_NYU_SHIBBOLETH_LOGOUT => "https://login.nyu.edu/sso/UI/Logou
 use constant EZBORROW_AUTHORIZED_STATUSES => qw(50 51 52 53 54 55 56 57 58 60 61 62 63 65 66 80 81 82);
 use constant EZBORROW_URL_BASE => "https://e-zborrow.relaisd2d.com/service-proxy/";
 # library dot nyu cookies to delete on logout
-use constant LIBRARY_DOT_NYU_COOKIES => qw(_getit_session _eshelf_session _umbra_session
-  _privileges_guide_session _room_reservation_session _room_reservation_session 
-    _marli_session xerxessession_);
+use constant LIBRARY_DOT_NYU_COOKIES => qw(_tsetse_session tsetse_credentials tsetse_handle
+  _umlaut_session _getit_session _eshelf_session _umbra_session _privileges_guide_session
+    _room_reservation_session _room_reservation_session _marli_session xerxessession_);
 
 # Private method to encrypt the Aleph identity
 # Usage:
