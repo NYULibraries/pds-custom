@@ -113,11 +113,6 @@ use constant NYU_LOGOUT => "<!DOCTYPE html>
     <meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1\" />
     <link rel=\"stylesheet\" type=\"text/css\" href=\"/assets/css/nyu.css\" />
     <script src=\"/assets/javascripts/application.js\" type=\"text/javascript\"></script>
-    <script src=\"https://library.nyu.edu/scripts/system_map.js\" type=\"text/javascript\"></script>
-    <script src=\"/assets/javascripts/logout.js\" type=\"text/javascript\"></script>
-    <script type=\"text/javascript\">
-      logout('http://example.com');
-    </script>
   </head>
   <body>
     <header id=\"header\" class=\"header\">
