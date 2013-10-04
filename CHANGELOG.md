@@ -40,18 +40,19 @@ They are highlighted below:
   scheduled for Spring 2014 that will rectify the problem.
   
   Since stories are a much better way to illustrate what this means, here are three:  
-  1. __Story:__ Lucinda goes to BobCat and clicks the Journal tab. She then __logs in__ to the NYU Home research channel,
-     and does a search in the journals tab. On getting her results, she is __not logged in__ to BobCat.
+  1. __Story:__ [Hannan](https://github.com/hab278) goes to BobCat and clicks the Journal tab.
+     He then __logs in__ to the NYU Home research channel, and does a search in the journals tab.
+     On getting his results, he is __not logged in__ to BobCat.
 
-     __Explanation:__ Lucinda had already hit BobCat and GetIt before logging into NYU Home, so when she went
-     back to those applications, she wasn't automatically logged in.  In order to login she needs to click login and 
-     she will be automatically logged in, without having to enter her NetID and password.  
-  2. __Story:__ Kristina __logs in__ to the NYU Home research channel and does a search in the journals tab.
-     On getting her results, she is __logged in__ to BobCat.
+     __Explanation:__ Hannan had already hit BobCat and GetIt before logging into NYU Home, so when he went
+     back to those applications, he wasn't automatically logged in.  In order to login, he needs to click login and 
+     he will be automatically logged in, without having to enter his NetID and password.  
+  2. __Story:__ [Kristina](https://github.com/kristinarose) __logs in__ to the NYU Home research channel
+     and does a search in the journals tab. On getting her results, she is __logged in__ to BobCat.
 
      __Explanation:__ Since the first time Kristina hit the NYU Libraries' GetIt application was after she 
      logged into NYU Home, GetIt attempted to log her in via her NYU session and succeeded.
-  3. __Story:__ Scot logs into the NYU Home research channel.  He clicks on the "My Library Account" link.
+  3. __Story:__ [Scot](https://github.com/scotdalton) logs into the NYU Home research channel.  He clicks on the "My Library Account" link.
      He is __not logged in__ to his e-Shelf.
 
      __Explanation:__ The e-Shelf is the exception, so even though Scot logged into NYU Home, he still needs to click
