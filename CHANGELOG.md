@@ -39,21 +39,18 @@ They are highlighted below:
   which ignores the possibility of an NYU SSO session altogether. This is a know issue and an e-Shelf upgrade is 
   scheduled for Spring 2014 that will rectify the problem.
   
-  Since stories are a much better way to illustrate what this means, here are three:
-  
+  Since stories are a much better way to illustrate what this means, here are three:  
   1. __Story:__ Lucinda goes to BobCat and clicks the Journal tab. She then __logs in__ to the NYU Home research channel,
      and does a search in the journals tab. On getting her results, she is __not logged in__ to BobCat.
 
      __Explanation:__ Lucinda had already hit BobCat and GetIt before logging into NYU Home, so when she went
      back to those applications, she wasn't automatically logged in.  In order to login she needs to click login and 
-     she will be automatically logged in, without having to enter her NetID and password.
-
+     she will be automatically logged in, without having to enter her NetID and password.  
   2. __Story:__ Kristina __logs in__ to the NYU Home research channel and does a search in the journals tab.
      On getting her results, she is __logged in__ to BobCat.
 
      __Explanation:__ Since the first time Kristina hit the NYU Libraries' GetIt application was after she 
      logged into NYU Home, GetIt attempted to log her in via her NYU session and succeeded.
-
   3. __Story:__ Scot logs into the NYU Home research channel.  He clicks on the "My Library Account" link.
      He is __not logged in__ to his e-Shelf.
 
