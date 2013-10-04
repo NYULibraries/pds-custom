@@ -68,6 +68,7 @@ use constant EZBORROW_URL_BASE => "https://e-zborrow.relaisd2d.com/service-proxy
 use constant LIBRARY_DOT_NYU_COOKIES => qw(_tsetse_session tsetse_credentials tsetse_handle nyulibrary_opensso_illiad
   _umlaut_session _getit_session _eshelf_session _umbra_session _privileges_guide_session
     _room_reservation_session _room_reservation_session _marli_session xerxessession_);
+use constant COOKIE_EXPIRATION => 'Thu, 01-Jan-1970 00:00:01 GMT'
 
 # Private method to encrypt the Aleph identity
 # Usage:
@@ -191,13 +192,13 @@ my $destroy_session = sub {
   $session->destroy();
   # Expire the session cookie
   my $pds_handle = CGI::Cookie->new(-name=>'PDS_HANDLE',
-    -expires => '-10Y', -value=>'', -domain=>'.library.nyu.edu');
+    -expires => COOKIE_EXPIRATION, -value=>'', -domain=>'.library.nyu.edu');
   my $cgi = CGI->new();
   print $cgi->header(-cookie=>[$pds_handle]);
   foreach my $library_cookie_name (LIBRARY_DOT_NYU_COOKIES) {
     if($cgi->cookie($library_cookie_name)) {
       my $library_cookie = CGI::Cookie->new(-name=>$library_cookie_name,
-        -expires => 'Thu, 01-Jan-1970 00:00:01 GMT', -value=>'',
+        -expires => COOKIE_EXPIRATION, -value=>'',
           -domain=>'.library.nyu.edu');
       print $cgi->header(-cookie=>[$library_cookie]);
     }
