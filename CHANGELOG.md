@@ -22,7 +22,7 @@ They are highlighted below:
   We used to employ the [Password Anti-Pattern](http://adactio.com/journal/1357/) for NYU users with a NetID and password.
   That's pretty bad :cry:, so we stopped with this release. Instead users are directed to the 
   [NYU Login page](https://login.nyu.edu/sso/UI/Login) via a  
-  [![GIGANTIC TORCH](https://raw.github.com/NYULibraries/pds-custom/master/assets/images/nyu.png)](https://logindev.library.nyu.edu/pds)
+  [![GIGANTIC TORCH](https://raw.github.com/NYULibraries/pds-custom/master/assets/images/nyu.png "GIGANTIC TORCH")](https://logindev.library.nyu.edu/pds)
 
 - __Shibboleth Integration__  
   Previously, NYU employed a hybrid single sign-on solution, using [OpenSSO](http://en.wikipedia.org/wiki/OpenSSO)
