@@ -41,7 +41,7 @@ They are highlighted below:
   and maintain the current speed. We decided on a compromise approach that checks with PDS the first time a user hits
   the application, but ignores the possibility on subsequent calls in the same browser session. The precedent for
   the decision is Primo and Aleph which have always worked in this manner.  The __exception__ to this method is e-Shelf,
-  which ignores the possibility of an NYU SSO session altogether. This is a know issue and an e-Shelf upgrade is 
+  which ignores the possibility of an NYU SSO session altogether. This is a known issue and an e-Shelf upgrade is 
   scheduled for Spring 2014 that will rectify the problem.
   
   Since stories are a much better way to illustrate what this means, here are three:  
