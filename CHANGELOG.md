@@ -10,7 +10,7 @@ They are highlighted below:
 
 - __Responsive UI__ :iphone:  
   PDS now uses the NYU Libraries [shared UI assets](https://github.com/NYULibraries/nyulibraries_assets)
-  gem which is built on top of Twitter's [Bootstrap](http://getbootstrap.com/2.3.2/).
+  :gem: which is built on top of Twitter's [Bootstrap](http://getbootstrap.com/2.3.2/).
   This means that library login pages are now [responsive](http://en.wikipedia.org/wiki/Responsive_web_design),
   so login should be more manageable on all your devices :smiley:.  
 
