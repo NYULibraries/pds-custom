@@ -12,7 +12,12 @@ They are highlighted below:
   PDS now uses the NYU Libraries [shared UI assets](https://github.com/NYULibraries/nyulibraries_assets)
   :gem: which is built on top of Twitter's [Bootstrap](http://getbootstrap.com/2.3.2/).
   This means that library login pages are now [responsive](http://en.wikipedia.org/wiki/Responsive_web_design),
-  so login should be more manageable on all your devices :smiley:.  
+  so login should be more usable on all your devices :smiley:
+
+- __Abu Dhabi, Shanghai and Health Sciences, Welcome to the Party__  
+  With the adoption of the NYU Libraries [shared UI assets](https://github.com/NYULibraries/nyulibraries_assets)
+  we get login screens styled for NYU Abu Dhabi, NYU Shanghai and the NYU Health Sciences Library for free :tada:  
+  Welcome to the party :fireworks:
 
 - __Stop Using the Password Anti-Pattern__  
   We used to employ the [Password Anti-Pattern](http://adactio.com/journal/1357/) for NYU users with a NetID and password.
@@ -26,7 +31,7 @@ They are highlighted below:
   for external systems. OpenSSO is no more, so we integrated 
   [PDS with Shibboleth](https://github.com/NYULibraries/pds-custom/wiki/NYU-Shibboleth-Integration).
 
-- __Single Sign-On, Mostly__
+- __Single Sign-On, Mostly__  
   Previously, most of our applications (the exceptions being Primo and Aleph) were able to determine on their
   own if a user was logged into another of NYU's single sign-on systems (e.g. NYU Home). Making this determination
   at the local application level meant that SSO checks didn't adversely affect performance. With the Shibboleth
@@ -58,4 +63,7 @@ They are highlighted below:
 
      __Explanation:__ The e-Shelf is the exception, so even though Scot logged into NYU Home, he still needs to click
      login and he will be automatically logged in, without having to enter his NetID and password.
+
+- __Sane Default Institution__  
+  PDS used to default to NYSID.  We thought this was a little crazy so we [changed it to NYU]().
   
