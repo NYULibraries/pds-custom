@@ -17,7 +17,6 @@ They are highlighted below:
 - __Abu Dhabi, Shanghai and Health Sciences, Welcome to the Party__  
   With the adoption of the NYU Libraries [shared UI assets](https://github.com/NYULibraries/nyulibraries_assets)
   we get login screens styled for NYU Abu Dhabi, NYU Shanghai and the NYU Health Sciences Library for free :tada:
-  __Welcome to the Party__ :fireworks:
 
 - __Stop Using the Password Anti-Pattern__  
   We used to employ the [Password Anti-Pattern](http://adactio.com/journal/1357/) for NYU users with a NetID and password.
