@@ -16,7 +16,8 @@ They are highlighted below:
 
 - __Stop Using the Password Anti-Pattern__  
   We used to employ the [Password Anti-Pattern](http://adactio.com/journal/1357/) for NYU users with a NetID and password.
-  That's pretty bad, so we stopped with this release. Instead users are directed to the [NYU Login page]() via a  
+  That's pretty bad, so we stopped with this release. Instead users are directed to the 
+  [NYU Login page](https://login.nyu.edu/sso/UI/Login) via a  
   [![GIGANTIC TORCH](https://raw.github.com/NYULibraries/pds-custom/master/assets/images/nyu.png)](https://logindev.library.nyu.edu/pds)
 
 - __Shibboleth Integration__  
