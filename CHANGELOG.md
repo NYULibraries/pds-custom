@@ -16,7 +16,7 @@ They are highlighted below:
 
 - __Abu Dhabi, Shanghai and Health Sciences, Welcome to the Party__  
   With the adoption of the NYU Libraries [shared UI assets](https://github.com/NYULibraries/nyulibraries_assets)
-  we get login screens styled for NYU Abu Dhabi, NYU Shanghai and the NYU Health Sciences Library for free :tada:  
+  we get login screens styled for NYU Abu Dhabi, NYU Shanghai and the NYU Health Sciences Library for free :tada:
   Welcome to the party :fireworks:
 
 - __Stop Using the Password Anti-Pattern__  
