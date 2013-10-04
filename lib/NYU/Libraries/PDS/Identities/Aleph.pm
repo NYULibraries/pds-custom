@@ -82,7 +82,7 @@ my $lookup_from_xserver = sub {
   $identity->{"bor_status"} = $bor_info->get_z305_borstatus();
   $identity->{"bor_type"} = $bor_info->get_z305_bortype();
   $identity->{"bor_name"} = $bor_info->get_z303_name();
-  $identity->{"email"} = $bor_info->get_z304_email_address();
+  $identity->{"email"} = lc($bor_info->get_z304_email_address());
   $identity->{"ill_permission"} = $bor_info->get_z305_photo_permission();
   # We're overridden the birthplace with a PLIF (Patron Load something something) status
   $identity->{"plif_status"} = $bor_info->get_z303_birthplace();
@@ -121,7 +121,7 @@ my $aleph_authenticate = sub {
   $identity->{"bor_status"} = $bor_auth->get_z305_borstatus();
   $identity->{"bor_type"} = $bor_auth->get_z305_bortype();
   $identity->{"bor_name"} = $bor_auth->get_z303_name();
-  $identity->{"email"} ||= $bor_auth->get_z304_email_address();
+  $identity->{"email"} ||= lc($bor_auth->get_z304_email_address());
   $identity->{"ill_permission"} = $bor_auth->get_z305_photo_permission();
   # We're overridden the birthplace with a PLIF (Patron Load something something) status
   $identity->{"plif_status"} = $bor_auth->get_z303_birthplace();

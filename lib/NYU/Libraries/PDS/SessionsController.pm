@@ -68,7 +68,7 @@ use constant EZBORROW_URL_BASE => "https://e-zborrow.relaisd2d.com/service-proxy
 use constant LIBRARY_DOT_NYU_COOKIES => qw(_tsetse_session tsetse_credentials tsetse_handle nyulibrary_opensso_illiad
   _umlaut_session _getit_session _eshelf_session _umbra_session _privileges_guide_session
     _room_reservation_session _room_reservation_session _marli_session xerxessession_);
-use constant COOKIE_EXPIRATION => 'Thu, 01-Jan-1970 00:00:01 GMT'
+use constant COOKIE_EXPIRATION => 'Thu, 01-Jan-1970 00:00:01 GMT';
 
 # Private method to encrypt the Aleph identity
 # Usage:
