@@ -67,6 +67,12 @@ They are highlighted below:
   PDS used to default to NYSID if a proper institute wasn't given.  We thought this was a little crazy so we
   [changed it to default NYU](https://github.com/NYULibraries/pds/blob/development/program/PDSTabService.pm#L252).
 
+- __Is Aleph Down?__  
+  What happens if Aleph is down? In this release of PDS we tell the user about it with a friendly,  
+
+        We're sorry for the inconvenience, but BobCat login services are down at the moment.
+        Please contact Ask a Librarian for more information.
+
 - __Automated Tests__  
   This isn't really a change in functionality, but's it's _AWESOME_ :sparkles: so we wanted to mention it.
   We've expanded the [BobCat automated tests](https://github.com/NYULibraries/bobcat_automated_tests)
