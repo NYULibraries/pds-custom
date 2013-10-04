@@ -71,4 +71,4 @@ They are highlighted below:
   This isn't really a change in functionality, but's it's _AWESOME_ :sparkles: so we wanted to mention it.
   We've expanded the [BobCat automated tests](https://github.com/NYULibraries/bobcat_automated_tests)
   for login. This means that all those hours that actual humans slogged through testing login (or maybe didn't)
-  are a thing of the past.  We'll let a :computer: :monkey: handle it from now on. 
+  are a thing of the past.  We'll let a :computer: :monkey: with a :pager: handle it from now on. 
