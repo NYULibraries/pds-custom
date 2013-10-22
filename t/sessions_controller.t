@@ -84,7 +84,7 @@ use constant NYU_LOGIN => "<!DOCTYPE html>
           <div>
             <h3>Additional information:</h3>
             <ul class=\"unstyled\">
-              <li><a href=\"http://library.cooper.edu/\" target=\"_blank\">Cooper Union</a></li>
+              <li><a href=\"http://library.cooper.edu/Logininfo.html\" target=\"_blank\">Cooper Union</a></li>
               <li><a href=\"http://library.newschool.edu/login/ns\" target=\"_blank\">New School</a></li>
               <li><a href=\"http://nysidlibrary.org/logging-into-bobcat\" target=\"_blank\">NYSID</a></li>
             </ul>
@@ -217,7 +217,7 @@ sub nyu_login_screen_with_errors {
           <div>
             <h3>Additional information:</h3>
             <ul class=\"unstyled\">
-              <li><a href=\"http://library.cooper.edu/\" target=\"_blank\">Cooper Union</a></li>
+              <li><a href=\"http://library.cooper.edu/Logininfo.html\" target=\"_blank\">Cooper Union</a></li>
               <li><a href=\"http://library.newschool.edu/login/ns\" target=\"_blank\">New School</a></li>
               <li><a href=\"http://nysidlibrary.org/logging-into-bobcat\" target=\"_blank\">NYSID</a></li>
             </ul>
