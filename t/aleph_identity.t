@@ -57,7 +57,7 @@ ok(defined($identity->{'identity'}));
 is($identity->{'identity'}->{'id'}, "N12162279", "Should have identity id");
 is($identity->{'identity'}->{'email'}, "std5\@nyu.edu", "Should have identity email");
 is($identity->{'identity'}->{'plif_status'}, "PLIF LOADED", "Should have identity plif status");
-is($identity->{'identity'}->{'bor_status'}, "51", "Should have identity bor status");
+is($identity->{'identity'}->{'bor_status'}, "55", "Should have identity bor status");
 
 # Verify attributes are set
 is($identity->id, "N12162279", "Should have id attribute");
@@ -76,8 +76,8 @@ is($identity->to_xml(),
     "<name>SCOT THOMAS</name>".
     "<bor_name>DALTON,SCOT THOMAS</bor_name>".
     "<verification>85db3f2529a3e4e9a28135491006ce3f</verification>".
-    "<expiry_date>20141031</expiry_date>".
-    "<bor_status>51</bor_status>".
+    "<expiry_date>20140215</expiry_date>".
+    "<bor_status>55</bor_status>".
     "<bor_type>CB</bor_type>".
     "<ill_permission>N</ill_permission>".
     "<plif_status>PLIF LOADED</plif_status>".
