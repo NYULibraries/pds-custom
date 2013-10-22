@@ -59,13 +59,13 @@ is($new_session->to_xml(),
   "<session>".
     "<id>N12162279</id>".
     "<email>std5\@nyu.edu</email>".
-    "<givenname>SCOT THOMAS</givenname>".
-    "<cn>DALTON,SCOT THOMAS</cn>".
-    "<sn>DALTON</sn>".
+    "<givenname>Scot Thomas</givenname>".
+    "<cn>Dalton,Scot Thomas</cn>".
+    "<sn>Dalton</sn>".
     "<institute>NYU</institute>".
     "<bor_status>55</bor_status>".
     "<bor_type>CB</bor_type>".
-    "<name>SCOT THOMAS</name>".
+    "<name>Scot Thomas</name>".
     "<verification>d4465aacaa645f2164908cd4184c09f0</verification>".
     "<ill_permission>N</ill_permission>".
     "<expiry_date>20140215</expiry_date>".

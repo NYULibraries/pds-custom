@@ -70,11 +70,11 @@ is($identity->to_xml(),
   "<aleph>".
     "<id>N12162279</id>".
     "<email>std5\@nyu.edu</email>".
-    "<givenname>SCOT THOMAS</givenname>".
-    "<cn>DALTON,SCOT THOMAS</cn>".
-    "<sn>DALTON</sn>".
-    "<name>SCOT THOMAS</name>".
-    "<bor_name>DALTON,SCOT THOMAS</bor_name>".
+    "<givenname>Scot Thomas</givenname>".
+    "<cn>Dalton,Scot Thomas</cn>".
+    "<sn>Dalton</sn>".
+    "<name>Scot Thomas</name>".
+    "<bor_name>Dalton,Scot Thomas</bor_name>".
     "<verification>85db3f2529a3e4e9a28135491006ce3f</verification>".
     "<expiry_date>20140215</expiry_date>".
     "<bor_status>55</bor_status>".
