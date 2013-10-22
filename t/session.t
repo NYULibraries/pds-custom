@@ -68,7 +68,7 @@ is($new_session->to_xml(),
     "<name>SCOT THOMAS</name>".
     "<verification>d4465aacaa645f2164908cd4184c09f0</verification>".
     "<ill_permission>N</ill_permission>".
-    "<expiry_date>20141031</expiry_date>".
+    "<expiry_date>20140215</expiry_date>".
   "</session>", "Unexpected session xml");
 
 # my $existing_session = NYU::Libraries::PDS::Session::find('27620139407145177581349399004532');
