@@ -11,6 +11,9 @@ use Net::LDAP;
 use Net::LDAP::Util qw(ldap_error_text ldap_error_name ldap_error_desc);
 use Net::LDAP::Constant;
 
+# NYU Libraries modules
+use NYU::Libraries::Util qw(trim);
+
 use base qw(NYU::Libraries::PDS::Identities::Base);
 my @attributes = qw(uid role aleph_identifer);
 __PACKAGE__->mk_ro_accessors(@attributes);
