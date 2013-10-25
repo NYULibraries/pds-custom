@@ -15,7 +15,7 @@ use Net::LDAP::Constant;
 use NYU::Libraries::Util qw(trim);
 
 use base qw(NYU::Libraries::PDS::Identities::Base);
-my @attributes = qw(uid role aleph_identifer);
+my @attributes = qw(uid role aleph_identifier);
 __PACKAGE__->mk_ro_accessors(@attributes);
 
 # Private method returns a new LDAP object based on the objects configuration
