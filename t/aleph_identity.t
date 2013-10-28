@@ -110,7 +110,7 @@ $identity = NYU::Libraries::PDS::Identities::Aleph->new(
 # Verify identity is defined
 ok(defined($identity->{'identity'}));
 is($identity->{'identity'}->{'id'}, "DS03D", "Should have identity id");
-is($identity->{'identity'}->{'email'}, "DS03D\@nyu.edu", "Should have identity email");
+is($identity->{'identity'}->{'email'}, "sydney.thompson\@nyu.edu", "Should have identity email");
 is($identity->{'identity'}->{'plif_status'}, "PLIF LOADED", "Should have identity birthplace");
 is($identity->{'identity'}->{'bor_status'}, "03", "Should have identity bor status");
 
