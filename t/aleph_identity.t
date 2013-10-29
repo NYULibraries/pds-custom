@@ -144,3 +144,8 @@ $identity = NYU::Libraries::PDS::Identities::Aleph->new(
   {shared_secret => 'EncryptThis', flat_file => "./t/support/patrons.dat", lookup_only => 1}, "N18545480");
 is($identity->ill_library, "ILL_MED", "Should be med ILL");
 
+# Get a new instance of Aleph identity with an BOBSTILL patron
+$identity = NYU::Libraries::PDS::Identities::Aleph->new(
+  {shared_secret => 'EncryptThis', flat_file => "./t/support/patrons.dat", lookup_only => 1}, "BOBSTILL");
+is($identity->givenname, "BOBSTILL", "Should be BOBSTILL");
+

@@ -188,7 +188,8 @@ my $set_names = sub {
   my @name_array = split(/,/, $self->bor_name);
   $self->set('cn', $self->bor_name);
   $self->set('sn', trim($name_array[0]));
-  $self->set('givenname', trim($name_array[1]));
+  $self->set('givenname', trim($name_array[1])) if $name_array[1];
+  $self->set('givenname', $self->id) unless $name_array[1];
 };
 
 # Authentication method
