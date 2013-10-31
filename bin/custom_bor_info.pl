@@ -20,7 +20,7 @@ sub custom_bor_info {
   my $pds_directory = getEnvironmentParams('pds_directory');
   my $conf = parse_conf("$pds_directory/config/pds/nyu.conf");
   $calling_system ||= PDSParamUtil::getAndFilterParam('calling_system');
-  my $target_url = fix_target_url(PDSParamUtil::queryUrl());
+  my $target_url = fix_target_url(PDSParamUtil::getAndFilterParam('url'));
   my $session_controller = NYU::Libraries::PDS::controller($conf, $institute, 
     $calling_system, $target_url, $session_id);
   my $bor_info_xml = $session_controller->bor_info();

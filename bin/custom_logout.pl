@@ -21,7 +21,7 @@ my $cgi = new CGI;
 # Get Session Id
 my $session_id = $cgi->cookie('PDS_HANDLE');
 # Target URL
-my $target_url = fix_target_url(PDSParamUtil::queryUrl());
+my $target_url = fix_target_url(PDSParamUtil::getAndFilterParam('url'));
 # Institute from URL
 my $institute = PDSParamUtil::getAndFilterParam('institute');
 # Calling system from URL
