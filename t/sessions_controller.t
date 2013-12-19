@@ -30,7 +30,6 @@ use constant NYU_LOGIN => "<!DOCTYPE html>
         <li>Login</li>
       </ul>
     </nav>
-    <h1 class=\"nyu-container container-fluid\">Please login to access library services.</h1>
     <section class=\"nyu-container container-fluid\">
       <div class=\"row-fluid\">
         <div class=\"span5 well\">
@@ -43,17 +42,6 @@ use constant NYU_LOGIN => "<!DOCTYPE html>
           <p>
             <a href=\"/Shibboleth.sso/Login?target=http%3A%2F%2Flocalhost%2Fpds%3Ffunc%3Dsso%26institute%3DNYU%26calling_system%3Dprimo%26url%3Dhttp%253A%252F%252Fexample.com\" class=\"btn shibboleth\">Click to Login</a>
           </p>
-          <div>
-            <a href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">Login help with an NYU NetID</a>
-          </div>
-          <div>
-            <h3>Additional information:</h3>
-            <ul class=\"unstyled\">
-              <li><a href=\"http://library.nyu.edu/help/proxy.html\" target=\"_blank\">NYU</a></li>
-              <li><a href=\"http://library.poly.edu/research/access/nyu\" target=\"_blank\">NYU-Poly</a></li>
-              <li><a href=\"http://library.nyu.edu/ask/\" target=\"_blank\">Ask a Librarian</a></li>
-            </ul>
-          </div>
         </div>
         <div class=\"span5 well\">
           <h2>
@@ -78,17 +66,6 @@ use constant NYU_LOGIN => "<!DOCTYPE html>
               <button type=\"submit\" class=\"btn\">Login</button>
             </fieldset>
           </form>
-          <div>
-            <a href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">Login help without an NYU NetID</a>
-          </div>
-          <div>
-            <h3>Additional information:</h3>
-            <ul class=\"unstyled\">
-              <li><a href=\"http://library.cooper.edu/Logininfo.html\" target=\"_blank\">Cooper Union</a></li>
-              <li><a href=\"http://library.newschool.edu/login/ns\" target=\"_blank\">New School</a></li>
-              <li><a href=\"http://nysidlibrary.org/logging-into-bobcat\" target=\"_blank\">NYSID</a></li>
-            </ul>
-          </div>
         </div>
       </div>
     </section>
@@ -160,7 +137,6 @@ sub nyu_login_screen_with_errors {
         <li>Login</li>
       </ul>
     </nav>
-    <h1 class=\"nyu-container container-fluid\">Please login to access library services.</h1>
     <section class=\"nyu-container container-fluid\">
       <div class=\"row-fluid\">
         <div class=\"span5 well\">
@@ -173,17 +149,6 @@ sub nyu_login_screen_with_errors {
           <p>
             <a href=\"/Shibboleth.sso/Login?target=http%3A%2F%2Flocalhost%2Fpds%3Ffunc%3Dsso%26institute%3DNYU%26calling_system%3Dprimo%26url%3Dhttp%253A%252F%252Fexample.com\" class=\"btn shibboleth\">Click to Login</a>
           </p>
-          <div>
-            <a href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">Login help with an NYU NetID</a>
-          </div>
-          <div>
-            <h3>Additional information:</h3>
-            <ul class=\"unstyled\">
-              <li><a href=\"http://library.nyu.edu/help/proxy.html\" target=\"_blank\">NYU</a></li>
-              <li><a href=\"http://library.poly.edu/research/access/nyu\" target=\"_blank\">NYU-Poly</a></li>
-              <li><a href=\"http://library.nyu.edu/ask/\" target=\"_blank\">Ask a Librarian</a></li>
-            </ul>
-          </div>
         </div>
         <div class=\"span5 well\">
           <h2>
@@ -211,17 +176,6 @@ sub nyu_login_screen_with_errors {
               <button type=\"submit\" class=\"btn\">Login</button>
             </fieldset>
           </form>
-          <div>
-            <a href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">Login help without an NYU NetID</a>
-          </div>
-          <div>
-            <h3>Additional information:</h3>
-            <ul class=\"unstyled\">
-              <li><a href=\"http://library.cooper.edu/Logininfo.html\" target=\"_blank\">Cooper Union</a></li>
-              <li><a href=\"http://library.newschool.edu/login/ns\" target=\"_blank\">New School</a></li>
-              <li><a href=\"http://nysidlibrary.org/logging-into-bobcat\" target=\"_blank\">NYSID</a></li>
-            </ul>
-          </div>
         </div>
       </div>
     </section>
