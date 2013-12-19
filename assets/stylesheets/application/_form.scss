@@ -27,10 +27,21 @@ h2 .popover-content {
   font-size: $baseFontSize;
   line-height: $baseLineHeight;
   font-weight: normal;
+  max-height: 280px;
   overflow: -moz-scrollbars-vertical; 
   -ms-overflow-y: scroll; 
   overflow-y: scroll; 
-  max-height: 280px;
+  &::-webkit-scrollbar {
+      width: 6px;
+  }
+  &.scroll::-webkit-scrollbar-thumb {
+    @include border-radius(4px);
+    background-color: grey;
+  }
+  &.scroll::-webkit-scrollbar-track-piece {
+    @include border-radius(4px);
+    background-color: whitesmoke;
+  }
 }
 
 .popover {
