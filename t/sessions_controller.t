@@ -30,8 +30,8 @@ use constant NYU_LOGIN => "<!DOCTYPE html>
         <li>Login</li>
       </ul>
     </nav>
-    <h1 class=\"container-fluid\">Please login to access library services.</h1>
-    <section class=\"container-fluid\">
+    <h1 class=\"nyu-container container-fluid\">Please login to access library services.</h1>
+    <section class=\"nyu-container container-fluid\">
       <div class=\"row-fluid\">
         <div class=\"span5 well\">
           <h2>
@@ -92,7 +92,7 @@ use constant NYU_LOGIN => "<!DOCTYPE html>
         </div>
       </div>
     </section>
-    <section class=\"container-fluid\">
+    <section class=\"nyu-container container-fluid\">
       <h3>
         Library services vary by institution. Please see the
         <a href=\"https://web1.library.nyu.edu/privileges_guide/\" target=\"_blank\">NYU Libraries Privileges Guide</a>.
@@ -127,7 +127,7 @@ use constant NYU_LOGOUT => "<!DOCTYPE html>
         <li>Logout</li>
       </ul>
     </nav>
-    <h1 class=\"container-fluid\"><a href=\"http://example.com\">Logout</a></h1>
+    <h1 class=\"nyu-container container-fluid\"><a href=\"http://example.com\">Logout</a></h1>
     <footer>NYU Division of Libraries.  BobCat.  Powered by Ex Libris Primo</footer>
   </body>
 </html>
@@ -160,8 +160,8 @@ sub nyu_login_screen_with_errors {
         <li>Login</li>
       </ul>
     </nav>
-    <h1 class=\"container-fluid\">Please login to access library services.</h1>
-    <section class=\"container-fluid\">
+    <h1 class=\"nyu-container container-fluid\">Please login to access library services.</h1>
+    <section class=\"nyu-container container-fluid\">
       <div class=\"row-fluid\">
         <div class=\"span5 well\">
           <h2>
@@ -225,7 +225,7 @@ sub nyu_login_screen_with_errors {
         </div>
       </div>
     </section>
-    <section class=\"container-fluid\">
+    <section class=\"nyu-container container-fluid\">
       <h3>
         Library services vary by institution. Please see the
         <a href=\"https://web1.library.nyu.edu/privileges_guide/\" target=\"_blank\">NYU Libraries Privileges Guide</a>.
@@ -269,7 +269,7 @@ sub redirect_html {
         <li>Login</li>
       </ul>
     </nav>
-    <h1 class=\"container-fluid\"><a href=\"$target_url\">Click to continue</a></h1>
+    <h1 class=\"nyu-container container-fluid\"><a href=\"$target_url\">Click to continue</a></h1>
     <footer>NYU Division of Libraries.  BobCat.  Powered by Ex Libris Primo</footer>
   </body>
 </html>
@@ -334,8 +334,8 @@ is($controller->_login_screen(), "<!DOCTYPE html>
         <li>Login</li>
       </ul>
     </nav>
-    <h1 class=\"container-fluid\">Please login to access library services.</h1>
-    <section class=\"container-fluid\">
+    <h1 class=\"nyu-container container-fluid\">Please login to access library services.</h1>
+    <section class=\"nyu-container container-fluid\">
       <div class=\"row-fluid\">
         <div class=\"span5 well\">
           <h2>
@@ -394,7 +394,7 @@ is($controller->_login_screen(), "<!DOCTYPE html>
         </div>
       </div>
     </section>
-    <section class=\"container-fluid\">
+    <section class=\"nyu-container container-fluid\">
       <h3>
         Library services vary by institution. Please see the
         <a href=\"https://web1.library.nyu.edu/privileges_guide/\" target=\"_blank\">NYU Libraries Privileges Guide</a>.
