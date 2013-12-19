@@ -35,7 +35,7 @@ use constant NYU_LOGIN => "<!DOCTYPE html>
         <div class=\"span5 well\">
           <h2>
             NYU Users with a NetID
-            <a class=\"nyulibraries-help\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
+            <a class=\"nyulibraries-help nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
               <i class=\"icons-famfamfam-help\"></i>
             </a>
           </h2>
@@ -46,7 +46,7 @@ use constant NYU_LOGIN => "<!DOCTYPE html>
         <div class=\"span5 well\">
           <h2>
             Consortium &amp; NYU Users without a NetID
-            <a class=\"nyulibraries-help-snippet\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
+            <a class=\"nyulibraries-help-snippet nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
               <i class=\"icons-famfamfam-help\"></i>
             </a>
           </h2>
@@ -142,7 +142,7 @@ sub nyu_login_screen_with_errors {
         <div class=\"span5 well\">
           <h2>
             NYU Users with a NetID
-            <a class=\"nyulibraries-help\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
+            <a class=\"nyulibraries-help nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
               <i class=\"icons-famfamfam-help\"></i>
             </a>
           </h2>
@@ -153,7 +153,7 @@ sub nyu_login_screen_with_errors {
         <div class=\"span5 well\">
           <h2>
             Consortium &amp; NYU Users without a NetID
-            <a class=\"nyulibraries-help-snippet\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
+            <a class=\"nyulibraries-help-snippet nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
               <i class=\"icons-famfamfam-help\"></i>
             </a>
           </h2>
@@ -294,7 +294,7 @@ is($controller->_login_screen(), "<!DOCTYPE html>
         <div class=\"span5 well\">
           <h2>
             Consortium or New School Patrons
-            <a class=\"nyulibraries-help-snippet\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
+            <a class=\"nyulibraries-help-snippet nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
               <i class=\"icons-famfamfam-help\"></i>
             </a>
           </h2>
@@ -328,7 +328,7 @@ is($controller->_login_screen(), "<!DOCTYPE html>
         <div class=\"span5 well\">
           <h2>
             NYU Users with a NetID
-            <a class=\"nyulibraries-help\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
+            <a class=\"nyulibraries-help nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
               <i class=\"icons-famfamfam-help\"></i>
             </a>
           </h2>

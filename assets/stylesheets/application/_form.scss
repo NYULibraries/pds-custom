@@ -23,6 +23,21 @@ label {
   }
 }
 
+.nyulibraries-help-icon {
+  min-width: 20px;
+  height: 100%;
+  font-size: 18.6px;
+  font-weight: bold;
+  margin-left: 20px;
+  padding-left: 6px;
+  background-color: #fff;
+  padding-right: 6px;
+  @include border-radius(20px);
+  &:hover {
+    text-decoration: none;
+  }
+}
+
 h2 .popover-content {
   font-size: $baseFontSize;
   line-height: $baseLineHeight;
