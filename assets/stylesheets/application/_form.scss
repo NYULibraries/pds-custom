@@ -27,10 +27,15 @@ h2 .popover-content {
   font-size: $baseFontSize;
   line-height: $baseLineHeight;
   font-weight: normal;
+  overflow: -moz-scrollbars-vertical; 
+  -ms-overflow-y: scroll; 
+  overflow-y: scroll; 
+  max-height: 280px;
 }
 
 .popover {
-  width: 400px;
+  max-width: 300px;
+  max-height: 300px;
 }
 
 // Phones to tablets
