@@ -63,7 +63,7 @@ is($new_session->to_xml(),
     "<cn>Dalton,Scot Thomas</cn>".
     "<sn>Dalton</sn>".
     "<institute>NYU</institute>".
-    "<bor_status>55</bor_status>".
+    "<bor_status>51</bor_status>".
     "<bor_type>CB</bor_type>".
     "<name>Scot Thomas</name>".
     "<verification>d4465aacaa645f2164908cd4184c09f0</verification>".
