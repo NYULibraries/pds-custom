@@ -70,18 +70,18 @@ is($identity->to_xml(),
   "<aleph>".
     "<id>N12162279</id>".
     "<email>std5\@nyu.edu</email>".
-    "<givenname>Scot Thomas</givenname>".
-    "<cn>Dalton,Scot Thomas</cn>".
-    "<sn>Dalton</sn>".
-    "<name>Scot Thomas</name>".
-    "<bor_name>Dalton,Scot Thomas</bor_name>".
+    "<givenname>SCOT THOMAS</givenname>".
+    "<cn>DALTON,SCOT THOMAS</cn>".
+    "<sn>DALTON</sn>".
+    "<name>SCOT THOMAS</name>".
+    "<bor_name>DALTON,SCOT THOMAS</bor_name>".
     "<verification>85db3f2529a3e4e9a28135491006ce3f</verification>".
     "<expiry_date>20141031</expiry_date>".
     "<bor_status>51</bor_status>".
     "<bor_type>CB</bor_type>".
     "<ill_permission>N</ill_permission>".
     "<plif_status>PLIF LOADED</plif_status>".
-  "</aleph>", "Should have XML");
+  "</aleph>", "Should have the expected Aleph identity XML");
 
 # Get a new instance of Aleph identity
 $identity = NYU::Libraries::PDS::Identities::Aleph->new(
