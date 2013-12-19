@@ -98,7 +98,7 @@ use constant NYU_LOGIN => "<!DOCTYPE html>
         <a href=\"https://web1.library.nyu.edu/privileges_guide/\" target=\"_blank\">NYU Libraries Privileges Guide</a>.
       </h3>
     </section>
-    <footer>NYU Division of Libraries.  BobCat.  Powered by Ex Libris Primo</footer>
+    <footer class=\"nyu-container\">NYU Division of Libraries.  BobCat.  Powered by Ex Libris Primo</footer>
   </body>
 </html>
 ";
@@ -128,7 +128,7 @@ use constant NYU_LOGOUT => "<!DOCTYPE html>
       </ul>
     </nav>
     <h1 class=\"nyu-container container-fluid\"><a href=\"http://example.com\">Logout</a></h1>
-    <footer>NYU Division of Libraries.  BobCat.  Powered by Ex Libris Primo</footer>
+    <footer class=\"nyu-container\">NYU Division of Libraries.  BobCat.  Powered by Ex Libris Primo</footer>
   </body>
 </html>
 ";
@@ -231,7 +231,7 @@ sub nyu_login_screen_with_errors {
         <a href=\"https://web1.library.nyu.edu/privileges_guide/\" target=\"_blank\">NYU Libraries Privileges Guide</a>.
       </h3>
     </section>
-    <footer>NYU Division of Libraries.  BobCat.  Powered by Ex Libris Primo</footer>
+    <footer class=\"nyu-container\">NYU Division of Libraries.  BobCat.  Powered by Ex Libris Primo</footer>
   </body>
 </html>
 "
@@ -270,7 +270,7 @@ sub redirect_html {
       </ul>
     </nav>
     <h1 class=\"nyu-container container-fluid\"><a href=\"$target_url\">Click to continue</a></h1>
-    <footer>NYU Division of Libraries.  BobCat.  Powered by Ex Libris Primo</footer>
+    <footer class=\"nyu-container\">NYU Division of Libraries.  BobCat.  Powered by Ex Libris Primo</footer>
   </body>
 </html>
 ";
@@ -400,7 +400,7 @@ is($controller->_login_screen(), "<!DOCTYPE html>
         <a href=\"https://web1.library.nyu.edu/privileges_guide/\" target=\"_blank\">NYU Libraries Privileges Guide</a>.
       </h3>
     </section>
-    <footer>BobCat.  Powered by Ex Libris Primo</footer>
+    <footer class=\"nyu-container\">BobCat.  Powered by Ex Libris Primo</footer>
   </body>
 </html>
 ", "Unexpected login NS html");
