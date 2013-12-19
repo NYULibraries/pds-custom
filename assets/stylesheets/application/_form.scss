@@ -23,3 +23,12 @@ label {
 .popover {
   width: 400px;
 }
+
+// Phones to tablets
+@media (max-width: 767px) {
+  // Adjust spacing to match breadcrumbs, etc.
+  .nyu-container {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
