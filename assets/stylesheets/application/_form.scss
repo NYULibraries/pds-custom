@@ -29,14 +29,12 @@ a.nyulibraries-help-icon {
   font-size: 18.6px;
   font-weight: bold;
   padding-left: 6px;
-  background-color: $linkColor;
-  color: #fff;
+  background-color: #fff;
+  color: $linkColor;
   padding-right: 6px;
   @include border-radius(20px);
   &:hover, &:focus, &:active {
     text-decoration: none;
-    color: $linkColor;
-    background-color: #fff;
   }
 }
 
