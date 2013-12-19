@@ -20,6 +20,12 @@ label {
   }
 }
 
+h2 .popover-content {
+  font-size: $baseFontSize;
+  line-height: $baseLineHeight;
+  font-weight: normal;
+}
+
 .popover {
   width: 400px;
 }
