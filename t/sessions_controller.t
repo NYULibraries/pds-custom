@@ -36,7 +36,7 @@ use constant NYU_LOGIN => "<!DOCTYPE html>
           <h2>
             NYU Users with a NetID
             <a class=\"nyulibraries-help nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
-              ?
+              help
             </a>
           </h2>
           <p>
@@ -47,7 +47,7 @@ use constant NYU_LOGIN => "<!DOCTYPE html>
           <h2>
             Consortium &amp; NYU Users without a NetID
             <a class=\"nyulibraries-help-snippet nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
-              ?
+              help
             </a>
           </h2>
           <form id=\"nyu_pds_login_form\" action=\"/pds\" method=\"post\">
@@ -143,7 +143,7 @@ sub nyu_login_screen_with_errors {
           <h2>
             NYU Users with a NetID
             <a class=\"nyulibraries-help nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
-              ?
+              help
             </a>
           </h2>
           <p>
@@ -154,7 +154,7 @@ sub nyu_login_screen_with_errors {
           <h2>
             Consortium &amp; NYU Users without a NetID
             <a class=\"nyulibraries-help-snippet nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
-              ?
+              help
             </a>
           </h2>
           <form id=\"nyu_pds_login_form\" action=\"/pds\" method=\"post\">
@@ -295,7 +295,7 @@ is($controller->_login_screen(), "<!DOCTYPE html>
           <h2>
             Consortium or New School Patrons
             <a class=\"nyulibraries-help-snippet nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
-              ?
+              help
             </a>
           </h2>
           <form id=\"nyu_pds_login_form\" action=\"/pds\" method=\"post\">
@@ -329,7 +329,7 @@ is($controller->_login_screen(), "<!DOCTYPE html>
           <h2>
             NYU Users with a NetID
             <a class=\"nyulibraries-help nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
-              ?
+              help
             </a>
           </h2>
           <p>
