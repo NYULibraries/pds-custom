@@ -23,18 +23,20 @@ label {
   }
 }
 
-.nyulibraries-help-icon {
+a.nyulibraries-help-icon {
   min-width: 20px;
   height: 100%;
   font-size: 18.6px;
   font-weight: bold;
-  margin-left: 20px;
   padding-left: 6px;
-  background-color: #fff;
+  background-color: $linkColor;
+  color: #fff;
   padding-right: 6px;
   @include border-radius(20px);
-  &:hover {
+  &:hover, &:focus, &:active {
     text-decoration: none;
+    color: $linkColor;
+    background-color: #fff;
   }
 }
 
