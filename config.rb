@@ -1,4 +1,4 @@
-require 'nyulibraries_assets'
+require 'nyulibraries-assets'
 # Require any additional compass plugins here.
 
 

@@ -4,14 +4,14 @@ require 'compass'
 # since that's how the bootstrap gem determines if we're 
 # asset pipelining
 require 'bootstrap-sass'
-require 'nyulibraries_assets'
+require 'nyulibraries-assets'
 require 'fileutils'
 require 'microservice_precompiler'
 
 ASSETS = %w(css images javascripts)
 # Get the various paths
 nyulibraries_assets_base = 
-  "#{Compass::Frameworks['nyulibraries_assets'].stylesheets_directory}/.."
+  "#{Compass::Frameworks['nyulibraries-assets'].stylesheets_directory}/.."
 nyulibraries_assets_javascripts_path = "#{nyulibraries_assets_base}/javascripts"
 nyulibraries_assets_images_path = "#{nyulibraries_assets_base}/images"
 bootstrap_assets_base = "#{Compass::Frameworks['bootstrap'].stylesheets_directory}/.."
