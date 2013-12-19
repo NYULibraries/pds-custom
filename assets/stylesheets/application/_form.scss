@@ -36,11 +36,9 @@ h2 .popover-content {
   }
   &.scroll::-webkit-scrollbar-thumb {
     @include border-radius(4px);
-    background-color: grey;
   }
   &.scroll::-webkit-scrollbar-track-piece {
     @include border-radius(4px);
-    background-color: whitesmoke;
   }
 }
 
