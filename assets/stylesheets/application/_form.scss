@@ -68,6 +68,10 @@ h2 {
 
 // Phones to tablets
 @media (max-width: 767px) {
+  p.shibboleth-button-container {
+    text-align:center;
+    margin-top:1em;
+  }
   // Adjust spacing to match breadcrumbs, etc.
   .nyu-container {
     padding-left: 20px;
