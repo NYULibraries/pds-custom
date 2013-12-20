@@ -34,7 +34,7 @@ use constant NYU_LOGIN => "<!DOCTYPE html>
       <div id=\"forms\" class=\"row-fluid\">
         <div id=\"shibboleth\" class=\"span5 well\">
           <h2>
-            NYU Users with a NetID
+            Login with an NYU NetID
             <a class=\"nyulibraries-help nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
               help
             </a>
@@ -45,7 +45,7 @@ use constant NYU_LOGIN => "<!DOCTYPE html>
         </div>
         <div class=\"span5 well\">
           <h2>
-            Consortium &amp; NYU Users without a NetID
+            Login with a Consortium ID or a Bobst ID
             <a class=\"nyulibraries-help-snippet nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
               help
             </a>
@@ -141,7 +141,7 @@ sub nyu_login_screen_with_errors {
       <div id=\"forms\" class=\"row-fluid\">
         <div id=\"shibboleth\" class=\"span5 well\">
           <h2>
-            NYU Users with a NetID
+            Login with an NYU NetID
             <a class=\"nyulibraries-help nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
               help
             </a>
@@ -152,7 +152,7 @@ sub nyu_login_screen_with_errors {
         </div>
         <div class=\"span5 well\">
           <h2>
-            Consortium &amp; NYU Users without a NetID
+            Login with a Consortium ID or a Bobst ID
             <a class=\"nyulibraries-help-snippet nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/no_netid.html\" target=\"_blank\">
               help
             </a>
@@ -327,7 +327,7 @@ is($controller->_login_screen(), "<!DOCTYPE html>
         </div>
         <div id=\"shibboleth\" class=\"span5 well\">
           <h2>
-            NYU Users with a NetID
+            Login with an NYU NetID
             <a class=\"nyulibraries-help nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
               help
             </a>

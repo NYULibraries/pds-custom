@@ -22,7 +22,7 @@ sub template_path {
 
 sub template_namespace { 'NYU::Libraries::PDS::Views'; };
 
-use constant DEFAULT_FORM_TITLE => 'Consortium & NYU Users without a NetID';
+use constant DEFAULT_FORM_TITLE => 'Login with a Consortium ID or a Bobst ID';
 use constant DEFAULT_FORM_ACTION => '/pds';
 use constant EZPROXY_FORM_ACTION => '/ezproxy';
 use constant EZBORROW_FORM_ACTION => '/ezborrow';
