@@ -2,24 +2,29 @@ label {
   margin-left: 0px;
 }
 
-.shibboleth {
-  height: 160px;
-  width: 150px;
-  line-height: 290px;
-  font-size: 20px;
-  color: $linkColor;
-  background-repeat: no-repeat;
-  background-color: darken(whitesmoke, 10%);
-  @include background-image(image-url("nyu.png"),linear-gradient(color-stops(darken(whitesmoke, 10%), darken(whitesmoke, 5%))));
-  background-position: center 6px;
-  &:hover, &:focus {
-    color: $linkColor;
-    text-decoration: underline;
-    background-image: image-url("nyu.png");
-    background-position: center 6px;
-  }
-  &:active {
-    background-image: image-url("nyu.png");
+#shibboleth {
+  p {
+    text-align: center;
+    a.btn {
+      height: 160px;
+      width: 150px;
+      line-height: 290px;
+      font-size: 20px;
+      color: $linkColor;
+      background-repeat: no-repeat;
+      background-color: darken(whitesmoke, 10%);
+      @include background-image(image-url("nyu.png"),linear-gradient(color-stops(darken(whitesmoke, 10%), darken(whitesmoke, 5%))));
+      background-position: center 6px;
+      &:hover, &:focus {
+        color: $linkColor;
+        text-decoration: underline;
+        background-image: image-url("nyu.png");
+        background-position: center 6px;
+      }
+      &:active {
+        background-image: image-url("nyu.png");
+      }
+    }
   }
 }
 
@@ -65,6 +70,12 @@ h2 {
   max-width: 300px;
   max-height: 300px;
 }
+
+#forms {
+  max-width: 1100px;
+}
+
+
 
 // Phones to tablets
 @media (max-width: 767px) {

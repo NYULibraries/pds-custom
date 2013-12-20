@@ -31,8 +31,8 @@ use constant NYU_LOGIN => "<!DOCTYPE html>
       </ul>
     </nav>
     <section class=\"nyu-container container-fluid\">
-      <div class=\"row-fluid\">
-        <div class=\"span5 well\">
+      <div id=\"forms\" class=\"row-fluid\">
+        <div id=\"shibboleth\" class=\"span5 well\">
           <h2>
             NYU Users with a NetID
             <a class=\"nyulibraries-help nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
@@ -40,7 +40,7 @@ use constant NYU_LOGIN => "<!DOCTYPE html>
             </a>
           </h2>
           <p>
-            <a href=\"/Shibboleth.sso/Login?target=http%3A%2F%2Flocalhost%2Fpds%3Ffunc%3Dsso%26institute%3DNYU%26calling_system%3Dprimo%26url%3Dhttp%253A%252F%252Fexample.com\" class=\"btn shibboleth\">Click to Login</a>
+            <a href=\"/Shibboleth.sso/Login?target=http%3A%2F%2Flocalhost%2Fpds%3Ffunc%3Dsso%26institute%3DNYU%26calling_system%3Dprimo%26url%3Dhttp%253A%252F%252Fexample.com\" class=\"btn\">Click to Login</a>
           </p>
         </div>
         <div class=\"span5 well\">
@@ -138,8 +138,8 @@ sub nyu_login_screen_with_errors {
       </ul>
     </nav>
     <section class=\"nyu-container container-fluid\">
-      <div class=\"row-fluid\">
-        <div class=\"span5 well\">
+      <div id=\"forms\" class=\"row-fluid\">
+        <div id=\"shibboleth\" class=\"span5 well\">
           <h2>
             NYU Users with a NetID
             <a class=\"nyulibraries-help nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
@@ -147,7 +147,7 @@ sub nyu_login_screen_with_errors {
             </a>
           </h2>
           <p>
-            <a href=\"/Shibboleth.sso/Login?target=http%3A%2F%2Flocalhost%2Fpds%3Ffunc%3Dsso%26institute%3DNYU%26calling_system%3Dprimo%26url%3Dhttp%253A%252F%252Fexample.com\" class=\"btn shibboleth\">Click to Login</a>
+            <a href=\"/Shibboleth.sso/Login?target=http%3A%2F%2Flocalhost%2Fpds%3Ffunc%3Dsso%26institute%3DNYU%26calling_system%3Dprimo%26url%3Dhttp%253A%252F%252Fexample.com\" class=\"btn\">Click to Login</a>
           </p>
         </div>
         <div class=\"span5 well\">
@@ -290,7 +290,7 @@ is($controller->_login_screen(), "<!DOCTYPE html>
     </nav>
     <h1 class=\"nyu-container container-fluid\">Please login to access library services.</h1>
     <section class=\"nyu-container container-fluid\">
-      <div class=\"row-fluid\">
+      <div id=\"forms\" class=\"row-fluid\">
         <div class=\"span5 well\">
           <h2>
             Consortium or New School Patrons
@@ -325,7 +325,7 @@ is($controller->_login_screen(), "<!DOCTYPE html>
             </ul>
           </div>
         </div>
-        <div class=\"span5 well\">
+        <div id=\"shibboleth\" class=\"span5 well\">
           <h2>
             NYU Users with a NetID
             <a class=\"nyulibraries-help nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
@@ -333,7 +333,7 @@ is($controller->_login_screen(), "<!DOCTYPE html>
             </a>
           </h2>
           <p>
-            <a href=\"/Shibboleth.sso/Login?target=http%3A%2F%2Flocalhost%2Fpds%3Ffunc%3Dsso%26institute%3DNS%26calling_system%3Dprimo%26url%3Dhttp%253A%252F%252Fexample.com\" class=\"btn shibboleth\">Click to Login</a>
+            <a href=\"/Shibboleth.sso/Login?target=http%3A%2F%2Flocalhost%2Fpds%3Ffunc%3Dsso%26institute%3DNS%26calling_system%3Dprimo%26url%3Dhttp%253A%252F%252Fexample.com\" class=\"btn\">Click to Login</a>
           </p>
           <div>
             <h3>Need more information?</h3>
