@@ -37,24 +37,27 @@ a.nyulibraries-help-icon {
   }
 }
 
-h2 .popover-content {
-  font-size: $baseFontSize;
-  line-height: $baseLineHeight;
-  font-weight: normal;
-  max-height: 280px;
-  overflow: -moz-scrollbars-vertical; 
-  -ms-overflow-y: scroll; 
-  overflow-y: scroll; 
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-  &::-webkit-scrollbar-thumb {
-    @include border-radius(4px);
-    background-color: grey;
-  }
-  &::-webkit-scrollbar-track-piece {
-    @include border-radius(4px);
-    background-color: whitesmoke;
+h2 {
+  line-height: $baseLineHeight * 1.75;
+  .popover-content {
+    font-size: $baseFontSize;
+    line-height: $baseLineHeight;
+    font-weight: normal;
+    max-height: 280px;
+    overflow: -moz-scrollbars-vertical; 
+    -ms-overflow-y: scroll; 
+    overflow-y: scroll; 
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      @include border-radius(4px);
+      background-color: grey;
+    }
+    &::-webkit-scrollbar-track-piece {
+      @include border-radius(4px);
+      background-color: whitesmoke;
+    }
   }
 }
 
