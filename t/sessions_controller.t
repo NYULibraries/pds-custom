@@ -34,7 +34,7 @@ use constant NYU_LOGIN => "<!DOCTYPE html>
       <div id=\"forms\" class=\"row-fluid\">
         <div id=\"shibboleth\" class=\"span5 well\">
           <h2>
-            Login with an NYU NetID
+            NYU NetID Login
             <a class=\"nyulibraries-help nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
               help
             </a>
@@ -72,7 +72,7 @@ use constant NYU_LOGIN => "<!DOCTYPE html>
     <section class=\"nyu-container container-fluid\">
       <h3>
         Library services vary by institution. Please see the
-        <a href=\"https://web1.library.nyu.edu/privileges_guide/\" target=\"_blank\">NYU Libraries Privileges Guide</a>.
+        <a href=\"https://privileges.library.nyu.edu/\" target=\"_blank\">NYU Libraries Privileges Guide</a>.
       </h3>
     </section>
     <footer class=\"nyu-container\">NYU Division of Libraries.  BobCat.  Powered by Ex Libris Primo</footer>
@@ -141,7 +141,7 @@ sub nyu_login_screen_with_errors {
       <div id=\"forms\" class=\"row-fluid\">
         <div id=\"shibboleth\" class=\"span5 well\">
           <h2>
-            Login with an NYU NetID
+            NYU NetID Login
             <a class=\"nyulibraries-help nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
               help
             </a>
@@ -182,7 +182,7 @@ sub nyu_login_screen_with_errors {
     <section class=\"nyu-container container-fluid\">
       <h3>
         Library services vary by institution. Please see the
-        <a href=\"https://web1.library.nyu.edu/privileges_guide/\" target=\"_blank\">NYU Libraries Privileges Guide</a>.
+        <a href=\"https://privileges.library.nyu.edu/\" target=\"_blank\">NYU Libraries Privileges Guide</a>.
       </h3>
     </section>
     <footer class=\"nyu-container\">NYU Division of Libraries.  BobCat.  Powered by Ex Libris Primo</footer>
@@ -327,7 +327,7 @@ is($controller->_login_screen(), "<!DOCTYPE html>
         </div>
         <div id=\"shibboleth\" class=\"span5 well\">
           <h2>
-            Login with an NYU NetID
+            NYU NetID Login
             <a class=\"nyulibraries-help nyulibraries-help-icon\" href=\"https://library.nyu.edu/info/bobcat/netid.html\" target=\"_blank\">
               help
             </a>
@@ -351,7 +351,7 @@ is($controller->_login_screen(), "<!DOCTYPE html>
     <section class=\"nyu-container container-fluid\">
       <h3>
         Library services vary by institution. Please see the
-        <a href=\"https://web1.library.nyu.edu/privileges_guide/\" target=\"_blank\">NYU Libraries Privileges Guide</a>.
+        <a href=\"https://privileges.library.nyu.edu/\" target=\"_blank\">NYU Libraries Privileges Guide</a>.
       </h3>
     </section>
     <footer class=\"nyu-container\">BobCat.  Powered by Ex Libris Primo</footer>
