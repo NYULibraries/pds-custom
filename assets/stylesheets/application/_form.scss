@@ -36,7 +36,7 @@ a.nyulibraries-help-icon {
   color: $linkColor;
   vertical-align: top;
   border: 1px solid $linkColor;
-  @include border-radius(18px);
+  @include border-radius(20px);
   &:hover, &:focus, &:active {
     // text-decoration: none;
   }
