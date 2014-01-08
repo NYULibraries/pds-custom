@@ -1,5 +1,30 @@
 # Change Log
 
+## 2014-01-13
+This release is intended to de-clutter the login screen and make user interactions more intuitive.
+We've trimmed the links and text on the page in the hope that this will help users
+focus on the main action of the page, logging in.
+
+Functionally, the following has changed:
+
+- __Help Icons__  
+  The help icons are now styled text that say "help" instead of the small "?" images that were previously used.
+  The change is intended to improve clarity.
+
+- __Headers__  
+  In the NYU skin, the page header has been removed.
+  In all skins, the "Where are you from" (WAYF) headers have been changed to be more instructive,
+  including the key instruction, "Login".
+  The changes are intended to reduce cognitive load and improve clarity.
+
+- __Help Links__  
+  In the NYU skin, the myriad help links have been removed, in lieu of the help icon change.
+  This should help users focus on the main action of the page, logging in.
+
+- __NYU Shibboleth Torch__  
+  The NYU Shibboleth Torch button has been centered and the text color updated to indicate a hyperlink.
+  This is intended to aid users who missed the fact that the Torch was clickable.
+
 ## 2013-10-25
 This release represents a complete refactor of NYU's PDS code for
 clarity and ease of management. The code is __completely different__
