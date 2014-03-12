@@ -13,7 +13,7 @@ continuous integration implementation.
 Since Ex Libris bundles its perl version with PDS, we use [perlbrew](http://perlbrew.pl/) to simulate the PDS environment.
 We use `perl v5.8.9` because that's what PDS reports using.
 
-    primo@primo1(p3_1):~/p3_1/primom$perl -v
+    primo@primo1(p4_1):~/p4_1/primom$perl -v
     This is perl, v5.8.9 built for i686-linux
 
 ### Dependencies
