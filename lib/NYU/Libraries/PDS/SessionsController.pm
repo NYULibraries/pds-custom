@@ -122,6 +122,8 @@ my $is_ezproxy_authorized = sub {
 my $is_ezborrow_authorized = sub {
   my($self, $session) = @_;
   # Must have a barcode
+  print $session->barcode;
+  print $session->bor_status;
   return 0 unless $session->barcode;
   # Must be an approved status
   return (grep { $_ eq $session->bor_status } EZBORROW_AUTHORIZED_STATUSES);
