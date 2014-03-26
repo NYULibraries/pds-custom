@@ -121,6 +121,9 @@ my $is_ezproxy_authorized = sub {
 #   $self->$is_ezborrow_authorized($session)
 my $is_ezborrow_authorized = sub {
   my($self, $session) = @_;
+  print STDERR "Barcode: ".$session->barcode;
+  print STDERR "Bor Status: ".$session->bor_status;
+  print STDERR "Auth Statuses: ".EZBORROW_AUTHORIZED_STATUSES;
   # Must have a barcode
   return 0 unless $session->barcode;
   # Must be an approved status
