@@ -769,7 +769,10 @@ sub ezborrow {
     } else {
       # Exit with Unauthorized Error
       $self->set('error', "EZBorrow Unauthorized");
-      return $self->_redirect_to_ezborrow_unauthorized();
+      print "Barcode: ".$session->barcode;
+      print "Bor Status: ".$session->bor_status;
+      print "Auth Statuses: ".EZBORROW_AUTHORIZED_STATUSES;
+      #return $self->_redirect_to_ezborrow_unauthorized();
     }
   } else {
     my $nyu_shibboleth_controller = $self->$nyu_shibboleth_controller();
