@@ -769,8 +769,8 @@ sub ezborrow {
     } else {
       # Exit with Unauthorized Error
       $self->set('error', "EZBorrow Unauthorized");
-      print "Barcode: ".$session->barcode;
-      print "Bor Status: ".$session->bor_status;
+      print "Barcode: ".$self->$current_session->barcode;
+      print "Bor Status: ".$self->$current_session->bor_status;
       print "Auth Statuses: ".EZBORROW_AUTHORIZED_STATUSES;
       #return $self->_redirect_to_ezborrow_unauthorized();
     }
@@ -794,8 +794,8 @@ sub ezborrow {
           # Redirect to EZ proxy
           return $self->_redirect_to_ezborrow($session, uri_unescape($self->current_url));
         } else {
-          print "Barcode: ".$session->barcode;
-          print "Bor Status: ".$session->bor_status;
+          print "Barcode: ".$self->$current_session->barcode;
+          print "Bor Status: ".$self->$current_session->bor_status;
           print "Auth Statuses: ".EZBORROW_AUTHORIZED_STATUSES;
           # Exit with Unauthorized Error
           $self->set('error', "EZBorrow Unauthorized");
