@@ -791,12 +791,9 @@ sub ezborrow {
           # Redirect to EZ proxy
           return $self->_redirect_to_ezborrow($session, uri_unescape($self->current_url));
         } else {
-          print "Barcode: ".$session->barcode;
-          print "Bor Status: ".$session->bor_status;
-          print "Auth Statuses: ".EZBORROW_AUTHORIZED_STATUSES;
           # Exit with Unauthorized Error
           $self->set('error', "EZBorrow Unauthorized");
-          #return $self->_redirect_to_ezborrow_unauthorized();
+          return $self->_redirect_to_ezborrow_unauthorized();
         }
       } else {
         # Exit with Unauthorized Error
