@@ -121,9 +121,6 @@ my $is_ezproxy_authorized = sub {
 #   $self->$is_ezborrow_authorized($session)
 my $is_ezborrow_authorized = sub {
   my($self, $session) = @_;
-  print STDERR "Barcode: ".$session->barcode;
-  print STDERR "Bor Status: ".$session->bor_status;
-  print STDERR "Auth Statuses: ".EZBORROW_AUTHORIZED_STATUSES;
   # Must have a barcode
   return 0 unless $session->barcode;
   # Must be an approved status
@@ -794,9 +791,12 @@ sub ezborrow {
           # Redirect to EZ proxy
           return $self->_redirect_to_ezborrow($session, uri_unescape($self->current_url));
         } else {
+          print "Barcode: ".$session->barcode;
+          print "Bor Status: ".$session->bor_status;
+          print "Auth Statuses: ".EZBORROW_AUTHORIZED_STATUSES;
           # Exit with Unauthorized Error
           $self->set('error', "EZBorrow Unauthorized");
-          return $self->_redirect_to_ezborrow_unauthorized();
+          #return $self->_redirect_to_ezborrow_unauthorized();
         }
       } else {
         # Exit with Unauthorized Error
