@@ -792,8 +792,8 @@ sub ezborrow {
           # Redirect to EZ proxy
           return $self->_redirect_to_ezborrow($session, uri_unescape($self->current_url));
         } else {
-          print "Aleph Id: ".Dumper($aleph_identity);
-          #print "Barcode: ".$session->barcode;
+          #print "Aleph Id: ".Dumper($aleph_identity);
+          print "Barcode: ".$session->barcode;
           #print "Bor Status: ".$session->bor_status;
           #print "Auth Statuses: ".Dumper(EZBORROW_AUTHORIZED_STATUSES);
           # Exit with Unauthorized Error
