@@ -45,6 +45,14 @@ are available through [`Test::More`](http://perldoc.perl.org/Test/More.html).
 3. `Test::Harness (v3.28)`
 4. `TAP::Harness::Archive (v0.15)`
 
+#### Skipping Tests
+
+Because of changing nature of the data we are testing against occasionally we will have to skip some tests as there is a difference between testing the code and testing the data. We can skip with:
+
+    SKIP: {
+      skip($when_to_skip, $how_many_tests_to_skip);
+      ok(...);
+    }
 
 #### PDS Dependencies
 PDS' Perl comes bundled with several perl module dependencies.
