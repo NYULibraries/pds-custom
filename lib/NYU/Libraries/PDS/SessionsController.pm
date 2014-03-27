@@ -798,7 +798,7 @@ sub ezborrow {
           #print "Auth Statuses: ".Dumper(EZBORROW_AUTHORIZED_STATUSES);
           # Exit with Unauthorized Error
           $self->set('error', "EZBorrow Unauthorized");
-          return $self->_redirect_to_ezborrow_unauthorized();
+          #return $self->_redirect_to_ezborrow_unauthorized();
         }
       } else {
         # Exit with Unauthorized Error
