@@ -17,7 +17,7 @@ sub template_path {
   my $template_path = "templates/";
   # Testing environment differs
   return ($ENV{'CI'}) ? "./$template_path" : 
-    "/exlibris/primo/p3_1/pds/custom/$template_path";
+    "/exlibris/primo/p4_1/pds/custom/$template_path";
 }
 
 sub application_title {
