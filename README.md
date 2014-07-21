@@ -13,7 +13,7 @@ continuous integration implementation.
 Since Ex Libris bundles its perl version with PDS, we use [perlbrew](http://perlbrew.pl/) to simulate the PDS environment.
 We use `perl v5.8.9` because that's what PDS reports using.
 
-    primo@primo1(p3_1):~/p3_1/primom$perl -v
+    primo@primo1(p4_1):~/p4_1/primom$perl -v
     This is perl, v5.8.9 built for i686-linux
 
 ### Dependencies
@@ -45,6 +45,14 @@ are available through [`Test::More`](http://perldoc.perl.org/Test/More.html).
 3. `Test::Harness (v3.28)`
 4. `TAP::Harness::Archive (v0.15)`
 
+#### Skipping Tests
+
+Because of changing nature of the data we are testing against occasionally we will have to skip some tests as there is a difference between testing the code and testing the data. We can skip with:
+
+    SKIP: {
+      skip($when_to_skip, $how_many_tests_to_skip);
+      ok(...);
+    }
 
 #### PDS Dependencies
 PDS' Perl comes bundled with several perl module dependencies.

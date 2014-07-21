@@ -17,6 +17,7 @@
 package NYU::Libraries::PDS::SessionsController;
 use strict;
 use warnings;
+use Data::Dumper;
 
 # Use our bundled Perl modules, e.g. Class::Accessor
 use lib "vendor/lib";

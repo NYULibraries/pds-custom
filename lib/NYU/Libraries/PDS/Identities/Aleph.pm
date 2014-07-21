@@ -77,6 +77,8 @@ my $lookup_from_xserver = sub {
   # Set identity hash reference from xservice.
   my $identity;
   $identity->{"id"} = $bor_info->get_z303_id();
+  # Barcode is not available in X-Service call to bor-info, so just set it to blank
+  # Certain services (e.g. EZBorrow) that require barcode will not be authorized when looking up from X-Server
   $identity->{"barcode"} =  "";
   $identity->{"expiry_date"} = $bor_info->get_z305_expiry_date();
   $identity->{"bor_status"} = $bor_info->get_z305_borstatus();

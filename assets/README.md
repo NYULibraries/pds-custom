@@ -1,3 +1,3 @@
 # Custom Assets
 ## Symbolic Link
-A symbolic link needs to be created in `apch` (`/exlibris/primo/p3_1/primoe/apache/htdocs`).
+A symbolic link needs to be created in `apch` (`/exlibris/primo/p4_1/primoe/apache/htdocs`).
