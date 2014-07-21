@@ -8,7 +8,7 @@ fi
 # Clone it (again)
 cd vendor && git clone git@github.com:NYULibraries/pds.git pds-core;
 # Use the dev branch
-cd pds-core && git checkout development-primo4;
+cd pds-core && git checkout development;
 # Get out of there
 cd ../../;
 
