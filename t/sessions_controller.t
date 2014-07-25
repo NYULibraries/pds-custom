@@ -20,7 +20,7 @@ use constant NYU_LOGIN => "<!DOCTYPE html>
   <body>
     <header id=\"header\" class=\"header\">
       <div class=\"parent\"><a href=\"http://library.nyu.edu\"><span>NYU Libraries</span></a></div>
-      <div class=\"suite\"><span>BobCat</span></div>
+      <div class=\"institution\"><span>NYU</span></div>
       <div class=\"application\"><span>Login</span></div>
     </header>
     <nav id=\"nav1\" class=\"breadcrumb\">
@@ -94,7 +94,7 @@ use constant NYU_LOGOUT => "<!DOCTYPE html>
   <body>
     <header id=\"header\" class=\"header\">
       <div class=\"parent\"><a href=\"http://library.nyu.edu\"><span>NYU Libraries</span></a></div>
-      <div class=\"suite\"><span>BobCat</span></div>
+      <div class=\"institution\"><span>NYU</span></div>
       <div class=\"application\"><span>Logout</span></div>
     </header>
     <nav id=\"nav1\" class=\"breadcrumb\">
@@ -127,7 +127,7 @@ sub nyu_login_screen_with_errors {
   <body>
     <header id=\"header\" class=\"header\">
       <div class=\"parent\"><a href=\"http://library.nyu.edu\"><span>NYU Libraries</span></a></div>
-      <div class=\"suite\"><span>BobCat</span></div>
+      <div class=\"institution\"><span>NYU</span></div>
       <div class=\"application\"><span>Login</span></div>
     </header>
     <nav id=\"nav1\" class=\"breadcrumb\">
@@ -213,7 +213,7 @@ sub redirect_html {
   <body>
     <header id=\"header\" class=\"header\">
       <div class=\"parent\"><a href=\"http://library.nyu.edu\"><span>NYU Libraries</span></a></div>
-      <div class=\"suite\"><span>BobCat</span></div>
+      <div class=\"institution\"><span>NYU</span></div>
       <div class=\"application\"><span>Login</span></div>
     </header>
     <nav id=\"nav1\" class=\"breadcrumb\">
@@ -278,7 +278,7 @@ is($controller->_login_screen(), "<!DOCTYPE html>
   <body>
     <header id=\"header\" class=\"header\">
       <div class=\"parent\"><a href=\"http://library.newschool.edu/\"><span>New School University Libraries</span></a></div>
-      <div class=\"suite\"><span>BobCat</span></div>
+      <div class=\"institution\"><span>NS</span></div>
       <div class=\"application\"><span>Login</span></div>
     </header>
     <nav id=\"nav1\" class=\"breadcrumb\">
