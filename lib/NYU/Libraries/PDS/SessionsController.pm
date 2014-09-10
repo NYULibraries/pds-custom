@@ -1,5 +1,5 @@
 # Controller for managing the PDS session flow.
-# 
+#
 # A SessionsController instance has the following methods
 #   login:
 #     Renders the appropriate login screen unless the user is single signed on.
@@ -13,7 +13,7 @@
 #     Attempts authentication for the given authentication method
 #   bor_info:
 #     Returns XML representation of an existing PDS session
-# 
+#
 package NYU::Libraries::PDS::SessionsController;
 use strict;
 use warnings;
@@ -63,7 +63,7 @@ use constant DEFAULT_CALLING_SYSTEM => "primo";
 use constant DEFAULT_TARGET_URL => "http://bobcat.library.nyu.edu";
 use constant DEFAULT_FUNCTION => "sso";
 use constant GLOBAL_NYU_SHIBBOLETH_LOGOUT => "https://login.nyu.edu/sso/UI/Logout";
-use constant EZBORROW_AUTHORIZED_STATUSES => qw(50 51 52 53 54 55 56 57 58 60 61 62 63 65 66 80 81 82);
+use constant EZBORROW_AUTHORIZED_STATUSES => qw(20 21 22 23 50 51 52 53 54 55 56 57 58 60 61 62 63 65 66 80 81 82);
 use constant EZBORROW_URL_BASE => "https://e-zborrow.relaisd2d.com/service-proxy/";
 # library dot nyu cookies to delete on logout
 use constant LIBRARY_DOT_NYU_COOKIES => qw(_tsetse_session tsetse_credentials tsetse_handle nyulibrary_opensso_illiad
@@ -91,14 +91,14 @@ my $current_session = sub {
   unless ($self->{'current_session'}) {
     # Testing environment differs
     unless ($ENV{'CI'}) {
-      $self->{'current_session'} = 
+      $self->{'current_session'} =
         NYU::Libraries::PDS::Session::find($self->session_id);
     }
   }
   return $self->{'current_session'};
 };
 
-# Private method to determine if the given session is 
+# Private method to determine if the given session is
 # authorized for EZproxy
 # Usage:
 #   $self->$is_ezproxy_authorized($session)
@@ -116,7 +116,7 @@ my $is_ezproxy_authorized = sub {
   return 0;
 };
 
-# Private method to determine if the given session is 
+# Private method to determine if the given session is
 # authorized for EZ Borrow
 # Usage:
 #   $self->$is_ezborrow_authorized($session)
@@ -128,7 +128,7 @@ my $is_ezborrow_authorized = sub {
   return (grep { $_ eq $session->bor_status } EZBORROW_AUTHORIZED_STATUSES);
 };
 
-# Private method to determine if the given session is 
+# Private method to determine if the given session is
 # an alumnus
 # Usage:
 #   $self->$is_alumni($session)
@@ -151,7 +151,7 @@ my $tsetse = sub {
   my $cgi = CGI->new;
   my $tsetse_handle = $cgi->cookie('tsetse_handle');
   my $tsetse_credentials = $cgi->cookie('tsetse_credentials');
-  my $eshelf_success = save_permanent_eshelf_records($conf, $session_id, 
+  my $eshelf_success = save_permanent_eshelf_records($conf, $session_id,
     $tsetse_handle, $tsetse_credentials);
 };
 
@@ -212,7 +212,7 @@ my $destroy_session = sub {
 my $aleph_controller = sub {
   my $self = shift;
   unless ($self->{'aleph_controller'}) {
-    $self->{'aleph_controller'} = 
+    $self->{'aleph_controller'} =
       NYU::Libraries::PDS::IdentitiesControllers::AlephController->new($self->{'conf'});
   }
   return $self->{'aleph_controller'};
@@ -224,7 +224,7 @@ my $aleph_controller = sub {
 my $ns_ldap_controller = sub {
   my $self = shift;
   unless ($self->{'ns_ldap_controller'}) {
-    $self->{'ns_ldap_controller'} = 
+    $self->{'ns_ldap_controller'} =
       NYU::Libraries::PDS::IdentitiesControllers::NsLdapController->new($self->{'conf'});
   }
   return $self->{'ns_ldap_controller'};
@@ -236,7 +236,7 @@ my $ns_ldap_controller = sub {
 my $nyu_shibboleth_controller = sub {
   my $self = shift;
   unless ($self->{'nyu_shibboleth_controller'}) {
-    my $nyu_shibboleth_controller = 
+    my $nyu_shibboleth_controller =
       NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethController->new($self->{'conf'});
     $nyu_shibboleth_controller->target_url($self->target_url);
     $nyu_shibboleth_controller->current_url($self->current_url);
@@ -254,7 +254,7 @@ my $set_target_url = sub {
   my($self, $target_url) = @_;
   # Set target_url from either the given target URL, the shibboleth controller stored
   # "been there done that cookie" or the default
-  $target_url ||= 
+  $target_url ||=
     NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethController->been_there_done_that();
   $target_url ||= $self->{'conf'}->{bobcat_url} if $self->{'conf'};
   $target_url ||= DEFAULT_TARGET_URL;
@@ -492,7 +492,7 @@ sub _authenticate_aleph {
   # authentication mechanism
   # Try to create the Aleph identity
   # based on the given ID and password
-  my $aleph_identity = 
+  my $aleph_identity =
     $self->$aleph_controller()->create($id, $password);
   # Check if the Aleph identity exists
   unless($aleph_identity->exists) {
@@ -523,7 +523,7 @@ sub _authenticate_ns_ldap {
   my ($ns_ldap_identity, $aleph_identity);
   # Try to create the New School identity
   # based on the given ID and password
-  $ns_ldap_identity = 
+  $ns_ldap_identity =
     $self->$ns_ldap_controller()->create($id, $password);
   # Check if the New School LDAP identity exists
   if($ns_ldap_identity->exists) {
@@ -572,7 +572,7 @@ sub load_login {
     if ($aleph_identity->exists) {
       # Encrypt the Aleph identity's password
       $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
-      my $session = 
+      my $session =
         $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
       # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
       # or just got it from me.
@@ -597,13 +597,13 @@ sub sso {
   my $nyu_shibboleth_identity = $nyu_shibboleth_controller->create();
   if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
     my $aleph_controller = $self->$aleph_controller();
-    my $aleph_identity = 
+    my $aleph_identity =
       $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
     # Check if the Aleph identity exists
     if ($aleph_identity->exists) {
       # Encrypt the Aleph identity's password
       $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
-      my $session = 
+      my $session =
         $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
       # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
       # or just got it from me.
@@ -666,7 +666,7 @@ sub logout {
     my $session_id = $session->session_id;
     for (my $i=0; $remote_address[$i]; $i++) {
       my @remote_one = split (/;/,$remote_address[$i]);
-      # Hack for dealing with the fact that we can't call primo logout from the 
+      # Hack for dealing with the fact that we can't call primo logout from the
       # pds server since they are the same box and the load balancer doesn't like it.
       if ($remote_one[2] eq "primo") {
         my $url = uri_escape($remote_one[0]);
@@ -717,14 +717,14 @@ sub ezproxy {
     if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
       # Try to create a PDS session, since we have the opportunity.
       my $aleph_controller = $self->$aleph_controller();
-      my $aleph_identity = 
+      my $aleph_identity =
         $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
       my $session;
       # Check if the Aleph identity exists
       if ($aleph_identity->exists) {
         # Encrypt the Aleph identity's password
         $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
-        $session = 
+        $session =
           $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
       }
       # Check if the Shibboleth user is authorized
@@ -733,7 +733,7 @@ sub ezproxy {
       if ($self->$is_ezproxy_authorized($nyu_shibboleth_identity)) {
         # Get the NYU Shibboleth identity's user id
         my $uid = $nyu_shibboleth_identity->uid;
-        # Get the target URL from Shibboleth controller, 
+        # Get the target URL from Shibboleth controller,
         # since it captured it on the previous pass,
         # or just got it from me.
         my $target_url = $nyu_shibboleth_controller->get_target_url();
@@ -780,13 +780,13 @@ sub ezborrow {
     # Do we have an identity? If so, let's get the associated Aleph identity
     if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
       my $aleph_controller = $self->$aleph_controller();
-      my $aleph_identity = 
+      my $aleph_identity =
         $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
       # Check if the Aleph identity exists
       if ($aleph_identity->exists) {
         # Encrypt the Aleph identity's password
         $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
-        my $session = 
+        my $session =
           $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
         if ($self->$is_ezborrow_authorized($session)) {
           # Redirect to EZ proxy
