@@ -288,7 +288,7 @@ my $set_cleanup_url = sub {
   my $base = $conf->{bobcat_url};
   if($base) {
     my $cleanup_url ||= "$base/primo_library/libweb/custom/cleanup.jsp?url=";
-    $self->set('cleanup_url', $cleanup_url);
+    $self->set('cleanup_url', uri_escape($cleanup_url));
   }
 };
 
