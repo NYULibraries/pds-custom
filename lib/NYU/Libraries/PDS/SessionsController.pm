@@ -288,7 +288,7 @@ my $set_cleanup_url = sub {
   my $base = $conf->{bobcat_url};
   if($base) {
     my $cleanup_url ||= "$base/primo_library/libweb/custom/cleanup.jsp?url=";
-    $self->set('cleanup_url', uri_escape($cleanup_url));
+    $self->set('cleanup_url', $cleanup_url);
   }
 };
 
@@ -474,7 +474,7 @@ sub _redirect_to_ezborrow {
   my $query =  $uri->query_param('query');
   my $barcode = $session->barcode;
   my $ezborrow_url =
-    EZBORROW_URL_BASE."?command=mkauth&LS=NYU&PI=$barcode&query=$query";
+    EZBORROW_URL_BASE."?command=mkauth&LS=NYU&PI=$barcode&query=".uri_escape($query);
   $ezborrow_url = uri_escape($ezborrow_url);
   # my $eshelf_url = $self->{'conf'}->{eshelf_url};
   # return $self->$redirect("$eshelf_url/validate?return_url=$ezborrow_url");
