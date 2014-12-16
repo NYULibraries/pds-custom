@@ -13,7 +13,7 @@ my $identity = NYU::Libraries::PDS::Identities::Aleph->new();
 is($identity->error, "No configuration set.", "Should be error on new");
 
 # Get an instance of Aleph identity
-$identity = 
+$identity =
   NYU::Libraries::PDS::Identities::Aleph->new({shared_secret => 'EncryptThis',
     lookup_only => 1}, "N12162279");
 
@@ -57,7 +57,7 @@ ok(defined($identity->{'identity'}));
 is($identity->{'identity'}->{'id'}, "N12162279", "Should have identity id");
 is($identity->{'identity'}->{'email'}, "std5\@nyu.edu", "Should have identity email");
 is($identity->{'identity'}->{'plif_status'}, "PLIF LOADED", "Should have identity plif status");
-is($identity->{'identity'}->{'bor_status'}, "55", "Should have identity bor status");
+is($identity->{'identity'}->{'bor_status'}, "51", "Should have identity bor status");
 
 # Verify attributes are set
 is($identity->id, "N12162279", "Should have id attribute");
@@ -66,18 +66,18 @@ is($identity->plif_status, "PLIF LOADED", "Should have plif status attribute");
 is($identity->verification, "85db3f2529a3e4e9a28135491006ce3f", "Should have encrypted verification");
 
 # Verify XML
-is($identity->to_xml(), 
+is($identity->to_xml(),
   "<aleph>".
     "<id>N12162279</id>".
     "<email>std5\@nyu.edu</email>".
-    "<givenname>SCOT THOMAS</givenname>".
-    "<cn>DALTON,SCOT THOMAS</cn>".
-    "<sn>DALTON</sn>".
-    "<name>SCOT THOMAS</name>".
-    "<bor_name>DALTON,SCOT THOMAS</bor_name>".
+    "<givenname>Scot Thomas</givenname>".
+    "<cn>Dalton, Scot Thomas</cn>".
+    "<sn>Dalton</sn>".
+    "<name>Scot Thomas</name>".
+    "<bor_name>Dalton, Scot Thomas</bor_name>".
     "<verification>85db3f2529a3e4e9a28135491006ce3f</verification>".
-    "<expiry_date>20141031</expiry_date>".
-    "<bor_status>55</bor_status>".
+    "<expiry_date>20151031</expiry_date>".
+    "<bor_status>51</bor_status>".
     "<ill_permission>Y</ill_permission>".
     "<plif_status>PLIF LOADED</plif_status>".
   "</aleph>", "Should have the expected Aleph identity XML");
@@ -109,7 +109,7 @@ $identity = NYU::Libraries::PDS::Identities::Aleph->new(
 # Verify identity is defined
 SKIP: {
   skip(1, 8);
-  
+
   ok(defined($identity->{'identity'}));
   is($identity->{'identity'}->{'id'}, "DS03D", "Should have identity id");
   is($identity->{'identity'}->{'email'}, "sydney.thompson\@nyu.edu", "Should have identity email");
@@ -151,4 +151,3 @@ is($identity->ill_library, "ILL_MED", "Should be med ILL");
 $identity = NYU::Libraries::PDS::Identities::Aleph->new(
   {shared_secret => 'EncryptThis', flat_file => "./t/support/patrons.dat", lookup_only => 1}, "BOBSTILL");
 is($identity->givenname, "BOBSTILL", "Should be BOBSTILL");
-

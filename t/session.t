@@ -23,9 +23,9 @@ isa_ok($session, qw(Class::Accessor));
 isa_ok($session, qw(NYU::Libraries::PDS::Session));
 
 # Verify methods
-can_ok($session, (qw(id institute barcode bor_status bor_type name uid email cn 
-  givenname sn verification nyuidn nyu_shibboleth ns_ldap entitlements objectclass 
-    ill_permission college_code college_name dept_code dept_name major_code major ill_library 
+can_ok($session, (qw(id institute barcode bor_status bor_type name uid email cn
+  givenname sn verification nyuidn nyu_shibboleth ns_ldap entitlements objectclass
+    ill_permission college_code college_name dept_code dept_name major_code major ill_library
       session_id calling_system target_url new find to_xml remote_address)));
 
 
@@ -37,7 +37,7 @@ my $new_session = NYU::Libraries::PDS::Session->new($identity);
 
 SKIP: {
   skip(1,1);
-  is($new_session->to_xml(), 
+  is($new_session->to_xml(),
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".
     "<session>".
       "<id>DS03D</id>".
@@ -58,20 +58,20 @@ $conf->{xserver_host} = undef;
 $controller = NYU::Libraries::PDS::IdentitiesControllers::AlephController->new($conf);
 $identity = $controller->get("N12162279");
 $new_session = NYU::Libraries::PDS::Session->new($identity);
-is($new_session->to_xml(), 
+is($new_session->to_xml(),
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".
   "<session>".
     "<id>N12162279</id>".
     "<email>std5\@nyu.edu</email>".
-    "<givenname>SCOT THOMAS</givenname>".
-    "<cn>DALTON,SCOT THOMAS</cn>".
-    "<sn>DALTON</sn>".
+    "<givenname>Scot Thomas</givenname>".
+    "<cn>Dalton, Scot Thomas</cn>".
+    "<sn>Dalton</sn>".
     "<institute>NYU</institute>".
-    "<bor_status>55</bor_status>".
-    "<name>SCOT THOMAS</name>".
+    "<bor_status>51</bor_status>".
+    "<name>Scot Thomas</name>".
     "<verification>d4465aacaa645f2164908cd4184c09f0</verification>".
     "<ill_permission>Y</ill_permission>".
-    "<expiry_date>20141031</expiry_date>".
+    "<expiry_date>20151031</expiry_date>".
   "</session>", "Unexpected session xml");
 
 # my $existing_session = NYU::Libraries::PDS::Session::find('27620139407145177581349399004532');
