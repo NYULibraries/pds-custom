@@ -9,8 +9,6 @@
 #     Renders the appropriate login screen unless the user is authorized for ezborrow.
 #   sso:
 #     Redirects to the given url unless the user is single signed on
-#   authenticate:
-#     Attempts authentication for the given authentication method
 #   bor_info:
 #     Returns XML representation of an existing PDS session
 #
@@ -475,80 +473,6 @@ sub _redirect_to_ezborrow {
   return $self->$redirect($self->cleanup_url.$ezborrow_url);
 };
 
-# Authenticate against Aleph.
-# Returns an 1 element array of newly created identities.
-# The first element is the Aleph identity.
-# Usage:
-#   my @identities = $self->$authenticate_aleph($id, $password);
-sub _authenticate_aleph {
-  my($self, $id, $password) = @_;
-  # We need an Aleph identity to successfully create a session for this
-  # authentication mechanism
-  # Try to create the Aleph identity
-  # based on the given ID and password
-  my $aleph_identity =
-    $self->$aleph_controller()->create($id, $password);
-  # Check if the Aleph identity exists
-  unless($aleph_identity->exists) {
-    # The Aleph identity doesn't exist
-    # so we exit and set a Login Error
-    my $error = $aleph_identity->error;
-    # Don't overwrite the existing error.
-    unless ($self->error) {
-      $self->set('error', $error);
-    }
-    return undef;
-  }
-  # If we successfully authenticated return identity
-  return [$aleph_identity];
-}
-
-# Authenticate against New School's LDAP.
-# Returns an 2 element array of newly created identities.
-# The first element is the New School LDAP identity,
-# the second is the Aleph identity.
-# Usage:
-#   my @identities = $self->$authenticate_ns_ldap($id, $password);
-sub _authenticate_ns_ldap {
-  my($self, $id, $password) = @_;
-  # We need a New School LDAP identity AND an Aleph identity
-  # to successfully create a session for this authentication
-  # mechanism
-  my ($ns_ldap_identity, $aleph_identity);
-  # Try to create the New School identity
-  # based on the given ID and password
-  $ns_ldap_identity =
-    $self->$ns_ldap_controller()->create($id, $password);
-  # Check if the New School LDAP identity exists
-  if($ns_ldap_identity->exists) {
-    # Try to create the Aleph identity
-    # based on the Aleph identifier that we got from
-    # the New School LDAP identity
-    $aleph_identity =
-      $self->$aleph_controller()->get($ns_ldap_identity->aleph_identifier);
-    # Check if the Aleph identity exists
-    unless($aleph_identity->exists) {
-      # The Aleph identity doesn't exist
-      # so we exit and set a Unauthorized Error
-      $self->set('error', "Unauthorized");
-      return undef;
-    }
-  } else {
-    # The New School LDAP identity doesn't exist
-    # so we exit and set a Login Error
-    # Don't overwrite the existing error.
-    unless ($self->error) {
-      my $error = $ns_ldap_identity->error;
-      $self->set('error', $error);
-    }
-    return undef;
-  }
-  # Encrypt the Aleph identity's password
-  $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
-  # If we successfully authenticated return identities
-  return [$ns_ldap_identity, $aleph_identity];
-}
-
 # Display the login screen, unless already signed in
 # Usage:
 #   $controller->load_login();
@@ -606,42 +530,6 @@ sub sso {
     }
   }
   return $nyu_shibboleth_controller->redirect_to_target();
-}
-
-# Authenticate based on the given id and password
-# Usage:
-#   $controller->authenticate();
-sub authenticate {
-  my($self, $id, $password) = @_;
-  my $identities;
-  # If we're New School, do New School LDAP first.
-  # Otherwise, do Aleph first
-  if($self->institute eq "NS") {
-    $identities = $self->_authenticate_ns_ldap($id, $password);
-    $identities = $self->_authenticate_aleph($id, $password) unless defined($identities);
-  } else {
-    $identities = $self->_authenticate_aleph($id, $password);
-    $identities = $self->_authenticate_ns_ldap($id, $password) unless defined($identities);
-  }
-  # If we got some identities, create a session and redirect to the target URL
-  # Otherwise, present the login screen or redirect to unauthorized
-  if (defined($identities)) {
-    my $session = $self->$create_session(@$identities);
-    # Redirect to whence we came (with some processing)
-    # return $self->_redirect_to_eshelf();
-    return $self->_redirect_to_cleanup($session);
-  } else {
-    # Redirect to unauthorized page
-    return $self->_redirect_to_unauthorized() if ($self->error eq "Unauthorized");
-    # Let people know that BobCat is down.
-    if ($self->error eq "Authentication error: Couldn't get a session id") {
-      $self->set('error', "We're sorry for the inconvenience, but BobCat login services are down at the moment.");
-    } else {
-      $self->set('error', "There seems to have been a problem logging in. Please check your credentials.");
-    }
-    # Return Login Screen
-    return $self->_login_screen();
-  }
 }
 
 # Destroy the session, handle cookie maintenance and
