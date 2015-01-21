@@ -198,47 +198,6 @@ my $destroy_session = sub {
   }
 };
 
-# Private method to get a new Aleph Controller
-# Usage:
-#   $self->$aleph_controller()
-my $aleph_controller = sub {
-  my $self = shift;
-  unless ($self->{'aleph_controller'}) {
-    $self->{'aleph_controller'} =
-      NYU::Libraries::PDS::IdentitiesControllers::AlephController->new($self->{'conf'});
-  }
-  return $self->{'aleph_controller'};
-};
-
-# Private method to get a new NsLdap Controller
-# Usage:
-#   $self->$ns_ldap_controller()
-my $ns_ldap_controller = sub {
-  my $self = shift;
-  unless ($self->{'ns_ldap_controller'}) {
-    $self->{'ns_ldap_controller'} =
-      NYU::Libraries::PDS::IdentitiesControllers::NsLdapController->new($self->{'conf'});
-  }
-  return $self->{'ns_ldap_controller'};
-};
-
-# Private method to get a new NyuShibboleth Controller
-# Usage:
-#   $self->$nyu_shibboleth_controller()
-my $nyu_shibboleth_controller = sub {
-  my $self = shift;
-  unless ($self->{'nyu_shibboleth_controller'}) {
-    my $nyu_shibboleth_controller =
-      NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethController->new($self->{'conf'});
-    $nyu_shibboleth_controller->target_url($self->target_url);
-    $nyu_shibboleth_controller->current_url($self->current_url);
-    $nyu_shibboleth_controller->cleanup_url($self->cleanup_url);
-    $nyu_shibboleth_controller->institute($self->institute);
-    $self->{'nyu_shibboleth_controller'} = $nyu_shibboleth_controller;
-  }
-  return $self->{'nyu_shibboleth_controller'};
-};
-
 # Private method to set the target URL
 # Usage:
 #   $self->$set_target_url($target_url);
