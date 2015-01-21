@@ -42,13 +42,7 @@ use PDSLogout;
 
 # NYU Libraries modules
 use NYU::Libraries::Util qw(trim whitelist_institution save_permanent_eshelf_records handle_primo_target_url);
-use NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethController;
-use NYU::Libraries::PDS::IdentitiesControllers::NsLdapController;
-use NYU::Libraries::PDS::IdentitiesControllers::AlephController;
 use NYU::Libraries::PDS::Session;
-use NYU::Libraries::PDS::Views::Login;
-use NYU::Libraries::PDS::Views::Logout;
-use NYU::Libraries::PDS::Views::Redirect;
 
 use base qw(Class::Accessor);
 __PACKAGE__->mk_accessors(qw(institute calling_system target_url current_url cleanup_url session_id error));
