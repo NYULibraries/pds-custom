@@ -259,6 +259,15 @@ my $ezproxy_ticket = sub {
   return ($ezproxy_ticket) ? CGI::escape($ezproxy_ticket) : undef;
 };
 
+# Private method to redirect
+# Usage:
+#   $self->$redirect($target_url, $session);
+my $redirect = sub {
+  my($self, $target_url) = @_;
+  my $cgi = CGI->new();
+  return $cgi->redirect($target_url);
+};
+
 # Private method to get the target_url
 # Private initialization method
 # Usage:
@@ -294,24 +303,24 @@ sub new {
   return $self;
 }
 
-# Redirects to external SSO login page
+# Returns a rendered HTML login screen for presentation
 # Usage:
 #   my $login_screen = $self->_login_screen();
 sub _login_screen {
   my $self = shift;
-  my $cgi = CGI->new();
   # Present Login Screen
-  return $cgi->redirect(LOGIN_URL);
+  my $template = NYU::Libraries::PDS::Views::Login->new($self->{'conf'}, $self);
+  return $template->render();
 }
 
-# Redirects to external logout page
+# Returns a rendered HTML logout screen for presentation
 # Usage:
 #   my $login_screen = $self->_logout_screen();
 sub _logout_screen {
   my $self = shift;
-  my $cgi = CGI->new();
-  # Present Logged Out Screen
-  return $cgi->redirect(LOGIN_URL.LOGOUT_URL);
+  # Present Login Screen
+  my $template = NYU::Libraries::PDS::Views::Logout->new($self->{'conf'}, $self);
+  return $template->render();
 }
 
 # Returns a redirect header to the unauthorized message URL
@@ -328,8 +337,7 @@ sub _redirect_to_unauthorized {
 #   my $redirect_header = $self->_redirect_to_ezproxy_unauthorized();
 sub _redirect_to_ezproxy_unauthorized {
   my $self = shift;
-  my $cgi = CGI->new();
-  return $cgi->redirect(EZPROXY_UNAUTHORIZED_URL);
+  return $self->$redirect(EZPROXY_UNAUTHORIZED_URL);
 }
 
 # Returns a redirect header to the EZ Borrow unauthorized message URL
@@ -337,8 +345,7 @@ sub _redirect_to_ezproxy_unauthorized {
 #   my $redirect_header = $self->_redirect_to_ezborrow_unauthorized();
 sub _redirect_to_ezborrow_unauthorized {
   my $self = shift;
-  my $cgi = CGI->new();
-  return $cgi->redirect(EZBORROW_UNAUTHORIZED_URL);
+  return $self->$redirect(EZBORROW_UNAUTHORIZED_URL);
 }
 
 # Returns a redirect header to the target URL
@@ -347,10 +354,9 @@ sub _redirect_to_ezborrow_unauthorized {
 sub _redirect_to_target {
   my ($self, $session) = @_;
   my $target_url = $self->target_url;
-  my $cgi = CGI->new();
   # Primo sucks!
   $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
-  return $cgi->redirect($target_url);
+  return $self->$redirect($target_url);
 }
 
 # Returns a redirect header to the cleanup URL
@@ -360,11 +366,10 @@ sub _redirect_to_cleanup {
   my ($self, $session) = @_;
   return _redirect_to_target unless $self->cleanup_url;
   my $target_url = $self->target_url;
-  my $cgi = CGI->new();
   # Primo sucks!
   $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
   $target_url = uri_escape($target_url);
-  return $cgi->redirect($self->cleanup_url.$target_url);
+  return $self->$redirect($self->cleanup_url.$target_url);
 }
 
 # Returns a redirect header to the eshelf
@@ -375,12 +380,11 @@ sub _redirect_to_eshelf {
   my $eshelf_url = $self->{'conf'}->{eshelf_url};
   return _redirect_to_cleanup unless $eshelf_url;
   my $target_url = $self->target_url;
-  my $cgi = CGI->new();
   # Primo sucks!
   $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
   $target_url = uri_escape($target_url);
   my $cleanup_url = uri_escape($self->cleanup_url.$target_url);
-  return $cgi->redirect("$eshelf_url/validate?return_url=$cleanup_url");
+  return $self->$redirect("$eshelf_url/validate?return_url=$cleanup_url");
 }
 
 # Returns a redirect header to the EZProxy URL for the given target url
@@ -393,24 +397,22 @@ sub _redirect_to_ezproxy {
   my $resource_url = uri_escape($uri->query_param('url'));
   my $ezproxy_url = $self->{'conf'}->{ezproxy_url};
   my $ezproxy_ticket = $self->$ezproxy_ticket($user);
-  my $cgi = CGI->new();
   $ezproxy_url .= "/login?ticket=$ezproxy_ticket&user=$user&qurl=$resource_url";
   # Go through the cleanup if we have a session.
    if ($session) {
      $ezproxy_url = uri_escape($ezproxy_url);
      # my $eshelf_url = $self->{'conf'}->{eshelf_url};
      # return $self->$redirect("$eshelf_url/validate?return_url=$ezproxy_url");
-     return $cgi->redirect($self->cleanup_url.$ezproxy_url);
+     return $self->$redirect($self->cleanup_url.$ezproxy_url);
    } else {
-     return $cgi->redirect($ezproxy_url);
+     return $self->$redirect($ezproxy_url);
    }
 }
 
 # Returns a redirect header to the EZProxy URL
 sub _redirect_to_alumni_ezproxy {
   my $self = shift;
-  my $cgi = CGI->new();
-  return $cgi->redirect(ALUMNI_EZPROXY_URL);
+  return $self->$redirect(ALUMNI_EZPROXY_URL);
 }
 
 # Returns a redirect header to the EZBorrow URL for the given session and query
@@ -421,11 +423,10 @@ sub _redirect_to_ezborrow {
   my $barcode = $session->barcode;
   my $ezborrow_url =
     EZBORROW_URL_BASE."?command=mkauth&LS=NYU&PI=$barcode&query=".uri_escape($query);
-  my $cgi = CGI->new();
   $ezborrow_url = uri_escape($ezborrow_url);
   # my $eshelf_url = $self->{'conf'}->{eshelf_url};
   # return $self->$redirect("$eshelf_url/validate?return_url=$ezborrow_url");
-  return $cgi->redirect($self->cleanup_url.$ezborrow_url);
+  return $self->$redirect($self->cleanup_url.$ezborrow_url);
 };
 
 # Display the login screen, unless already signed in
