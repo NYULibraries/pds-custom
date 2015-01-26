@@ -306,12 +306,11 @@ sub new {
 # Returns a rendered HTML login screen for presentation
 # Usage:
 #   my $login_screen = $self->_login_screen();
-# sub _login_screen {
-#   my $self = shift;
-#   # Present Login Screen
-#   my $template = NYU::Libraries::PDS::Views::Login->new($self->{'conf'}, $self);
-#   return $template->render();
-# }
+sub _login_screen {
+  my $self = shift;
+  # Present Login Screen
+  return $self->$redirect(LOGIN_URL);
+}
 
 # Returns a rendered HTML logout screen for presentation
 # Usage:
