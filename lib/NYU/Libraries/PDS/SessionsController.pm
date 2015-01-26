@@ -438,25 +438,25 @@ sub load_login {
   # It will redirect to the Shibboleth IdP for passive authentication.
   # my $nyu_shibboleth_identity = $nyu_shibboleth_controller->create();
   # Do we have an identity? If so, let's get the associated Aleph identity
-  if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
-    my $aleph_controller = $self->$aleph_controller();
-    my $aleph_identity = $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
-    # Check if the Aleph identity exists
-    if ($aleph_identity->exists) {
-      # Encrypt the Aleph identity's password
-      $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
-      my $session =
-        $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
-      # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
-      # or just got it from me.
-      # return $nyu_shibboleth_controller->redirect_to_eshelf();
-      return $nyu_shibboleth_controller->redirect_to_cleanup($session);
-    } else {
-      # Exit with Unauthorized Error
-      $self->set('error', "Unauthorized");
-      return $self->_redirect_to_unauthorized();
-    }
-  }
+  # if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
+  #   my $aleph_controller = $self->$aleph_controller();
+  #   my $aleph_identity = $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
+  #   # Check if the Aleph identity exists
+  #   if ($aleph_identity->exists) {
+  #     # Encrypt the Aleph identity's password
+  #     $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
+  #     my $session =
+  #       $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
+  #     # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
+  #     # or just got it from me.
+  #     # return $nyu_shibboleth_controller->redirect_to_eshelf();
+  #     return $nyu_shibboleth_controller->redirect_to_cleanup($session);
+  #   } else {
+  #     # Exit with Unauthorized Error
+  #     $self->set('error', "Unauthorized");
+  #     return $self->_redirect_to_unauthorized();
+  #   }
+  # }
   # Print the login screen
   return $self->_login_screen();
 }
@@ -527,7 +527,7 @@ sub logout {
 # Usage:
 #   $controller->ezproxy();
 sub ezproxy {
-  # my $self = shift;
+  my $self = shift;
   # my $cgi = CGI->new();
   # print $cgi->header(-type=>'text/html', -charset =>'UTF-8');
   # # First check the current session
@@ -596,7 +596,7 @@ sub ezproxy {
 # Usage:
 #   $controller->ezborrow();
 sub ezborrow {
-  # my $self = shift;
+  my $self = shift;
   # my $cgi = CGI->new();
   # print $cgi->header(-type=>'text/html', -charset =>'UTF-8');
   # # First check the current session
