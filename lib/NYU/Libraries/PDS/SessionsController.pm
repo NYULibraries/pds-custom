@@ -80,17 +80,17 @@ use constant LOGOUT_URL => "/logout";
 # Private method to find the current session
 # Usage:
 #   $self->$current_session()
-# my $current_session = sub {
-#   my $self = shift;
-#   unless ($self->{'current_session'}) {
-#     # Testing environment differs
-#     unless ($ENV{'CI'}) {
-#       $self->{'current_session'} =
-#         NYU::Libraries::PDS::Session::find($self->session_id);
-#     }
-#   }
-#   return $self->{'current_session'};
-# };
+my $current_session = sub {
+  my $self = shift;
+  unless ($self->{'current_session'}) {
+    # Testing environment differs
+    unless ($ENV{'CI'}) {
+      $self->{'current_session'} =
+        NYU::Libraries::PDS::Session::find($self->session_id);
+    }
+  }
+  return $self->{'current_session'};
+};
 
 # Private method to determine if the given session is
 # authorized for EZproxy
@@ -139,15 +139,15 @@ use constant LOGOUT_URL => "/logout";
 # Private method to save eshelf records
 # Usage:
 #   $self->$tsetse($session_id)
-# my $tsetse = sub {
-#   my ($self, $session_id) = @_;
-#   my $conf = $self->{'conf'};
-#   my $cgi = CGI->new;
-#   my $tsetse_handle = $cgi->cookie('tsetse_handle');
-#   my $tsetse_credentials = $cgi->cookie('tsetse_credentials');
-#   my $eshelf_success = save_permanent_eshelf_records($conf, $session_id,
-#     $tsetse_handle, $tsetse_credentials);
-# };
+my $tsetse = sub {
+  my ($self, $session_id) = @_;
+  my $conf = $self->{'conf'};
+  my $cgi = CGI->new;
+  my $tsetse_handle = $cgi->cookie('tsetse_handle');
+  my $tsetse_credentials = $cgi->cookie('tsetse_credentials');
+  my $eshelf_success = save_permanent_eshelf_records($conf, $session_id,
+    $tsetse_handle, $tsetse_credentials);
+};
 
 # Private method to create a session
 # Usage:
