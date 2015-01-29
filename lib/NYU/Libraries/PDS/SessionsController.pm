@@ -468,14 +468,14 @@ sub _redirect_to_target {
 sub load_login {
   my $self = shift;
   my $cgi = CGI->new();
-  my $access_token = $self->$client("site_id")->get_access_token($cgi->param("code"));
+  # my $access_token = $self->$client("site_id")->get_access_token($cgi->param("code"));
   # Do we have an identity? If so, let's get the associated Aleph identity
   if (defined($access_token)) {
-    my $response = $access_token->get($self->$client("site_id")->protected_resource_url);
-    if ($response->is_success) {
-      my $content = '<h2>Protected resource retrieved successfully!</h2><p>' . encode_entities($response->decoded_content) . '</p>';
-      return $content;
-    }
+    # my $response = $access_token->get($self->$client("site_id")->protected_resource_url);
+    # if ($response->is_success) {
+    #   my $content = '<h2>Protected resource retrieved successfully!</h2><p>' . encode_entities($response->decoded_content) . '</p>';
+    #   return $content;
+    # }
     # Check if the Aleph identity exists
     # if ($aleph_identity->exists) {
     #   # Encrypt the Aleph identity's password
