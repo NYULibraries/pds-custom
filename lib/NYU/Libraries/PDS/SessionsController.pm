@@ -69,17 +69,17 @@ use constant COOKIE_EXPIRATION => 'Thu, 01-Jan-1970 00:00:01 GMT';
 use constant LOGIN_URL => "https://dev.login.library.nyu.edu";
 use constant LOGOUT_PATH => "/logout";
 
-my $client = sub {
-  my $self = shift;
-  my $oauth2_client = Net::OAuth2::Client->new(
-    "client_id",
-    "client_secret",
-    site => "https://dev.login.library.nyu.edu",
-    authorize_path => "/oauth/authorize",
-    protected_resource_url => "/api/v1/user"
-  )->web_server(redirect_uri => $self->target_url);
-  return $oauth2_client;
-};
+# my $client = sub {
+#   my $self = shift;
+#   my $oauth2_client = Net::OAuth2::Client->new(
+#     "client_id",
+#     "client_secret",
+#     site => "https://dev.login.library.nyu.edu",
+#     authorize_path => "/oauth/authorize",
+#     protected_resource_url => "/api/v1/user"
+#   )->web_server(redirect_uri => $self->target_url);
+#   return $oauth2_client;
+# };
 
 # get '/pds/users/omniauth_callbacks' => sub {
 #   return wrap("Error: Missing access code") if (!defined params->{code});
