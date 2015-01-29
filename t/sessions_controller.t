@@ -37,7 +37,7 @@ if($ENV{'CI'}) {
   exit;
 }
 
-like($controller->_login_screen(), NYU_LOGIN, "Unexpected login redirect");
+is($controller->_login_screen(), NYU_LOGIN, "Unexpected login redirect");
 
 # Get another instance of SessionController
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NS", "primo", "http://example.com");
@@ -52,7 +52,7 @@ is(defined($controller->error), '', "Error should be undefined");
 
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
 # Test logout screen
-like($controller->_logout_screen(), NYU_LOGOUT, "Should be a logout screen.");
+is($controller->_logout_screen(), NYU_LOGOUT, "Should be a logout screen.");
 
 $ENV{'uid'} = 'uid';
 $ENV{'email'}='email@nyu.edu';

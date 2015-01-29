@@ -341,11 +341,8 @@ sub new {
 sub _login_screen {
   my $self = shift;
   # Present Login Screen
-  return $self->$redirect(LOGIN_URL);
-  # get '/pds/users/auth/nyulibraries' => sub {
-    # redirect client->authorize_url;
-  # };
-  # return $self->$redirect($self->$client->authorize());
+  # return $self->$redirect(LOGIN_URL);
+  return $self->$redirect($self->$client->authorize());
 }
 
 # Returns a rendered HTML logout screen for presentation
