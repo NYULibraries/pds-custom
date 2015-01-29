@@ -341,10 +341,6 @@ sub new {
 sub _login_screen {
   my $self = shift;
   # Present Login Screen
-  # return $self->$redirect(LOGIN_URL);
-  # get '/pds/users/auth/nyulibraries' => sub {
-    # redirect client->authorize_url;
-  # };
   return $self->$redirect($self->$client->authorize());
 }
 
@@ -467,10 +463,10 @@ sub _redirect_to_target {
 #   $controller->load_login();
 sub load_login {
   my $self = shift;
-  my $cgi = CGI->new();
+  # my $cgi = CGI->new();
   # my $access_token = $self->$client("site_id")->get_access_token($cgi->param("code"));
   # Do we have an identity? If so, let's get the associated Aleph identity
-  if (defined($access_token)) {
+  # if (defined($access_token)) {
     # my $response = $access_token->get($self->$client("site_id")->protected_resource_url);
     # if ($response->is_success) {
     #   my $content = '<h2>Protected resource retrieved successfully!</h2><p>' . encode_entities($response->decoded_content) . '</p>';
@@ -491,7 +487,7 @@ sub load_login {
     #   $self->set('error', "Unauthorized");
     #   return $self->_redirect_to_unauthorized();
     # }
-  }
+  # }
   # Print the login screen
   return $self->_login_screen();
 }
