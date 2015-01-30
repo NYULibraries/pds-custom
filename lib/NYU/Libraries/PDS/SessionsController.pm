@@ -608,6 +608,25 @@ sub ezproxy {
 #   $controller->ezborrow();
 sub ezborrow {
   my $self = shift;
+  my $cgi = CGI->new();
+
+  # Use the auth code to fetch the access token
+  my $access_token = $self->$client->get_access_token($cgi->param("code"));
+
+  if (defined($access_token)) {
+    # Use the access token to fetch a protected resource
+    my $response = $access_token->get($self->$client->protected_resource_url);
+
+    if ($response->is_success) {
+      print "Yay, it worked: " . $response->decoded_content;
+    }
+    else {
+      print "Error: " . $response->status_line;
+    }
+  }
+  print "Did we get the code? " . $cgi->param("code");
+  print "Client: " . Dumper($self->$client);
+
   # my $cgi = CGI->new();
   # print $cgi->header(-type=>'text/html', -charset =>'UTF-8');
   # # First check the current session
@@ -652,7 +671,7 @@ sub ezborrow {
   #   }
   # }
   # Print the login screen
-  return $self->_login_screen();
+  # return $self->_login_screen();
 }
 
 # Return the bor_info as an XML string
