@@ -475,8 +475,9 @@ sub sso {
     else {
       print "Error: " . $response->status_line;
     }
-    return 1;
   }
+  print "Did we get the code? " . $cgi->param("code");
+  print "Client: " . Dumper($self->$client);
   # Do we have an identity? If so, let's get the associated Aleph identity
   # Check if the Aleph identity exists
   # if ($aleph_identity->exists) {
