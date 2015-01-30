@@ -464,19 +464,19 @@ sub sso {
 
   # Use the auth code to fetch the access token
   if (defined($auth_code)) {
-    my $access_token = $self->$client->get_access_token($auth_code);
-
-    if (defined($access_token)) {
-      # Use the access token to fetch a protected resource
-      my $response = $access_token->get($self->$client->protected_resource_url);
-
-      if ($response->is_success) {
-        print "Yay, it worked: " . $response->decoded_content;
-      }
-      else {
-        print "Error: " . $response->status_line;
-      }
-    }
+    # my $access_token = $self->$client->get_access_token($auth_code);
+    #
+    # if (defined($access_token)) {
+    #   # Use the access token to fetch a protected resource
+    #   my $response = $access_token->get($self->$client->protected_resource_url);
+    #
+    #   if ($response->is_success) {
+    #     print "Yay, it worked: " . $response->decoded_content;
+    #   }
+    #   else {
+    #     print "Error: " . $response->status_line;
+    #   }
+    # }
     print "Did we get the code? " . $auth_code;
     print "Client: " . Dumper($self->$client);
   }
