@@ -19,7 +19,6 @@ use Data::Dumper;
 
 # use Dancer;
 use Net::OAuth2::Client;
-use HTML::Entities;
 
 # Use our bundled Perl modules, e.g. Class::Accessor
 use lib "vendor/lib";
@@ -467,7 +466,7 @@ sub sso {
   # if (defined($access_token)) {
   # my $response = $access_token->get($self->$client("site_id")->protected_resource_url);
   # if ($response->is_success) {
-  #   my $content = '<h2>Protected resource retrieved successfully!</h2><p>' . encode_entities($response->decoded_content) . '</p>';
+  #   my $content = '<h2>Protected resource retrieved successfully!</h2><p>' . $response->decoded_content . '</p>';
   #   return $content;
   # }
   # Check if the Aleph identity exists
