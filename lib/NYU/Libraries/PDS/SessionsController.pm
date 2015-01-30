@@ -457,27 +457,29 @@ sub load_login {
 # Alias this method from OAuth2 callback
 # Single sign on if possible, otherwise return from whence you came
 # Usage:
-#   $controller->sso();
+#   $controller->sso($auth_code);
 sub sso {
-  my $self = shift;
+  my($self, $auth_code) = @_;
   my $cgi = CGI->new();
 
   # Use the auth code to fetch the access token
-  my $access_token = $self->$client->get_access_token($cgi->param("code"));
+  if (defined($auth_code)) {
+    my $access_token = $self->$client->get_access_token($auth_code);
 
-  if (defined($access_token)) {
-    # Use the access token to fetch a protected resource
-    my $response = $access_token->get($self->$client->protected_resource_url);
+    if (defined($access_token)) {
+      # Use the access token to fetch a protected resource
+      my $response = $access_token->get($self->$client->protected_resource_url);
 
-    if ($response->is_success) {
-      print "Yay, it worked: " . $response->decoded_content;
+      if ($response->is_success) {
+        print "Yay, it worked: " . $response->decoded_content;
+      }
+      else {
+        print "Error: " . $response->status_line;
+      }
     }
-    else {
-      print "Error: " . $response->status_line;
-    }
+    print "Did we get the code? " . $auth_code;
+    print "Client: " . Dumper($self->$client);
   }
-  print "Did we get the code? " . $cgi->param("code");
-  print "Client: " . Dumper($self->$client);
   # Do we have an identity? If so, let's get the associated Aleph identity
   # Check if the Aleph identity exists
   # if ($aleph_identity->exists) {
@@ -608,25 +610,6 @@ sub ezproxy {
 #   $controller->ezborrow();
 sub ezborrow {
   my $self = shift;
-  my $cgi = CGI->new();
-
-  # Use the auth code to fetch the access token
-  my $access_token = $self->$client->get_access_token($cgi->param("code"));
-
-  if (defined($access_token)) {
-    # Use the access token to fetch a protected resource
-    my $response = $access_token->get($self->$client->protected_resource_url);
-
-    if ($response->is_success) {
-      print "Yay, it worked: " . $response->decoded_content;
-    }
-    else {
-      print "Error: " . $response->status_line;
-    }
-  }
-  print "Did we get the code? " . $cgi->param("code");
-  print "Client: " . Dumper($self->$client);
-
   # my $cgi = CGI->new();
   # print $cgi->header(-type=>'text/html', -charset =>'UTF-8');
   # # First check the current session
