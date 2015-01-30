@@ -17,9 +17,6 @@ use strict;
 use warnings;
 use Data::Dumper;
 
-# use Dancer;
-use Net::OAuth2::Client;
-
 # Use our bundled Perl modules, e.g. Class::Accessor
 use lib "vendor/lib";
 
@@ -40,6 +37,9 @@ use URI::QueryParam;
 
 # PDS Logout module
 use PDSLogout;
+
+# Use the Net::OAuth2 client for logging in with oauth2 standard
+use Net::OAuth2::Client;
 
 # NYU Libraries modules
 use NYU::Libraries::Util qw(trim whitelist_institution save_permanent_eshelf_records handle_primo_target_url);
@@ -73,12 +73,13 @@ use constant LOGOUT_PATH => "/logout";
 #   $oauth2_client = $self->$client
 my $client = sub {
   my $self = shift;
+  my $conf = $self->{'conf'};
   my $oauth2_client = Net::OAuth2::Client->new(
-    "5e2f4e9b81de796989dff3be33b64bcaddeac206328011c17f92135b5479d63c",
-    "f50f474ee66c243e6ec39e7878b42dd0e00313f64a23a6ab7a50da16d573bc4a",
-    site => "https://dev.login.library.nyu.edu",
-    authorize_path => "/oauth/authorize",
-    protected_resource_url => "/api/v1/user"
+    $conf->{site_id},
+    $conf->{site_secret},
+    site => $conf->{site},
+    authorize_path => $conf->{authorize_path},
+    protected_resource_url => $conf->{protected_resource_url}
   )->web_server(redirect_uri => $self->target_url);
   return $oauth2_client;
 };
@@ -327,8 +328,7 @@ sub new {
 sub _login_screen {
   my $self = shift;
   # Present Login Screen
-  return $self->$redirect(LOGIN_URL);
-  # return $self->$redirect($self->$client->authorize());
+  return $self->$redirect($self->$client->authorize());
 }
 
 # Returns a rendered HTML logout screen for presentation
