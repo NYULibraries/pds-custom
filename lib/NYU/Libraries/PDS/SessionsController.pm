@@ -462,6 +462,10 @@ sub sso {
   my($self, $auth_code) = @_;
   my $cgi = CGI->new();
 
+  print "Target URL: " . $self->target_url;
+  print "Current URL: " . $self->current_url;
+  print "Client: " . Dumper($self->$client);
+
   # Use the auth code to fetch the access token
   if (defined($auth_code)) {
     # my $access_token = $self->$client->get_access_token($auth_code);
