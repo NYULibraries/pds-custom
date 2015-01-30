@@ -459,16 +459,24 @@ sub load_login {
 # Usage:
 #   $controller->sso();
 sub sso {
-  # my $self = shift;
-  # my $cgi = CGI->new();
-  # my $access_token = $self->$client("site_id")->get_access_token($cgi->param("code"));
+  my $self = shift;
+  my $cgi = CGI->new();
+
+  # Use the auth code to fetch the access token
+  my $access_token = $self->$client->get_access_token($cgi->param("code"));
+
+  if (defined($access_token)) {
+    # Use the access token to fetch a protected resource
+    my $response = $access_token->get($self->$client->protected_resource_url);
+
+    if ($response->is_success) {
+      return "Yay, it worked: " . $response->decoded_content;
+    }
+    else {
+      return "Error: " . $response->status_line;
+    }
+  }
   # Do we have an identity? If so, let's get the associated Aleph identity
-  # if (defined($access_token)) {
-  # my $response = $access_token->get($self->$client("site_id")->protected_resource_url);
-  # if ($response->is_success) {
-  #   my $content = '<h2>Protected resource retrieved successfully!</h2><p>' . $response->decoded_content . '</p>';
-  #   return $content;
-  # }
   # Check if the Aleph identity exists
   # if ($aleph_identity->exists) {
   #   # Encrypt the Aleph identity's password
