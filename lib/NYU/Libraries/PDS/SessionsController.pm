@@ -470,11 +470,12 @@ sub sso {
     my $response = $access_token->get($self->$client->protected_resource_url);
 
     if ($response->is_success) {
-      return "Yay, it worked: " . $response->decoded_content;
+      print "Yay, it worked: " . $response->decoded_content;
     }
     else {
-      return "Error: " . $response->status_line;
+      print "Error: " . $response->status_line;
     }
+    return 1;
   }
   # Do we have an identity? If so, let's get the associated Aleph identity
   # Check if the Aleph identity exists
