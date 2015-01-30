@@ -69,33 +69,20 @@ use constant COOKIE_EXPIRATION => 'Thu, 01-Jan-1970 00:00:01 GMT';
 use constant LOGIN_URL => "https://dev.login.library.nyu.edu";
 use constant LOGOUT_PATH => "/logout";
 
-# my $client = sub {
-#   my $self = shift;
-#   my $oauth2_client = Net::OAuth2::Client->new(
-#     "client_id",
-#     "client_secret",
-#     site => "https://dev.login.library.nyu.edu",
-#     authorize_path => "/oauth/authorize",
-#     protected_resource_url => "/api/v1/user"
-#   )->web_server(redirect_uri => $self->target_url);
-#   return $oauth2_client;
-# };
-
-# get '/pds/users/omniauth_callbacks' => sub {
-#   return wrap("Error: Missing access code") if (!defined params->{code});
-#   my $access_token =  client(params->{site_id})->get_access_token(params->{code});
-#   return wrap("Error: " . $access_token->to_string) if ($access_token->{error});
-#   my $content = '<h2>Access token retrieved successfully!</h2><p>' . encode_entities($access_token->to_string) . '</p>';
-#   my $response = $access_token->get(config->{sites}{params->{site_id}}{protected_resource_url} || config->{sites}{params->{site_id}}{protected_resource_path});
-#   if ($response->is_success) {
-#     $content .= '<h2>Protected resource retrieved successfully!</h2><p>' . encode_entities($response->decoded_content) . '</p>';
-#   }
-#   else {
-#     $content .= '<p>Error: ' . $response->status_line . '</p>';
-#   }
-#   $content =~ s[\n][<br/>\n]g;
-#   return $content;
-# };
+# Private method to retrieve the OAuth2 server info
+# Usage:
+#   $oauth2_client = $self->$client
+my $client = sub {
+  my $self = shift;
+  my $oauth2_client = Net::OAuth2::Client->new(
+    "5e2f4e9b81de796989dff3be33b64bcaddeac206328011c17f92135b5479d63c",
+    "f50f474ee66c243e6ec39e7878b42dd0e00313f64a23a6ab7a50da16d573bc4a",
+    site => "https://dev.login.library.nyu.edu",
+    authorize_path => "/oauth/authorize",
+    protected_resource_url => "/api/v1/user"
+  )->web_server(redirect_uri => $self->target_url);
+  return $oauth2_client;
+};
 
 # Private method to encrypt the Aleph identity
 # Usage:
@@ -171,15 +158,15 @@ my $current_session = sub {
 # Private method to save eshelf records
 # Usage:
 #   $self->$tsetse($session_id)
-my $tsetse = sub {
-  my ($self, $session_id) = @_;
-  my $conf = $self->{'conf'};
-  my $cgi = CGI->new;
-  my $tsetse_handle = $cgi->cookie('tsetse_handle');
-  my $tsetse_credentials = $cgi->cookie('tsetse_credentials');
-  my $eshelf_success = save_permanent_eshelf_records($conf, $session_id,
-    $tsetse_handle, $tsetse_credentials);
-};
+# my $tsetse = sub {
+#   my ($self, $session_id) = @_;
+#   my $conf = $self->{'conf'};
+#   my $cgi = CGI->new;
+#   my $tsetse_handle = $cgi->cookie('tsetse_handle');
+#   my $tsetse_credentials = $cgi->cookie('tsetse_credentials');
+#   my $eshelf_success = save_permanent_eshelf_records($conf, $session_id,
+#     $tsetse_handle, $tsetse_credentials);
+# };
 
 # Private method to create a session
 # Usage:
@@ -280,16 +267,16 @@ my $set_cleanup_url = sub {
 # Private method to get the EZProxy ticket
 # Usage:
 #   $self->$ezproxy_ticket($user, $groups);
-# my $ezproxy_ticket = sub {
-#   my ($self, $user, $groups) = @_;
-#   $groups ||= "Default";
-#   my $ezproxy_secret = $self->{'conf'}->{ezproxy_secret};
-#   return undef unless $user && $groups && $ezproxy_secret;
-#   my $packet = '$u'.time();
-#   $packet .= '$g'.$groups;
-#   my $ezproxy_ticket = md5_hex($ezproxy_secret.$user.$packet).$packet;
-#   return ($ezproxy_ticket) ? CGI::escape($ezproxy_ticket) : undef;
-# };
+my $ezproxy_ticket = sub {
+  my ($self, $user, $groups) = @_;
+  $groups ||= "Default";
+  my $ezproxy_secret = $self->{'conf'}->{ezproxy_secret};
+  return undef unless $user && $groups && $ezproxy_secret;
+  my $packet = '$u'.time();
+  $packet .= '$g'.$groups;
+  my $ezproxy_ticket = md5_hex($ezproxy_secret.$user.$packet).$packet;
+  return ($ezproxy_ticket) ? CGI::escape($ezproxy_ticket) : undef;
+};
 
 # Private method to redirect
 # Usage:
@@ -464,57 +451,40 @@ sub _redirect_to_target {
 #   $controller->load_login();
 sub load_login {
   my $self = shift;
-  # my $cgi = CGI->new();
-  # my $access_token = $self->$client("site_id")->get_access_token($cgi->param("code"));
-  # Do we have an identity? If so, let's get the associated Aleph identity
-  # if (defined($access_token)) {
-    # my $response = $access_token->get($self->$client("site_id")->protected_resource_url);
-    # if ($response->is_success) {
-    #   my $content = '<h2>Protected resource retrieved successfully!</h2><p>' . encode_entities($response->decoded_content) . '</p>';
-    #   return $content;
-    # }
-    # Check if the Aleph identity exists
-    # if ($aleph_identity->exists) {
-    #   # Encrypt the Aleph identity's password
-    #   $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
-    #   my $session =
-    #     $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
-    #   # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
-    #   # or just got it from me.
-    #   # return $nyu_shibboleth_controller->redirect_to_eshelf();
-    #   return $nyu_shibboleth_controller->redirect_to_cleanup($session);
-    # } else {
-    #   # Exit with Unauthorized Error
-    #   $self->set('error', "Unauthorized");
-    #   return $self->_redirect_to_unauthorized();
-    # }
-  # }
   # Print the login screen
   return $self->_login_screen();
 }
 
+# Alias this method from OAuth2 callback
 # Single sign on if possible, otherwise return from whence you came
 # Usage:
 #   $controller->sso();
 sub sso {
   # my $self = shift;
-  # my $nyu_shibboleth_controller = $self->$nyu_shibboleth_controller();
-  # my $nyu_shibboleth_identity = $nyu_shibboleth_controller->create();
-  # if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
-  #   my $aleph_controller = $self->$aleph_controller();
-  #   my $aleph_identity =
-  #     $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
-  #   # Check if the Aleph identity exists
-  #   if ($aleph_identity->exists) {
-  #     # Encrypt the Aleph identity's password
-  #     $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
-  #     my $session =
-  #       $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
-  #     # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
-  #     # or just got it from me.
-  #     # return $nyu_shibboleth_controller->redirect_to_eshelf();
-  #     return $nyu_shibboleth_controller->redirect_to_cleanup($session);
-  #   }
+  # my $cgi = CGI->new();
+  # my $access_token = $self->$client("site_id")->get_access_token($cgi->param("code"));
+  # Do we have an identity? If so, let's get the associated Aleph identity
+  # if (defined($access_token)) {
+  # my $response = $access_token->get($self->$client("site_id")->protected_resource_url);
+  # if ($response->is_success) {
+  #   my $content = '<h2>Protected resource retrieved successfully!</h2><p>' . encode_entities($response->decoded_content) . '</p>';
+  #   return $content;
+  # }
+  # Check if the Aleph identity exists
+  # if ($aleph_identity->exists) {
+  #   # Encrypt the Aleph identity's password
+  #   $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
+  #   my $session =
+  #     $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
+  #   # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
+  #   # or just got it from me.
+  #   # return $nyu_shibboleth_controller->redirect_to_eshelf();
+  #   return $nyu_shibboleth_controller->redirect_to_cleanup($session);
+  # } else {
+  #   # Exit with Unauthorized Error
+  #   $self->set('error', "Unauthorized");
+  #   return $self->_redirect_to_unauthorized();
+  # }
   # }
   # return $nyu_shibboleth_controller->redirect_to_target();
 }
