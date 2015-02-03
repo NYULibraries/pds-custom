@@ -41,6 +41,9 @@ use PDSLogout;
 # Use the Net::OAuth2 client for logging in with oauth2 standard
 use Net::OAuth2::Client;
 
+# Use JSON::Parse to parse JSON response from oauth2 provider
+use JSON::Parse qw(parse_json);
+
 # NYU Libraries modules
 use NYU::Libraries::Util qw(trim whitelist_institution save_permanent_eshelf_records handle_primo_target_url);
 use NYU::Libraries::PDS::Session;
@@ -78,7 +81,9 @@ my $client = sub {
     $conf->{site_secret},
     site => $conf->{site},
     authorize_path => $conf->{authorize_path},
-    protected_resource_url => $conf->{protected_resource_url}
+    protected_resource_url => $conf->{protected_resource_url},
+    access_token_path => $conf->{access_token_path},
+    access_token_method => $conf->{accesss_token_method}
   )->web_server(redirect_uri => $conf->{oauth_callback_url});
   return $oauth2_client;
 };
@@ -462,27 +467,23 @@ sub sso {
   my($self, $auth_code) = @_;
   my $cgi = CGI->new();
 
-  print STDERR "Target URL: " . $self->target_url;
-  # print "Current URL: " . $self->current_url;
-  # print "Client: " . Dumper($self->$client);
-
   # Use the auth code to fetch the access token
   if (defined($auth_code)) {
-    # my $access_token = $self->$client->get_access_token($auth_code);
-    #
-    # if (defined($access_token)) {
-    #   # Use the access token to fetch a protected resource
-    #   my $response = $access_token->get($self->$client->protected_resource_url);
-    #
-    #   if ($response->is_success) {
-    #     print "Yay, it worked: " . $response->decoded_content;
-    #   }
-    #   else {
-    #     print "Error: " . $response->status_line;
-    #   }
-    # }
-    # print "Did we get the code? " . $auth_code;
-    # print "Client: " . Dumper($self->$client);
+    my $access_token = $self->$client->get_access_token($auth_code);
+
+    if (defined($access_token)) {
+      # Use the access token to fetch a protected resource
+      my $response = $access_token->get($self->$client->protected_resource_url);
+
+      if ($response->is_success) {
+        my $user = parse_json($response->decoded_content);
+        print STDERR "Yay, it worked: " . $user->{identities};
+      }
+      else {
+        $self->set('error', "Unauthorized");
+        return $self->_redirect_to_unauthorized();
+      }
+    }
   }
   # Do we have an identity? If so, let's get the associated Aleph identity
   # Check if the Aleph identity exists
