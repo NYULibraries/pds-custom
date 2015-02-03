@@ -65,7 +65,6 @@ use constant LIBRARY_DOT_NYU_COOKIES => qw(_tsetse_session tsetse_credentials ts
   _umlaut_session _getit_session _eshelf_session _umbra_session _privileges_guide_session
     _room_reservation_session _room_reservation_session _marli_session xerxessession_);
 use constant COOKIE_EXPIRATION => 'Thu, 01-Jan-1970 00:00:01 GMT';
-use constant LOGIN_URL => "https://dev.login.library.nyu.edu";
 use constant LOGOUT_PATH => "/logout";
 
 # Private method to retrieve the OAuth2 server info
@@ -80,7 +79,7 @@ my $client = sub {
     site => $conf->{site},
     authorize_path => $conf->{authorize_path},
     protected_resource_url => $conf->{protected_resource_url}
-  )->web_server(redirect_uri => $self->target_url);
+  )->web_server(redirect_uri => $conf->{oauth_callback_url});
   return $oauth2_client;
 };
 
@@ -336,8 +335,9 @@ sub _login_screen {
 #   my $login_screen = $self->_logout_screen();
 sub _logout_screen {
   my $self = shift;
+  my $conf = $self->{'conf'};
   # Present Login Screen
-  return $self->$redirect(LOGIN_URL.LOGOUT_PATH);
+  return $self->$redirect($conf->{site}.LOGOUT_PATH);
 }
 
 # Returns a redirect header to the unauthorized message URL
@@ -462,9 +462,9 @@ sub sso {
   my($self, $auth_code) = @_;
   my $cgi = CGI->new();
 
-  print "Target URL: " . $self->target_url;
-  print "Current URL: " . $self->current_url;
-  print "Client: " . Dumper($self->$client);
+  print STDERR "Target URL: " . $self->target_url;
+  # print "Current URL: " . $self->current_url;
+  # print "Client: " . Dumper($self->$client);
 
   # Use the auth code to fetch the access token
   if (defined($auth_code)) {
@@ -481,8 +481,8 @@ sub sso {
     #     print "Error: " . $response->status_line;
     #   }
     # }
-    print "Did we get the code? " . $auth_code;
-    print "Client: " . Dumper($self->$client);
+    # print "Did we get the code? " . $auth_code;
+    # print "Client: " . Dumper($self->$client);
   }
   # Do we have an identity? If so, let's get the associated Aleph identity
   # Check if the Aleph identity exists
