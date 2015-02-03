@@ -42,6 +42,7 @@ use PDSLogout;
 use Net::OAuth2::Client;
 
 # Use JSON::Parse to parse JSON response from oauth2 provider
+use JSON;
 use JSON::Parse qw(parse_json);
 
 # NYU Libraries modules
