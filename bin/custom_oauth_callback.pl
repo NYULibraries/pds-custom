@@ -24,7 +24,7 @@ my $institute = PDSParamUtil::getAndFilterParam('institute');
 # Get the current URL
 my $current_url = $cgi->url(-query => 1);
 # Get the auth code if it's there
-# my $auth_code = $cgi->param('code');
+my $auth_code = $cgi->param('code');
 # Calling system is ezproxy
 my $calling_system = "primo";
 # Get the configuration
@@ -34,6 +34,6 @@ my $conf = parse_conf("$pds_directory/config/pds/nyu.conf");
 my $session_controller = NYU::Libraries::PDS::controller($conf, $institute,
 $calling_system, $current_url, $session_id, $current_url);
 # Logout
-print $session_controller->sso();
+print $session_controller->sso($auth_code);
 # Get the hell out of dodge
 exit;
