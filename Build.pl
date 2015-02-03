@@ -21,7 +21,8 @@ my $builder = Module::Build->new(
       'HTML::TagFilter' => '1.03',
       # OAuth2 Prereqs
       'Net::OAuth2' => '0.61',
-      'JSON' => '2.90'
+      'JSON' => '2.90',
+      'JSON::Parse' => '0.31'
     }
 );
 
