@@ -478,8 +478,12 @@ sub sso {
       if ($response->is_success) {
         my $user = decode_json($response->decoded_content);
         my $identities = @{$user->{'identities'}};
-        my $aleph_identity = grep { $_->{'provider'} eq 'aleph' } $identities;
-        return $identities[0]->{'provider'};
+        print STDERR "Response: ".$response->decoded_content;
+        print STDERR "\n\n";
+        print STDERR "Decoded JSON: ".$user;
+        # my $aleph_identity = grep { $_->{'provider'} eq 'aleph' } $identities;
+        # return $aleph_identity;
+        # return $identities[0]->{'provider'};
       }
       else {
         $self->set('error', "Unauthorized");
