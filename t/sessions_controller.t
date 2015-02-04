@@ -37,7 +37,7 @@ if($ENV{'CI'}) {
   exit;
 }
 
-is($controller->_login_screen(), NYU_LOGIN, "Unexpected login redirect");
+like($controller->_login_screen(), NYU_LOGIN, "Unexpected login redirect");
 
 # Get another instance of SessionController
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NS", "primo", "http://example.com");
