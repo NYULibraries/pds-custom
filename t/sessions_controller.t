@@ -16,7 +16,7 @@ BEGIN { use_ok('NYU::Libraries::PDS::SessionsController') };
 require_ok( 'NYU::Libraries::PDS::SessionsController' );
 
 # Get an instance of SessionController
-my $conf = parse_conf("vendor/pds-core/config/pds/nyu.conf");
+my $conf = parse_conf("custom/vendor/pds-core/config/pds/nyu.conf");
 $conf->{ssl_cert_path} = undef;
 my $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
 
@@ -52,7 +52,7 @@ is(defined($controller->error), '', "Error should be undefined");
 
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
 # Test logout screen
-is($controller->_logout_screen(), NYU_LOGOUT, "Should be a logout screen.");
+like($controller->_logout_screen(), NYU_LOGOUT, "Should be a logout screen.");
 
 $ENV{'uid'} = 'uid';
 $ENV{'email'}='email@nyu.edu';
