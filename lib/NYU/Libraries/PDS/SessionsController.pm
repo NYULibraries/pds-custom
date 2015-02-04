@@ -41,9 +41,8 @@ use PDSLogout;
 # Use the Net::OAuth2 client for logging in with oauth2 standard
 use Net::OAuth2::Client;
 
-# Use JSON::Parse to parse JSON response from oauth2 provider
+# Use JSON to parse JSON response from oauth2 provider
 use JSON;
-use JSON::Parse qw(parse_json);
 
 # NYU Libraries modules
 use NYU::Libraries::Util qw(trim whitelist_institution save_permanent_eshelf_records handle_primo_target_url);
@@ -479,8 +478,8 @@ sub sso {
       if ($response->is_success) {
         my $user = decode_json($response->decoded_content);
         my $identities = @{$user->{'identities'}};
-        my $aleph_identity_index = grep { $_->{'provider'} eq 'aleph', $identities };
-        print STDERR "Yay, it worked: " . $identities[$aleph_identity_index]->{'username'};
+        my $aleph_identity = grep { $_->{'provider'} eq 'aleph' } $identities;
+        return $identities[0]->{'provider'};
       }
       else {
         $self->set('error', "Unauthorized");
