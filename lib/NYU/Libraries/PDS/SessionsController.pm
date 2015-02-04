@@ -477,8 +477,10 @@ sub sso {
       my $response = $access_token->get($self->$client->protected_resource_url);
 
       if ($response->is_success) {
-        my $user = parse_json($response->decoded_content);
-        print STDERR "Yay, it worked: " . $user->{identities};
+        my $user = decode_json($response->decoded_content);
+        my $identities = @{$user->{'identities'}};
+        my $aleph_identity_index = grep { $_->{'provider'} eq 'aleph', $identities };
+        print STDERR "Yay, it worked: " . $identities[$aleph_identity_index]->{'username'};
       }
       else {
         $self->set('error', "Unauthorized");
