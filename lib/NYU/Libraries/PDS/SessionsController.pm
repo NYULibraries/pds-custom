@@ -88,6 +88,30 @@ my $client = sub {
   return $oauth2_client;
 };
 
+# Private method to get identity from identities array based on provider
+# Usage:
+#   $identity = $self->$get_identity_from_provider($identities, 'provider');
+my $get_identity_from_provider = sub {
+  my($self, $identities, $provider) = @_;
+  for my $identity (@$identities) {
+    if ($identity->{provider} eq $provider) {
+      return $identity;
+    }
+  }
+};
+
+# Public method to get Aleph identity from JSON response
+sub _aleph_identity {
+  my($self, $identities) = @_;
+  return $self->$get_identity_from_provider($identities, 'aleph');
+}
+
+# Public method to get NYU Shibboleth identity from JSON response
+sub _nyu_shibboleth_identity {
+  my($self, $identities) = @_;
+  return $self->$get_identity_from_provider($identities, 'nyu_shibboleth');
+}
+
 # Private method to encrypt the Aleph identity
 # Usage:
 #   $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity)
@@ -477,13 +501,7 @@ sub sso {
 
       if ($response->is_success) {
         my $user = decode_json($response->decoded_content);
-        my $identities = @{$user->{'identities'}};
-        print STDERR "Response: ".$response->decoded_content;
-        print STDERR "\n\n";
-        print STDERR "Decoded JSON: ".$user;
-        # my $aleph_identity = grep { $_->{'provider'} eq 'aleph' } $identities;
-        # return $aleph_identity;
-        # return $identities[0]->{'provider'};
+        my $identities = $user->{'identities'};
       }
       else {
         $self->set('error', "Unauthorized");
