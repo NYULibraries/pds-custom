@@ -2,6 +2,7 @@
 package NYU::Libraries::PDS::Session;
 use strict;
 use warnings;
+use Data::Dumper;
 
 # Use our bundled Perl modules, e.g. Class::Accessor
 use lib "vendor/lib";
@@ -30,42 +31,53 @@ __PACKAGE__->mk_accessors(qw(calling_system target_url));
 # Usage:
 #   $self->$initialize(identities)
 my $initialize = sub {
-  my($self, @identities) = @_;
-  foreach my $identity (@identities) {
-    # Order matters
-    if(ref($identity) eq "NYU::Libraries::PDS::Identities::NyuShibboleth") {
-      my $identity_hash = $identity->to_h();
+  my($self, $identities) = @_;
+
+  foreach my $identity (@$identities) {
+    if ($identity->{provider} eq 'nyu_shibboleth') {
       $self->set('nyu_shibboleth', 'true');
-      foreach my $attribute (keys %$identity_hash) {
-        # Skip ID attribute
-        next if $attribute eq "id";
-        $self->set($attribute, $identity_hash->{$attribute});
-      }
-    } elsif(ref($identity) eq "NYU::Libraries::PDS::Identities::NsLdap") {
-      my $identity_hash = $identity->to_h();
+    } elsif ($identity->{provider} eq 'new_school_ldap') {
       $self->set('ns_ldap', 'true');
-      foreach my $attribute (keys %$identity_hash) {
-        # Skip ID attribute
-        next if $attribute eq "id";
-        $self->set($attribute, $identity_hash->{$attribute});
-      }
-    } elsif(ref($identity) eq "NYU::Libraries::PDS::Identities::Aleph") {
-      my $identity_hash = $identity->to_h();
-      # Set ID, override if it was already set
-      $self->set('id', $identity->id);
-      foreach my $attribute (keys %$identity_hash) {
-        # Skip ID attribute
-        next if $attribute eq "id";
-        # Don't override attribute if it was previously set
-        next if $self->{$attribute};
-        $self->set($attribute, $identity_hash->{$attribute});
-      }
-    } else {
-      # Assume we're creating the Session object from an existing PDS session hash
-      foreach my $attribute (keys %$identity) {
-        $self->set("$attribute", $identity->{$attribute});
-      }
     }
+    foreach my $key (keys(%{$identity->{properties}})) {
+      $self->set($key, %{$identity->{properties}}->{$key});
+    }
+
+    # Order matters
+
+    # if(ref($identity) eq "NYU::Libraries::PDS::Identities::NyuShibboleth") {
+    #   my $identity_hash = $identity->to_h();
+    #   $self->set('nyu_shibboleth', 'true');
+      # foreach my $attribute (keys %$identity_hash) {
+      #   # Skip ID attribute
+      #   next if $attribute eq "id";
+      #   $self->set($attribute, $identity_hash->{$attribute});
+      # }
+    # } elsif(ref($identity) eq "NYU::Libraries::PDS::Identities::NsLdap") {
+    #   my $identity_hash = $identity->to_h();
+    #   $self->set('ns_ldap', 'true');
+    #   foreach my $attribute (keys %$identity_hash) {
+    #     # Skip ID attribute
+    #     next if $attribute eq "id";
+    #     $self->set($attribute, $identity_hash->{$attribute});
+    #   }
+    # } elsif(ref($identity) eq "NYU::Libraries::PDS::Identities::Aleph") {
+    #   my $identity_hash = $identity->to_h();
+    #   # Set ID, override if it was already set
+    #   $self->set('id', $identity->id);
+    #   foreach my $attribute (keys %$identity_hash) {
+    #     # Skip ID attribute
+    #     next if $attribute eq "id";
+    #     # Don't override attribute if it was previously set
+    #     next if $self->{$attribute};
+    #     $self->set($attribute, $identity_hash->{$attribute});
+    #   }
+    # } else {
+    #   # Assume we're creating the Session object from an existing PDS session hash
+    #   foreach my $attribute (keys %$identity) {
+    #     $self->set("$attribute", $identity->{$attribute});
+    #   }
+    # }
   }
   # Return self
   return $self;
