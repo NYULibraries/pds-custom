@@ -112,17 +112,18 @@ sub _nyu_shibboleth_identity {
   return $self->$get_identity_from_provider($identities, 'nyu_shibboleth');
 }
 
+# Public method to get NYU Shibboleth identity from JSON response
+sub _new_school_ldap_identity {
+  my($self, $identities) = @_;
+  return $self->$get_identity_from_provider($identities, 'new_school_ldap');
+}
+
 # Private method to encrypt the Aleph identity
 # Usage:
 #   $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity)
-# my $encrypt_aleph_identity = sub {
-#   my($self, $aleph_identity) = @_;
-#   # Encrypt the password
-#   $aleph_identity->encrypt(1);
-#   # And reset the attributes
-#   $aleph_identity->set_attributes(1);
-#   return $aleph_identity;
-# };
+my $encrypt_aleph_identity = sub {
+  my($self, $verification) = @_;
+};
 
 # Private method to find the current session
 # Usage:
@@ -501,7 +502,8 @@ sub sso {
 
       if ($response->is_success) {
         my $user = decode_json($response->decoded_content);
-        my $identities = $user->{'identities'};
+        my $session = $self->$create_session($user);
+        return $self->_redirect_to_target();
       }
       else {
         $self->set('error', "Unauthorized");
@@ -509,24 +511,7 @@ sub sso {
       }
     }
   }
-  # Do we have an identity? If so, let's get the associated Aleph identity
-  # Check if the Aleph identity exists
-  # if ($aleph_identity->exists) {
-  #   # Encrypt the Aleph identity's password
-  #   $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
-  #   my $session =
-  #     $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
-  #   # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
-  #   # or just got it from me.
-  #   # return $nyu_shibboleth_controller->redirect_to_eshelf();
-  #   return $nyu_shibboleth_controller->redirect_to_cleanup($session);
-  # } else {
-  #   # Exit with Unauthorized Error
-  #   $self->set('error', "Unauthorized");
-  #   return $self->_redirect_to_unauthorized();
-  # }
-  # }
-  # return $nyu_shibboleth_controller->redirect_to_target();
+  return $self->_redirect_to_target();
 }
 
 # Destroy the session, handle cookie maintenance and
