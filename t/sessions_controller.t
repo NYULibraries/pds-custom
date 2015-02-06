@@ -55,14 +55,23 @@ $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo"
 # Test logout screen
 like($controller->_logout_screen(), NYU_LOGOUT, "Should be a logout screen.");
 
+# Setup oauth2 JSON response mock
 my $entitlements = 'urn:mace:nyu.edu:entl:its:wikispriv;urn:mace:nyu.edu:entl:its:classes;urn:mace:nyu.edu:entl:its:qualtrics;urn:mace:nyu.edu:entl:lib:eresources;urn:mace:nyu.edu:entl:its:wikispub;urn:mace:nyu.edu:entl:its:lynda;urn:mace:nyu.edu:entl:lib:ideaexchange;urn:mace:nyu.edu:entl:its:files;urn:mace:incommon:entitlement:common:1';
-my $json_response = '{"id":1,"username":"xx10","email":"dev@library.nyu.edu","admin":true,"created_at":"2014-02-24T22:13:00.529Z","updated_at":"2015-02-04T21:36:34.275Z","institution_code":"NYU","provider":"nyu_shibboleth","identities":[{"id":17,"user_id":1,"provider":"aleph","uid":"1234567890","properties":{"type":"","major":"Web Services","status":"51","college":"Division of Libraries","department":"IT Services \u0026 Media Services","identifier":"1234567890","ill_library":"","patron_type":"","plif_status":"PLIF LOADED","patron_status":"51","ill_permission":"Y","institution_code":"NYU"},"created_at":"2014-10-17T17:38:43.095Z","updated_at":"2015-02-03T17:23:15.150Z"},{"id":1,"user_id":1,"provider":"nyu_shibboleth","uid":"xx10","properties":{"uid":"xx10","name":"Dev Eloper","email":"dev@lirbary.nyu.edu","extra":{"raw_info":{"nyuidn":"1234567890","entitlement":"'.$entitlements.'"}},"nyuidn":"1234567890","nickname":"Mickie","last_name":"Eloper","first_name":"Dev","entitlement":"'.$entitlements.'","institution_code":"NYU"},"created_at":"2014-02-24T22:13:00.565Z","updated_at":"2015-02-04T21:36:34.307Z"}]}';
+my $json_response = '{"id":1,"username":"xx10","email":"dev@library.nyu.edu","admin":true,"created_at":"2014-02-24T22:13:00.529Z","updated_at":"2015-02-04T21:36:34.275Z","institution_code":"NYU","provider":"nyu_shibboleth","identities":[{"provider":"new_school_ldap"},{"id":17,"user_id":1,"provider":"aleph","uid":"1234567890","properties":{"verification":"12345","barcode":"67890","type":"","major":"Web Services","status":"51","college":"Division of Libraries","department":"IT Services \u0026 Media Services","identifier":"1234567890","ill_library":"","patron_type":"","plif_status":"PLIF LOADED","patron_status":"51","ill_permission":"Y","institution_code":"NYU"},"created_at":"2014-10-17T17:38:43.095Z","updated_at":"2015-02-03T17:23:15.150Z"},{"id":1,"user_id":1,"provider":"nyu_shibboleth","uid":"xx10","properties":{"uid":"xx10","name":"Dev Eloper","email":"dev@lirbary.nyu.edu","extra":{"raw_info":{"nyuidn":"1234567890","entitlement":"'.$entitlements.'"}},"nyuidn":"1234567890","nickname":"Mickie","last_name":"Eloper","first_name":"Dev","entitlement":"'.$entitlements.'","institution_code":"NYU"},"created_at":"2014-02-24T22:13:00.565Z","updated_at":"2015-02-04T21:36:34.307Z"}]}';
 my $decoded_json = decode_json($json_response);
 my $identities = $decoded_json->{'identities'};
+# Test that you can get the correct identity out of a JSON response from Oauth
+# Get the Aleph identity
 my $aleph_identity = $controller->_aleph_identity($identities);
 is($aleph_identity->{'provider'}, "aleph", "Should return aleph identity");
+# Get the NYU Shibboleth identity
 my $nyu_shibboleth_identity = $controller->_nyu_shibboleth_identity($identities);
 is($nyu_shibboleth_identity->{'provider'}, "nyu_shibboleth", "Should return NYU Shibboleth identity");
+# Get the NS LDAP identity
+my $new_school_ldap_identity = $controller->_new_school_ldap_identity($identities);
+is($new_school_ldap_identity->{'provider'}, "new_school_ldap", "Should return New School LDAP identity");
+# When there is no session just redirect to the target url
+like($controller->sso(), '/Location: http:\/\/example.com/', "Should redirect to target url");
 
 $ENV{'uid'} = 'uid';
 $ENV{'email'}='email@nyu.edu';
