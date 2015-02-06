@@ -104,18 +104,6 @@ sub _aleph_identity {
   return $self->$get_identity_from_provider($identities, 'aleph');
 }
 
-# Public method to get NYU Shibboleth identity from JSON response
-sub _nyu_shibboleth_identity {
-  my($self, $identities) = @_;
-  return $self->$get_identity_from_provider($identities, 'nyu_shibboleth');
-}
-
-# Public method to get NYU Shibboleth identity from JSON response
-sub _new_school_ldap_identity {
-  my($self, $identities) = @_;
-  return $self->$get_identity_from_provider($identities, 'new_school_ldap');
-}
-
 # Private method to encrypt the Aleph identity
 # Usage:
 #   $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity)
@@ -498,7 +486,8 @@ sub sso {
       # Use the access token to fetch a protected resource
       my $response = $access_token->get($self->$client->protected_resource_url);
 
-      if ($response->is_success) {
+      # If we got the response and this user has an aleph identity, let's log 'em in
+      if ($response->is_success && $self->_aleph_identity()->exists) {
         my $user = decode_json($response->decoded_content);
         my $session = $self->$create_session($user);
         return $self->_redirect_to_target();
