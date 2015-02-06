@@ -20,12 +20,12 @@ BEGIN { use_ok('NYU::Libraries::PDS::SessionsController') };
 require_ok( 'NYU::Libraries::PDS::SessionsController' );
 
 # Get an instance of SessionController
+my $conf;
 if($ENV{'CONFIG_BASEPATH'}) {
-  my $conf = parse_conf($ENV{'CONFIG_BASEPATH'}."config/pds/nyu.conf");
+  $conf = parse_conf($ENV{'CONFIG_BASEPATH'}."config/pds/nyu.conf");
 } else {
-  my $conf = parse_conf("config/pds/nyu.conf");
+  $conf = parse_conf("config/pds/nyu.conf");
 }
-
 my $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
 
 # Verify that this a Class::Accessor
