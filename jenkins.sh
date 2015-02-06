@@ -12,6 +12,7 @@ cd pds-core && git checkout development-login;
 # Get out of there
 cd ../../;
 
+export CONFIG_BASEPATH='vendor/pds-core';
 # Use perlbrew version of perl-5.8.9
 source ~/perl5/perlbrew/etc/bashrc && perlbrew use perl-5.8.9;
 # Make sure dependencies are installed
