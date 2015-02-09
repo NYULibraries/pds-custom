@@ -17,7 +17,11 @@ use PDSUtil;
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(trim xml_encode parse_conf fix_target_url
-  save_permanent_eshelf_records whitelist_institution handle_primo_target_url);
+  save_permanent_eshelf_records whitelist_institution handle_primo_target_url aleph_identity nyu_shibboleth_identity new_school_ldap_identity);
+
+use constant ALEPH_IDENTITY_NAME => 'aleph';
+use constant NYU_SHIBBOLETH_IDENTITY_NAME => 'nyu_shibboleth';
+use constant NEW_SCHOOL_LDAP_IDENTITY_NAME => 'new_school_ldap';
 
 # global lookup hash
 my %ESCAPES = ('&' => '&amp;', '"' => '&quot;');
@@ -52,11 +56,11 @@ sub parse_conf {
   my $conf = {};
   my $line;
   while ($line = <OPEN_FILE>) {
-    # Next if empty line or 
+    # Next if empty line or
     # comment(starts with # or !) or
     # section heading ([SECTION HEADING])
-    next if ($line =~/^\s*$/) || 
-      ($line =~ /^\s*(#|!)/) || 
+    next if ($line =~/^\s*$/) ||
+      ($line =~ /^\s*(#|!)/) ||
         ($line =~/^\[[A-Z]/i);
     $line = trim($line);
     if ($line =~ /=/) {
@@ -135,6 +139,34 @@ sub save_permanent_eshelf_records {
     return 0 unless ($response->is_success);
     return 1;
   }
+}
+
+# Private method to get identity from identities array based on provider
+sub get_identity_from_provider {
+  my($identities, $provider) = @_;
+  for my $identity (@$identities) {
+    if ($identity->{provider} eq $provider) {
+      return $identity;
+    }
+  }
+}
+
+# Pull Aleph identity
+sub aleph_identity {
+  my ($identities) = @_;
+  return get_identity_from_provider($identities, ALEPH_IDENTITY_NAME);
+}
+
+# Pull NYU Shibboleth identity
+sub nyu_shibboleth_identity {
+  my ($identities) = @_;
+  return get_identity_from_provider($identities, NYU_SHIBBOLETH_IDENTITY_NAME);
+}
+
+# Pull New School LDAP identity
+sub new_school_ldap_identity {
+  my ($identities) = @_;
+  return get_identity_from_provider($identities, NEW_SCHOOL_LDAP_IDENTITY_NAME);
 }
 
 1;
