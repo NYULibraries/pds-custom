@@ -45,7 +45,7 @@ use Net::OAuth2::Client;
 use JSON;
 
 # NYU Libraries modules
-use NYU::Libraries::Util qw(trim whitelist_institution save_permanent_eshelf_records handle_primo_target_url);
+use NYU::Libraries::Util qw(trim whitelist_institution save_permanent_eshelf_records handle_primo_target_url aleph_identity);
 use NYU::Libraries::PDS::Session;
 
 use base qw(Class::Accessor);
@@ -85,24 +85,6 @@ my $client = sub {
   )->web_server(redirect_uri => $conf->{oauth_callback_url});
   return $oauth2_client;
 };
-
-# Private method to get identity from identities array based on provider
-# Usage:
-#   $identity = $self->$get_identity_from_provider($identities, 'provider');
-my $get_identity_from_provider = sub {
-  my($self, $identities, $provider) = @_;
-  for my $identity (@$identities) {
-    if ($identity->{provider} eq $provider) {
-      return $identity;
-    }
-  }
-};
-
-# Public method to get Aleph identity from JSON response
-sub _aleph_identity {
-  my($self, $identities) = @_;
-  return $self->$get_identity_from_provider($identities, 'aleph');
-}
 
 # Private method to encrypt the Aleph identity
 # Usage:
@@ -187,9 +169,9 @@ my $tsetse = sub {
 # Usage:
 #   $self->$create_session($identity1, $identity2)
 my $create_session = sub {
-  my($self, @identities) = @_;
+  my($self, $user) = @_;
   # Get a new session based on the given identities
-  my $session = NYU::Libraries::PDS::Session->new(@identities);
+  my $session = NYU::Libraries::PDS::Session->new($user);
   # Add some attributes from the controller
   $session->target_url($self->target_url);
   $session->calling_system($self->calling_system);
@@ -487,7 +469,7 @@ sub sso {
       my $response = $access_token->get($self->$client->protected_resource_url);
 
       # If we got the response and this user has an aleph identity, let's log 'em in
-      if ($response->is_success && $self->_aleph_identity()->exists) {
+      if ($response->is_success && $self->aleph_identity()->exists) {
         my $user = decode_json($response->decoded_content);
         my $session = $self->$create_session($user);
         return $self->_redirect_to_target();
