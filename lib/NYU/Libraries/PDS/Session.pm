@@ -16,14 +16,14 @@ use PDSUtil qw(isUsingOracle);
 use PDSParamUtil;
 
 # NYU Libraries modules
-use NYU::Libraries::Util qw(trim xml_encode);
+use NYU::Libraries::Util qw(trim xml_encode aleph_identity nyu_shibboleth_identity new_school_ldap_identity);
 
 use base qw(Class::Accessor);
 # Assumes the same names as the identities
-my @attributes = qw(id email givenname cn sn institute barcode bor_status
-  bor_type name uid verification nyuidn nyu_shibboleth ns_ldap
-    entitlements objectclass ill_permission college_code college_name
-      dept_code dept_name major_code major ill_library session_id expiry_date remote_address);
+my @attributes = qw(id email institution_code institute barcode bor_status patron_status
+  patron_type name first_name last_name uid nyuidn nyu_shibboleth ns_ldap verification
+    entitlements objectclass ill_permission college_code college plif_status
+      dept_code department major_code major ill_library session_id expiry_date remote_address);
 __PACKAGE__->mk_ro_accessors(@attributes);
 __PACKAGE__->mk_accessors(qw(calling_system target_url));
 
@@ -31,54 +31,41 @@ __PACKAGE__->mk_accessors(qw(calling_system target_url));
 # Usage:
 #   $self->$initialize(identities)
 my $initialize = sub {
-  my($self, $identities) = @_;
+  my($self, $user) = @_;
 
-  foreach my $identity (@$identities) {
-    if ($identity->{provider} eq 'nyu_shibboleth') {
-      $self->set('nyu_shibboleth', 'true');
-    } elsif ($identity->{provider} eq 'new_school_ldap') {
-      $self->set('ns_ldap', 'true');
-    }
-    foreach my $key (keys(%{$identity->{properties}})) {
-      $self->set($key, %{$identity->{properties}}->{$key});
-    }
+  # Extra identities from oauth2 api
+  my $identities = $user->{'identities'};
+  my $aleph_identity = aleph_identity($identities);
+  my $new_school_ldap_identity = new_school_ldap_identity($identities);
+  my $nyu_shibboleth_identity = nyu_shibboleth_identity($identities);
 
-    # Order matters
-
-    # if(ref($identity) eq "NYU::Libraries::PDS::Identities::NyuShibboleth") {
-    #   my $identity_hash = $identity->to_h();
-    #   $self->set('nyu_shibboleth', 'true');
-      # foreach my $attribute (keys %$identity_hash) {
-      #   # Skip ID attribute
-      #   next if $attribute eq "id";
-      #   $self->set($attribute, $identity_hash->{$attribute});
-      # }
-    # } elsif(ref($identity) eq "NYU::Libraries::PDS::Identities::NsLdap") {
-    #   my $identity_hash = $identity->to_h();
-    #   $self->set('ns_ldap', 'true');
-    #   foreach my $attribute (keys %$identity_hash) {
-    #     # Skip ID attribute
-    #     next if $attribute eq "id";
-    #     $self->set($attribute, $identity_hash->{$attribute});
-    #   }
-    # } elsif(ref($identity) eq "NYU::Libraries::PDS::Identities::Aleph") {
-    #   my $identity_hash = $identity->to_h();
-    #   # Set ID, override if it was already set
-    #   $self->set('id', $identity->id);
-    #   foreach my $attribute (keys %$identity_hash) {
-    #     # Skip ID attribute
-    #     next if $attribute eq "id";
-    #     # Don't override attribute if it was previously set
-    #     next if $self->{$attribute};
-    #     $self->set($attribute, $identity_hash->{$attribute});
-    #   }
-    # } else {
-    #   # Assume we're creating the Session object from an existing PDS session hash
-    #   foreach my $attribute (keys %$identity) {
-    #     $self->set("$attribute", $identity->{$attribute});
-    #   }
-    # }
+  if ($nyu_shibboleth_identity) {
+    $self->set('nyu_shibboleth', 'true');
+  } elsif ($new_school_ldap_identity) {
+    $self->set('ns_ldap', 'true');
   }
+  # Look for the top-level email first,
+  # if it's not set here we'll set it from one of the identities
+  $self->set('email', $user->{'email'});
+  # # Set NYU Shibboleth properties to the session variables
+  foreach my $key (keys(%{$nyu_shibboleth_identity->{properties}})) {
+    $self->set($key, %{$nyu_shibboleth_identity->{properties}}->{$key});
+  }
+  # Set New School LDAP properties to the session variables
+  # Unless they're already set
+  foreach my $key (keys(%{$new_school_ldap_identity->{properties}})) {
+    next if $self->{$key};
+    $self->set($key, %{$new_school_ldap_identity->{properties}}->{$key});
+  }
+  # Set Aleph properties to the session variables
+  # Unless they're already set
+  foreach my $key (keys(%{$aleph_identity->{properties}})) {
+    next if $self->{$key};
+    $self->set($key, %{$aleph_identity->{properties}}->{$key});
+  }
+  $self->set('id', $aleph_identity->{uid});
+  $self->set('institute', $user->{'institution_code'});
+
   # Return self
   return $self;
 };
