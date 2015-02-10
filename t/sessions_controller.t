@@ -10,7 +10,6 @@ use NYU::Libraries::Util qw(parse_conf);
 use JSON qw(decode_json);
 
 use constant NYU_LOGIN => '/Location: https://dev.login.library.nyu.edu/';
-use constant NS_LOGIN => '/Location: https://dev.login.library.nyu.edu/';
 use constant NYU_LOGOUT => '/Location: https://dev.login.library.nyu.edu/logout/';
 
 # Verify module can be included via "use" pragma
@@ -47,10 +46,6 @@ if($ENV{'CI'}) {
 
 like($controller->_login_screen(), NYU_LOGIN, "Unexpected login redirect");
 
-# Get another instance of SessionController
-$controller = NYU::Libraries::PDS::SessionsController->new($conf, "NS", "primo", "http://example.com");
-like($controller->_login_screen(), NS_LOGIN, "Unexpected login NS html");
-
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
 # Test error undefined after authenticate
 is($controller->error, undef, "Error should be undefined");
@@ -74,8 +69,3 @@ $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "ezprox
 $ENV{'nyuidn'}='DS03D';
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "ezborrow", "http://login.library.nyu.edu/ezborrow?query=ezborrow");
 # is($controller->ezborrow, redirect_html("http://library.nyu.edu/errors/ezborrow-library-nyu-edu/login.html"), "Should redirect to ezborrow unauthorized");
-
-$ENV{'uid'} = 'uid';
-$ENV{'email'}='email@nyu.edu';
-$ENV{'entitlement'}='some:entitlements';
-$ENV{'nyuidn'}='N12162279';
