@@ -86,13 +86,6 @@ my $client = sub {
   return $oauth2_client;
 };
 
-# Private method to encrypt the Aleph identity
-# Usage:
-#   $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity)
-my $encrypt_aleph_identity = sub {
-  my($self, $verification) = @_;
-};
-
 # Private method to find the current session
 # Usage:
 #   $self->$current_session()
@@ -171,7 +164,7 @@ my $tsetse = sub {
 my $create_session = sub {
   my($self, $user) = @_;
   # Get a new session based on the given identities
-  my $session = NYU::Libraries::PDS::Session->new($user);
+  my $session = NYU::Libraries::PDS::Session->new($user, 0, $self->{'conf'});
   # Add some attributes from the controller
   $session->target_url($self->target_url);
   $session->calling_system($self->calling_system);
