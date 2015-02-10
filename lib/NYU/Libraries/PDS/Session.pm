@@ -19,7 +19,7 @@ use PDSParamUtil;
 use Digest::MD5 qw(md5_hex md5);
 
 # NYU Libraries modules
-use NYU::Libraries::Util qw(trim xml_encode aleph_identity nyu_shibboleth_identity new_school_ldap_identity);
+use NYU::Libraries::Util qw(trim xml_encode);
 
 use base qw(Class::Accessor);
 # Assumes the same names as the identities

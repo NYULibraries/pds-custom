@@ -45,7 +45,7 @@ use Net::OAuth2::Client;
 use JSON;
 
 # NYU Libraries modules
-use NYU::Libraries::Util qw(trim whitelist_institution save_permanent_eshelf_records handle_primo_target_url aleph_identity);
+use NYU::Libraries::Util qw(trim whitelist_institution save_permanent_eshelf_records handle_primo_target_url);
 use NYU::Libraries::PDS::Session;
 
 use base qw(Class::Accessor);
@@ -462,7 +462,7 @@ sub sso {
       my $response = $access_token->get($self->$client->protected_resource_url);
 
       # If we got the response and this user has an aleph identity, let's log 'em in
-      if ($response->is_success && $self->aleph_identity()->exists) {
+      if ($response->is_success) {
         my $user = decode_json($response->decoded_content);
         my $session = $self->$create_session($user);
         return $self->_redirect_to_target();
