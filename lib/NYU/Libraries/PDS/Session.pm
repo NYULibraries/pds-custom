@@ -133,23 +133,24 @@ my $initialize = sub {
     my $new_school_ldap_identity = $self->$new_school_ldap_identity($identities);
     my $nyu_shibboleth_identity = $self->$nyu_shibboleth_identity($identities);
 
-    if ($nyu_shibboleth_identity) {
-      $self->set('nyu_shibboleth', 'true');
-    } elsif ($new_school_ldap_identity) {
-      $self->set('ns_ldap', 'true');
-    }
     # Look for the top-level email first,
     # if it's not set here we'll set it from one of the identities
     $self->set('email', $user->{'email'});
-    # # Set NYU Shibboleth properties to the session variables
-    foreach my $key (keys(%{$nyu_shibboleth_identity->{properties}})) {
-      $self->set($key, %{$nyu_shibboleth_identity->{properties}}->{$key});
-    }
-    # Set New School LDAP properties to the session variables
-    # Unless they're already set
-    foreach my $key (keys(%{$new_school_ldap_identity->{properties}})) {
-      next if $self->{$key};
-      $self->set($key, %{$new_school_ldap_identity->{properties}}->{$key});
+
+    if ($nyu_shibboleth_identity) {
+      $self->set('nyu_shibboleth', 'true');
+      # Set NYU Shibboleth properties to the session variables
+      foreach my $key (keys(%{$nyu_shibboleth_identity->{properties}})) {
+        $self->set($key, %{$nyu_shibboleth_identity->{properties}}->{$key});
+      }
+      # Set New School LDAP properties to the session variables
+      # Unless they're already set
+    } elsif ($new_school_ldap_identity) {
+      $self->set('ns_ldap', 'true');
+      foreach my $key (keys(%{$new_school_ldap_identity->{properties}})) {
+        next if $self->{$key};
+        $self->set($key, %{$new_school_ldap_identity->{properties}}->{$key});
+      }
     }
     # Set Aleph properties to the session variables
     # Unless they're already set
