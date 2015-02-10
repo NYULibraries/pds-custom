@@ -15,64 +15,131 @@ use PDSSessionUserAttrs;
 use PDSUtil qw(isUsingOracle);
 use PDSParamUtil;
 
+# Hash encryption module for password
+use Digest::MD5 qw(md5_hex md5);
+
 # NYU Libraries modules
 use NYU::Libraries::Util qw(trim xml_encode aleph_identity nyu_shibboleth_identity new_school_ldap_identity);
 
 use base qw(Class::Accessor);
 # Assumes the same names as the identities
+# Duplicate entries are there for legacy apps which expect old values:
+# => patron_status = bor_status
+# => `institute` is expected by PDS
+# => `expiry_date` is expected by PDS
 my @attributes = qw(id email institution_code institute barcode bor_status patron_status
   patron_type name first_name last_name uid nyuidn nyu_shibboleth ns_ldap verification
-    entitlements objectclass ill_permission college_code college plif_status
+    entitlement objectclass ill_permission college_code college plif_status
       dept_code department major_code major ill_library session_id expiry_date remote_address);
 __PACKAGE__->mk_ro_accessors(@attributes);
 __PACKAGE__->mk_accessors(qw(calling_system target_url));
+
+use constant LOADED_FROM_PLIF => "PLIF LOADED";
+use constant FAMILY_MEMBER_BOR_STATUS => "65";
+
+# Private method returns whether this record was loaded from the PLIF
+my $loaded_from_plif = sub {
+  my $self = shift;
+  return ($self->plif_status eq LOADED_FROM_PLIF);
+};
+
+# Private method returns a boolean indicating whether to encrypt the verification
+# based on some business logic
+# Usage:
+#   $self->$is_encrypt_verification()
+my $is_encrypt_verification = sub {
+  my $self = shift;
+  # If no NetID and the record wasn't loaded from plif, don't encrypt.
+  return ($self->nyu_shibboleth && ($self->$loaded_from_plif))
+  # ????????????
+};
+
+# Private method returns a boolean indicating whether this is an encryption exception
+# Usage:
+#   $self->$encryption_exception()
+my $encryption_exception = sub {
+  my $self = shift;
+  return ($self->patron_status eq FAMILY_MEMBER_BOR_STATUS);
+};
+
+# Private method returns an encrypted verification based on a shared secret
+# Usage:
+#   $self->$encrypt_verification(unencrypted_verification)
+my $encrypt_verification = sub {
+  my($self, $unencrypted_verification) = @_;
+  my $conf = $self->{'conf'};
+  # Don't encrypt if no shared secret provided
+  return $unencrypted_verification unless $conf->{shared_secret};
+  # Don't encrypt if this is an exception.
+  return $unencrypted_verification if $self->$encryption_exception();
+  # Don't encrypt unless the patron meets the encryption business logic.
+  return $unencrypted_verification unless $self->$is_encrypt_verification();
+  my $encrypted_verification =
+    md5_hex($conf->{shared_secret}, $unencrypted_verification);
+  return $encrypted_verification;
+};
 
 # Private initialization method
 # Usage:
 #   $self->$initialize(identities)
 my $initialize = sub {
-  my($self, $user) = @_;
+  my($self, $user, $existing_user, $conf) = @_;
+  # Set configurations
+  $self->set('conf', $conf);
 
-  # Extra identities from oauth2 api
-  my $identities = $user->{'identities'};
-  my $aleph_identity = aleph_identity($identities);
-  my $new_school_ldap_identity = new_school_ldap_identity($identities);
-  my $nyu_shibboleth_identity = nyu_shibboleth_identity($identities);
+  # Assume we're creating the Session object from an existing PDS session hash
+  if ($existing_user) {
+    foreach my $attribute (keys %$user) {
+      $self->set("$attribute", $user->{$attribute});
+    }
+  # Create session based on OAuth2 response
+  } else {
+    # Extra identities from OAuth2 API
+    my $identities = $user->{'identities'};
+    my $aleph_identity = aleph_identity($identities);
+    my $new_school_ldap_identity = new_school_ldap_identity($identities);
+    my $nyu_shibboleth_identity = nyu_shibboleth_identity($identities);
 
-  if ($nyu_shibboleth_identity) {
-    $self->set('nyu_shibboleth', 'true');
-  } elsif ($new_school_ldap_identity) {
-    $self->set('ns_ldap', 'true');
-  }
-  # Look for the top-level email first,
-  # if it's not set here we'll set it from one of the identities
-  $self->set('email', $user->{'email'});
-  # # Set NYU Shibboleth properties to the session variables
-  foreach my $key (keys(%{$nyu_shibboleth_identity->{properties}})) {
-    $self->set($key, %{$nyu_shibboleth_identity->{properties}}->{$key});
-  }
-  # Set New School LDAP properties to the session variables
-  # Unless they're already set
-  foreach my $key (keys(%{$new_school_ldap_identity->{properties}})) {
-    next if $self->{$key};
-    $self->set($key, %{$new_school_ldap_identity->{properties}}->{$key});
-  }
-  # Set Aleph properties to the session variables
-  # Unless they're already set
-  foreach my $key (keys(%{$aleph_identity->{properties}})) {
-    next if $self->{$key};
-    $self->set($key, %{$aleph_identity->{properties}}->{$key});
-  }
-  $self->set('id', $aleph_identity->{uid});
-  $self->set('institute', $user->{'institution_code'});
+    if ($nyu_shibboleth_identity) {
+      $self->set('nyu_shibboleth', 'true');
+    } elsif ($new_school_ldap_identity) {
+      $self->set('ns_ldap', 'true');
+    }
+    # Look for the top-level email first,
+    # if it's not set here we'll set it from one of the identities
+    $self->set('email', $user->{'email'});
+    # # Set NYU Shibboleth properties to the session variables
+    foreach my $key (keys(%{$nyu_shibboleth_identity->{properties}})) {
+      $self->set($key, %{$nyu_shibboleth_identity->{properties}}->{$key});
+    }
+    # Set New School LDAP properties to the session variables
+    # Unless they're already set
+    foreach my $key (keys(%{$new_school_ldap_identity->{properties}})) {
+      next if $self->{$key};
+      $self->set($key, %{$new_school_ldap_identity->{properties}}->{$key});
+    }
+    # Set Aleph properties to the session variables
+    # Unless they're already set
+    foreach my $key (keys(%{$aleph_identity->{properties}})) {
+      next if $self->{$key};
+      $self->set($key, %{$aleph_identity->{properties}}->{$key});
+    }
+    # Set ID from Aleph Identity
+    $self->set('id', $aleph_identity->{uid});
+    # Set institute from institution_code, required by Aleph
+    $self->set('institute', $user->{'institution_code'});
 
+    # Encrypt verification and set as attribute
+    my $encrypted_verification = $self->$encrypt_verification($self->verification);
+    $self->set('verification', $encrypted_verification);
+  }
   # Return self
   return $self;
 };
 
 # Returns an new PDS Session based on the given identities
 # Usage:
-#   NYU::Libraries::PDS::Session->new(identities)
+#   NYU::Libraries::PDS::Session->new(user, existing_user, conf)
 sub new {
   my($proto, @args) = @_;
   my($class) = ref $proto || $proto;
@@ -99,7 +166,7 @@ sub find {
     $error_code = IOZ311_file::io_z311_file('DISPLAY', \%session) if $error_code eq "00";
     IOZ312_file::io_z312_file("READ", \%session, $id) if $error_code eq "00";
   }
-  return ($error_code eq "00") ? NYU::Libraries::PDS::Session->new(\%session) : undef;
+  return ($error_code eq "00") ? NYU::Libraries::PDS::Session->new(\%session, 1) : undef;
 }
 
 # Save the session to either the DB or file system
@@ -270,10 +337,10 @@ sub to_xml {
   foreach my $attribute (@attributes) {
     $xml .= "<$attribute>".xml_encode(trim($self->{$attribute}))."</$attribute>" if $self->{$attribute};
   }
-  if($self->{'entitlements'}) {
-    my $entitlements = $self->{'entitlements'};
-    $entitlements =~ s/;/<\/value><value>/g;
-    my $edupersonentitlements = "<value>$entitlements</value>";
+  if($self->{'entitlement'}) {
+    my $entitlement = $self->{'entitlement'};
+    $entitlement =~ s/;/<\/value><value>/g;
+    my $edupersonentitlements = "<value>$entitlement</value>";
     $xml .= "<edupersonentitlement>$edupersonentitlements</edupersonentitlement>";
   }
   $xml .= "</$root>";
