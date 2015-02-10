@@ -1,6 +1,7 @@
 package NYU::Libraries::Util;
 use strict;
 use warnings;
+use Data::Dumper;
 
 # URI module
 use URI;
@@ -145,6 +146,7 @@ sub save_permanent_eshelf_records {
 # Private method to get identity from identities array based on provider
 sub get_identity_from_provider {
   my($identities, $provider) = @_;
+  print STDERR Dumper($identities);
   for my $identity (@$identities) {
     if ($identity->{provider} eq $provider) {
       return $identity;
