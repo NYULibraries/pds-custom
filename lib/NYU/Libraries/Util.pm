@@ -145,7 +145,7 @@ sub save_permanent_eshelf_records {
 
 # Private method to get identity from identities array based on provider
 sub get_identity_from_provider {
-  my($identities, $provider) = @_;
+  my($self, $identities, $provider) = @_;
   print STDERR Dumper($identities);
   for my $identity (@$identities) {
     if ($identity->{provider} eq $provider) {
@@ -157,19 +157,31 @@ sub get_identity_from_provider {
 # Pull Aleph identity
 sub aleph_identity {
   my ($identities) = @_;
-  return get_identity_from_provider($identities, ALEPH_IDENTITY_NAME);
+  for my $identity (@$identities) {
+    if ($identity->{provider} eq ALEPH_IDENTITY_NAME) {
+      return $identity;
+    }
+  }
 }
 
 # Pull NYU Shibboleth identity
 sub nyu_shibboleth_identity {
   my ($identities) = @_;
-  return get_identity_from_provider($identities, NYU_SHIBBOLETH_IDENTITY_NAME);
+  for my $identity (@$identities) {
+    if ($identity->{provider} eq NYU_SHIBBOLETH_IDENTITY_NAME) {
+      return $identity;
+    }
+  }
 }
 
 # Pull New School LDAP identity
 sub new_school_ldap_identity {
   my ($identities) = @_;
-  return get_identity_from_provider($identities, NEW_SCHOOL_LDAP_IDENTITY_NAME);
+  for my $identity (@$identities) {
+    if ($identity->{provider} eq NEW_SCHOOL_LDAP_IDENTITY_NAME) {
+      return $identity;
+    }
+  }
 }
 
 1;
