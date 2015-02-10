@@ -36,6 +36,9 @@ __PACKAGE__->mk_accessors(qw(calling_system target_url));
 
 use constant LOADED_FROM_PLIF => "PLIF LOADED";
 use constant FAMILY_MEMBER_BOR_STATUS => "65";
+use constant ALEPH_IDENTITY_NAME => 'aleph';
+use constant NYU_SHIBBOLETH_IDENTITY_NAME => 'nyu_shibboleth';
+use constant NEW_SCHOOL_LDAP_IDENTITY_NAME => 'new_school_ldap';
 
 # Private method returns whether this record was loaded from the PLIF
 my $loaded_from_plif = sub {
@@ -79,6 +82,36 @@ my $encrypt_verification = sub {
   return $encrypted_verification;
 };
 
+# Pull Aleph identity
+my $aleph_identity = sub {
+  my ($self, $identities) = @_;
+  for my $identity (@$identities) {
+    if ($identity->{provider} eq ALEPH_IDENTITY_NAME) {
+      return $identity;
+    }
+  }
+};
+
+# Pull NYU Shibboleth identity
+my $nyu_shibboleth_identity = sub {
+  my ($self, $identities) = @_;
+  for my $identity (@$identities) {
+    if ($identity->{provider} eq NYU_SHIBBOLETH_IDENTITY_NAME) {
+      return $identity;
+    }
+  }
+};
+
+# Pull New School LDAP identity
+my $new_school_ldap_identity = sub {
+  my ($self, $identities) = @_;
+  for my $identity (@$identities) {
+    if ($identity->{provider} eq NEW_SCHOOL_LDAP_IDENTITY_NAME) {
+      return $identity;
+    }
+  }
+};
+
 # Private initialization method
 # Usage:
 #   $self->$initialize(identities)
@@ -96,9 +129,9 @@ my $initialize = sub {
   } else {
     # Extra identities from OAuth2 API
     my $identities = $user->{'identities'};
-    my $aleph_identity = aleph_identity($identities);
-    my $new_school_ldap_identity = new_school_ldap_identity($identities);
-    my $nyu_shibboleth_identity = nyu_shibboleth_identity($identities);
+    my $aleph_identity = $self->$aleph_identity($identities);
+    my $new_school_ldap_identity = $self->$new_school_ldap_identity($identities);
+    my $nyu_shibboleth_identity = $self->$nyu_shibboleth_identity($identities);
 
     if ($nyu_shibboleth_identity) {
       $self->set('nyu_shibboleth', 'true');
