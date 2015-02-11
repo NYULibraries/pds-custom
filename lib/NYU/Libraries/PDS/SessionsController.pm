@@ -45,7 +45,7 @@ use Net::OAuth2::Client;
 use JSON;
 
 # NYU Libraries modules
-use NYU::Libraries::Util qw(trim whitelist_institution save_permanent_eshelf_records handle_primo_target_url);
+use NYU::Libraries::Util qw(trim whitelist_institution save_permanent_eshelf_records handle_primo_target_url PDS_TARGET_COOKIE);
 use NYU::Libraries::PDS::Session;
 
 use base qw(Class::Accessor);
@@ -84,6 +84,33 @@ my $client = sub {
     access_token_method => $conf->{accesss_token_method}
   )->web_server(redirect_uri => $conf->{oauth_callback_url});
   return $oauth2_client;
+};
+
+# Private method expires the cookie that specifies that
+# we've been here done that
+# Usage:
+#   $self->$expire_been_there_done_that();
+my $expire_been_there_done_that = sub {
+  my $self = shift;
+  my $cgi = CGI->new();
+  # Unset the cookie!
+  my $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE,
+    -expires => 'Thu, 01-Jan-1970 00:00:01 GMT');
+  print $cgi->header(-cookie => [$pds_target]);
+};
+
+# Private method sets the cookie that specifies that
+# we've been here done that
+# Usage:
+#   $self->$set_been_there_done_that();
+my $set_been_there_done_that = sub {
+  my ($self) = shift;
+  my $cgi = CGI->new();
+  # Set the cookie to the current target URL
+  # It expires in 5 minutes
+  my $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE,
+    -expires => '+5m', -value => $self->target_url);
+  print $cgi->header(-cookie => [$pds_target]);
 };
 
 # Private method to find the current session
@@ -216,8 +243,7 @@ my $set_target_url = sub {
   my($self, $target_url) = @_;
   # Set target_url from either the given target URL, the shibboleth controller stored
   # "been there done that cookie" or the default
-  # $target_url ||=
-    # NYU::Libraries::PDS::IdentitiesControllers::NyuShibbolethController->been_there_done_that();
+  $target_url ||= $self->_been_there_done_that();
   $target_url ||= $self->{'conf'}->{bobcat_url} if $self->{'conf'};
   $target_url ||= DEFAULT_TARGET_URL;
   $self->set('target_url', $target_url);
@@ -312,6 +338,26 @@ sub new {
   return $self;
 }
 
+
+# Method returns the target url
+# Checks the "been there done that" cookie first.
+# Usage:
+#   $self->_get_target_url();
+sub _get_target_url {
+  my $self = shift;
+  return ($self->_been_there_done_that() || $self->target_url);
+};
+
+# Method to get the "been there done that" cookie
+# Usage:
+#   $self->_been_there_done_that();
+sub _been_there_done_that {
+  # Get the "been there done that" cookie that says
+  # we've tried this and failed.  Get the target URL.
+  my $cgi = CGI->new();
+  return $cgi->cookie(PDS_TARGET_COOKIE);
+}
+
 # Returns a rendered HTML login screen for presentation
 # Usage:
 #   my $login_screen = $self->_login_screen();
@@ -360,7 +406,7 @@ sub _redirect_to_ezborrow_unauthorized {
 #   my $redirect_header = $self->_redirect_to_target($session);
 sub _redirect_to_target {
   my ($self, $session) = @_;
-  my $target_url = $self->target_url;
+  my $target_url = $self->_get_target_url();
   # Primo sucks!
   print STDERR Dumper($target_url);
   $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
@@ -455,23 +501,29 @@ sub sso {
   my($self, $auth_code) = @_;
   my $cgi = CGI->new();
 
-  # Use the auth code to fetch the access token
-  if (defined($auth_code)) {
-    my $access_token = $self->$client->get_access_token($auth_code);
+  unless ($self->_been_there_done_that()) {
+    # Use the auth code to fetch the access token
+    if (defined($auth_code)) {
+      my $access_token = $self->$client->get_access_token($auth_code);
 
-    if (defined($access_token)) {
-      # Use the access token to fetch a protected resource
-      my $response = $access_token->get($self->$client->protected_resource_url);
+      if (defined($access_token)) {
+        # Use the access token to fetch a protected resource
+        my $response = $access_token->get($self->$client->protected_resource_url);
 
-      # If we got the response and this user has an aleph identity, let's log 'em in
-      if ($response->is_success) {# && $self->aleph_identity()->exists) {
-        my $user = decode_json($response->decoded_content);
-        my $session = $self->$create_session($user);
-        return $self->_redirect_to_target($session);
-      }
-      else {
-        $self->set('error', "Unauthorized");
-        return $self->_redirect_to_unauthorized();
+        # If we got the response and this user has an aleph identity, let's log 'em in
+        if ($response->is_success) {# && $self->aleph_identity()->exists) {
+          my $user = decode_json($response->decoded_content);
+          # Now we've been there, done that
+          $self->$set_been_there_done_that();
+          # Create the session
+          my $session = $self->$create_session($user);
+          # Redirecet to target
+          return $self->_redirect_to_target($session);
+        }
+        else {
+          $self->set('error', "Unauthorized");
+          return $self->_redirect_to_unauthorized();
+        }
       }
     }
   }

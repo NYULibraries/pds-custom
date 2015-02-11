@@ -18,10 +18,13 @@ use PDSUtil;
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(trim xml_encode parse_conf fix_target_url
-  save_permanent_eshelf_records whitelist_institution handle_primo_target_url);
+  save_permanent_eshelf_records whitelist_institution handle_primo_target_url PDS_TARGET_COOKIE);
 
 # global lookup hash
 my %ESCAPES = ('&' => '&amp;', '"' => '&quot;');
+
+# Been there done that cookie name
+use constant PDS_TARGET_COOKIE => 'pds_btdt_target_url';
 
 # Function to encode quotes and ampersands.
 # Usage:
