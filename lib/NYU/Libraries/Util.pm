@@ -18,8 +18,7 @@ use PDSUtil;
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(trim xml_encode parse_conf fix_target_url
-  save_permanent_eshelf_records whitelist_institution handle_primo_target_url
-    aleph_identity nyu_shibboleth_identity new_school_ldap_identity);
+  save_permanent_eshelf_records whitelist_institution handle_primo_target_url);
 
 # global lookup hash
 my %ESCAPES = ('&' => '&amp;', '"' => '&quot;');

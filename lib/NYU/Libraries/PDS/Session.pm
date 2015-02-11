@@ -116,36 +116,34 @@ my $new_school_ldap_identity = sub {
 # Usage:
 #   $self->$initialize(identities)
 my $initialize = sub {
-  my($self, $user, $existing_user, $conf) = @_;
+  my($self, $user, $conf) = @_;
   # Set configurations
   $self->set('conf', $conf);
 
-  # Assume we're creating the Session object from an existing PDS session hash
-  if ($existing_user) {
-    foreach my $attribute (keys %$user) {
-      $self->set("$attribute", $user->{$attribute});
-    }
-  # Create session based on OAuth2 response
-  } else {
-    # Extra identities from OAuth2 API
-    my $identities = $user->{'identities'};
-    my $aleph_identity = $self->$aleph_identity($identities);
-    my $new_school_ldap_identity = $self->$new_school_ldap_identity($identities);
-    my $nyu_shibboleth_identity = $self->$nyu_shibboleth_identity($identities);
+  # Extra identities from OAuth2 API
+  my $identities = $user->{'identities'};
+  my $aleph_identity = $self->$aleph_identity($identities);
+  my $new_school_ldap_identity = $self->$new_school_ldap_identity($identities);
+  my $nyu_shibboleth_identity = $self->$nyu_shibboleth_identity($identities);
 
+  # Create session based on OAuth2 response if we have an aleph identity
+  if ($aleph_identity) {
     # Look for the top-level email first,
     # if it's not set here we'll set it from one of the identities
     $self->set('email', $user->{'email'});
 
     if ($nyu_shibboleth_identity) {
+      # Yes this is an nyu_shibboleth session
       $self->set('nyu_shibboleth', 'true');
       # Set NYU Shibboleth properties to the session variables
       foreach my $key (keys(%{$nyu_shibboleth_identity->{properties}})) {
         $self->set($key, %{$nyu_shibboleth_identity->{properties}}->{$key});
       }
-      # Set New School LDAP properties to the session variables
-      # Unless they're already set
-    } elsif ($new_school_ldap_identity) {
+    }
+    # Set New School LDAP properties to the session variables
+    # Unless they're already set
+    if ($new_school_ldap_identity) {
+      # Yes this is an new school LDAP session
       $self->set('ns_ldap', 'true');
       foreach my $key (keys(%{$new_school_ldap_identity->{properties}})) {
         next if $self->{$key};
@@ -161,11 +159,17 @@ my $initialize = sub {
     # Set ID from Aleph Identity
     $self->set('id', $aleph_identity->{uid});
     # Set institute from institution_code, required by Aleph
-    $self->set('institute', $user->{'institution_code'});
+    $self->set('institute', $user->{'institution_code'}) if $user->{'institution_code'};
 
     # Encrypt verification and set as attribute
     my $encrypted_verification = $self->$encrypt_verification($self->verification);
     $self->set('verification', $encrypted_verification);
+  }
+  # Assume we're creating the Session object from an existing PDS session hash
+  else {
+    foreach my $attribute (keys %$user) {
+      $self->set("$attribute", $user->{$attribute});
+    }
   }
   # Return self
   return $self;
@@ -173,7 +177,7 @@ my $initialize = sub {
 
 # Returns an new PDS Session based on the given identities
 # Usage:
-#   NYU::Libraries::PDS::Session->new(user, existing_user, conf)
+#   NYU::Libraries::PDS::Session->new(user, conf)
 sub new {
   my($proto, @args) = @_;
   my($class) = ref $proto || $proto;
@@ -200,7 +204,7 @@ sub find {
     $error_code = IOZ311_file::io_z311_file('DISPLAY', \%session) if $error_code eq "00";
     IOZ312_file::io_z312_file("READ", \%session, $id) if $error_code eq "00";
   }
-  return ($error_code eq "00") ? NYU::Libraries::PDS::Session->new(\%session, 1) : undef;
+  return ($error_code eq "00") ? NYU::Libraries::PDS::Session->new(\%session) : undef;
 }
 
 # Save the session to either the DB or file system

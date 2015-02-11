@@ -43,7 +43,7 @@ my $entitlement = 'urn:mace:nyu.edu:entl:its:wikispriv;urn:mace:nyu.edu:entl:its
 my $json_response = '{"id":1,"username":"xx10","email":"dev@library.nyu.edu","admin":true,"created_at":"2014-02-24T22:13:00.529Z","updated_at":"2015-02-04T21:36:34.275Z","institution_code":"NYU","provider":"nyu_shibboleth","identities":[{"id":17,"user_id":1,"provider":"aleph","uid":"1234567890","properties":{"verification":"12345","barcode":"67890","type":"","major":"Web Services","status":"51","college":"Division of Libraries","department":"IT Services \u0026 Media Services","identifier":"1234567890","ill_library":"","patron_type":"","plif_status":"PLIF LOADED","patron_status":"51","ill_permission":"Y","institution_code":"NYU"},"created_at":"2014-10-17T17:38:43.095Z","updated_at":"2015-02-03T17:23:15.150Z"},{"id":1,"user_id":1,"provider":"nyu_shibboleth","uid":"xx10","properties":{"uid":"xx10","name":"Dev Eloper","email":"dev@library.nyu.edu","extra":{"raw_info":{"nyuidn":"1234567890","entitlement":"'.$entitlement.'"}},"nyuidn":"1234567890","nickname":"Mickie","last_name":"Eloper","first_name":"Dev","entitlement":"'.$entitlement.'","institution_code":"NYU"},"created_at":"2014-02-24T22:13:00.565Z","updated_at":"2015-02-04T21:36:34.307Z"}]}';
 my $decoded_json = decode_json($json_response);
 # Create a new session based on JSON identities
-my $new_session = NYU::Libraries::PDS::Session->new($decoded_json, 0, $conf);
+my $new_session = NYU::Libraries::PDS::Session->new($decoded_json, $conf);
 
 is($new_session->to_xml(),
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".
