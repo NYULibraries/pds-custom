@@ -102,14 +102,14 @@ my $expire_been_there_done_that = sub {
 # Private method sets the cookie that specifies that
 # we've been here done that
 # Usage:
-#   $self->$set_been_there_done_that();
+#   $self->$set_been_there_done_that(target_url);
 my $set_been_there_done_that = sub {
-  my ($self) = shift;
+  my ($self, $target_url) = shift;
   my $cgi = CGI->new();
   # Set the cookie to the current target URL
   # It expires in 5 minutes
   my $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE,
-    -expires => '+5m', -value => $self->target_url);
+    -expires => '+5m', -value => $target_url);
   print $cgi->header(-cookie => [$pds_target]);
 };
 
@@ -241,9 +241,10 @@ my $destroy_session = sub {
 #   $self->$set_target_url($target_url);
 my $set_target_url = sub {
   my($self, $target_url) = @_;
-  # Set target_url from either the given target URL, the shibboleth controller stored
-  # "been there done that cookie" or the default
-  $target_url ||= $self->_been_there_done_that();
+  unless ($self->_been_there_done_that()) {
+    $self->$set_been_there_done_that($target_url);
+  }
+  $target_url = $self->_been_there_done_that();
   $target_url ||= $self->{'conf'}->{bobcat_url} if $self->{'conf'};
   $target_url ||= DEFAULT_TARGET_URL;
   $self->set('target_url', $target_url);
@@ -338,16 +339,6 @@ sub new {
   return $self;
 }
 
-
-# Method returns the target url
-# Checks the "been there done that" cookie first.
-# Usage:
-#   $self->_get_target_url();
-sub _get_target_url {
-  my $self = shift;
-  return ($self->_been_there_done_that() || $self->target_url);
-};
-
 # Method to get the "been there done that" cookie
 # Usage:
 #   $self->_been_there_done_that();
@@ -406,7 +397,7 @@ sub _redirect_to_ezborrow_unauthorized {
 #   my $redirect_header = $self->_redirect_to_target($session);
 sub _redirect_to_target {
   my ($self, $session) = @_;
-  my $target_url = $self->_get_target_url();
+  my $target_url = $self->_been_there_done_that();
   # Primo sucks!
   print STDERR Dumper($target_url);
   $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
@@ -513,8 +504,6 @@ sub sso {
         # If we got the response and this user has an aleph identity, let's log 'em in
         if ($response->is_success) {# && $self->aleph_identity()->exists) {
           my $user = decode_json($response->decoded_content);
-          # Now we've been there, done that
-          $self->$set_been_there_done_that();
           # Create the session
           my $session = $self->$create_session($user);
           # Redirecet to target
