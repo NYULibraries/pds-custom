@@ -15,7 +15,7 @@ use Net::LDAP::Constant;
 use NYU::Libraries::Util qw(trim);
 
 use base qw(NYU::Libraries::PDS::Identities::Base);
-my @attributes = qw(uid role aleph_identifier);
+my @attributes = qw(uid aleph_identifier);
 __PACKAGE__->mk_ro_accessors(@attributes);
 
 # Private method returns a new LDAP object based on the objects configuration
@@ -25,7 +25,7 @@ my $ldap_object = sub {
   my $self = shift;
   my $conf = $self->{'conf'};
   return Net::LDAPS->new($conf->{ldap_host}, port => $conf->{ldap_port},
-    timeout => $conf->{ldap_timeout}, version => $conf->{ldap_version}, 
+    timeout => $conf->{ldap_timeout}, version => $conf->{ldap_version},
       capath => $conf->{ssl_cert_path});
 };
 
@@ -43,9 +43,9 @@ my $ldap_user_search = sub {
   # Set error and return if the user bind failed
   $self->set('error', "Admin bind failed. ".$admin_bind_message->error) and return undef if $admin_bind_message->is_error();
   # Search for user based on the given id
-  my $user_search = 
-    $admin_ldap_object->search(base => "ou=people,o=newschool.edu,o=cp",
-      filter => "(|(pdsLoginId=$id))", attr => ['*', 'pdsExternalSystemID']);
+  my $user_search =
+    $admin_ldap_object->search(base => $conf->{ldap_base_dn},
+      filter => "(|(".$conf->{ldap_user_id_attribute}."=$id))", attr => ['*', 'cn']);
   # Close the admin connection
   $admin_ldap_object->disconnect();
   # Set error and return if more than one record exists for the user
@@ -63,11 +63,12 @@ my $ldap_user_search = sub {
 #   $self->$ldap_user_authenticate(uid, password)
 my $ldap_user_authenticate = sub {
   my($self, $uid, $password) = @_;
+  my $conf = $self->{'conf'};
   # Get the LDAP object for user binding
   my $user_ldap_object = $self->$ldap_object();
   $self->set('error', "Could not create new user LDAP object.") and return undef unless defined($user_ldap_object);
   # Set the user dn for binding
-  my $user_dn = "uid=$uid,ou=people,o=newschool.edu,o=cp";
+  my $user_dn = "uid=$uid,".$conf->{ldap_base_dn};
   # Bind to user dn with password to authenticate
   my $user_bind_message = $user_ldap_object->bind($user_dn, password=>$password);
   # Set error and return if the user bind failed
@@ -118,24 +119,13 @@ sub set_attributes {
   my $identity = $self->{'identity'};
   # Set the attributes
   # Set the id
-  $self->set('id', trim($identity->get_value("pdsLoginId")));
-  # Set the common name
-  $self->set('cn', trim($identity->get_value("cn")));
+  $self->set('id', trim($identity->get_value("uid")));
   # Set the given name
   $self->set('givenname', trim($identity->get_value("givenname")));
   # Set the surname
   $self->set('sn', trim($identity->get_value("sn")));
-  # Set the role
-  $self->set('role', trim($identity->get_value("pdsRole")));
-  # Set the Aleph identifier
-  my $aleph_identifier;
-  foreach ($identity->get_value("pdsExternalSystemID")) {
-    if ($_ =~ m/(N[0-9]+)::sct/) {
-      $_ =~ s/(N[0-9]+)::sct/$1/;
-      $aleph_identifier = $_;
-    }
-  }
-  $self->set('aleph_identifier', $aleph_identifier);
+  # Set the N#
+  $self->set('aleph_identifier', trim($identity->get_value("cn")));
 };
 
 1;
