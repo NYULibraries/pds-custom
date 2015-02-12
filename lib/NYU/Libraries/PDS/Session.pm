@@ -19,7 +19,7 @@ use PDSParamUtil;
 use Digest::MD5 qw(md5_hex md5);
 
 # NYU Libraries modules
-use NYU::Libraries::Util qw(trim xml_encode);
+use NYU::Libraries::Util qw(trim xml_encode aleph_identity nyu_shibboleth_identity new_school_ldap_identity);
 
 use base qw(Class::Accessor);
 # Assumes the same names as the identities
@@ -36,9 +36,6 @@ __PACKAGE__->mk_accessors(qw(calling_system target_url));
 
 use constant LOADED_FROM_PLIF => "PLIF LOADED";
 use constant FAMILY_MEMBER_BOR_STATUS => "65";
-use constant ALEPH_IDENTITY_NAME => 'aleph';
-use constant NYU_SHIBBOLETH_IDENTITY_NAME => 'nyu_shibboleth';
-use constant NEW_SCHOOL_LDAP_IDENTITY_NAME => 'new_school_ldap';
 
 # Private method returns whether this record was loaded from the PLIF
 my $loaded_from_plif = sub {
@@ -82,36 +79,6 @@ my $encrypt_verification = sub {
   return $encrypted_verification;
 };
 
-# Pull Aleph identity
-my $aleph_identity = sub {
-  my ($self, $identities) = @_;
-  for my $identity (@$identities) {
-    if ($identity->{provider} eq ALEPH_IDENTITY_NAME) {
-      return $identity;
-    }
-  }
-};
-
-# Pull NYU Shibboleth identity
-my $nyu_shibboleth_identity = sub {
-  my ($self, $identities) = @_;
-  for my $identity (@$identities) {
-    if ($identity->{provider} eq NYU_SHIBBOLETH_IDENTITY_NAME) {
-      return $identity;
-    }
-  }
-};
-
-# Pull New School LDAP identity
-my $new_school_ldap_identity = sub {
-  my ($self, $identities) = @_;
-  for my $identity (@$identities) {
-    if ($identity->{provider} eq NEW_SCHOOL_LDAP_IDENTITY_NAME) {
-      return $identity;
-    }
-  }
-};
-
 # Private initialization method
 # Usage:
 #   $self->$initialize(identities)
@@ -121,10 +88,10 @@ my $initialize = sub {
   $self->set('conf', $conf);
 
   # Extra identities from OAuth2 API
-  my $identities = $user->{'identities'};
-  my $aleph_identity = $self->$aleph_identity($identities);
-  my $new_school_ldap_identity = $self->$new_school_ldap_identity($identities);
-  my $nyu_shibboleth_identity = $self->$nyu_shibboleth_identity($identities);
+  my @identities = $user->{'identities'};
+  my $aleph_identity = aleph_identity(@identities);
+  my $new_school_ldap_identity = new_school_ldap_identity(@identities);
+  my $nyu_shibboleth_identity = nyu_shibboleth_identity(@identities);
 
   # Create session based on OAuth2 response if we have an aleph identity
   if ($aleph_identity) {
@@ -137,7 +104,8 @@ my $initialize = sub {
       $self->set('nyu_shibboleth', 'true');
       # Set NYU Shibboleth properties to the session variables
       foreach my $key (keys(%{$nyu_shibboleth_identity->{properties}})) {
-        $self->set($key, %{$nyu_shibboleth_identity->{properties}}->{$key});
+        my %properties = %{$nyu_shibboleth_identity->{properties}};
+        $self->set($key, $properties{$key});
       }
     }
     # Set New School LDAP properties to the session variables
@@ -147,14 +115,16 @@ my $initialize = sub {
       $self->set('ns_ldap', 'true');
       foreach my $key (keys(%{$new_school_ldap_identity->{properties}})) {
         next if $self->{$key};
-        $self->set($key, %{$new_school_ldap_identity->{properties}}->{$key});
+        my %properties = %{$new_school_ldap_identity->{properties}};
+        $self->set($key, $properties{$key});
       }
     }
     # Set Aleph properties to the session variables
     # Unless they're already set
     foreach my $key (keys(%{$aleph_identity->{properties}})) {
       next if $self->{$key};
-      $self->set($key, %{$aleph_identity->{properties}}->{$key});
+      my %properties = %{$aleph_identity->{properties}};
+      $self->set($key, $properties{$key});
     }
     # Set ID from Aleph Identity
     $self->set('id', $aleph_identity->{uid});

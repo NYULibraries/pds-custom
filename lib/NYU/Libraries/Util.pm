@@ -18,13 +18,82 @@ use PDSUtil;
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(trim xml_encode parse_conf fix_target_url
-  save_permanent_eshelf_records whitelist_institution handle_primo_target_url PDS_TARGET_COOKIE);
+  save_permanent_eshelf_records whitelist_institution handle_primo_target_url
+    expire_been_there_done_that set_been_there_done_that been_there_done_that
+      aleph_identity nyu_shibboleth_identity new_school_ldap_identity PDS_TARGET_COOKIE COOKIE_EXPIRATION);
 
 # global lookup hash
 my %ESCAPES = ('&' => '&amp;', '"' => '&quot;');
 
 # Been there done that cookie name
 use constant PDS_TARGET_COOKIE => 'pds_btdt_target_url';
+use constant COOKIE_EXPIRATION => 'Thu, 01-Jan-1970 00:00:01 GMT';
+use constant ALEPH_IDENTITY_NAME => 'aleph';
+use constant NYU_SHIBBOLETH_IDENTITY_NAME => 'nyu_shibboleth';
+use constant NEW_SCHOOL_LDAP_IDENTITY_NAME => 'new_school_ldap';
+
+sub get_identity_from_provider {
+  my ($identities, $provider) = @_;
+  for my $identity (@$identities) {
+    if ($identity->{provider} eq $provider) {
+      return $identity;
+    }
+  }
+}
+
+# Pull Aleph identity
+sub aleph_identity {
+  my ($identities) = @_;
+  return get_identity_from_provider($identities, ALEPH_IDENTITY_NAME);
+}
+
+# Pull NYU Shibboleth identity
+sub nyu_shibboleth_identity {
+  my ($identities) = @_;
+  return get_identity_from_provider($identities, NYU_SHIBBOLETH_IDENTITY_NAME);
+}
+
+# Pull New School LDAP identity
+sub new_school_ldap_identity {
+  my ($identities) = @_;
+  return get_identity_from_provider($identities, NEW_SCHOOL_LDAP_IDENTITY_NAME);
+}
+
+# Function expires the cookie that specifies that
+# we've been here done that
+# Usage:
+#   expire_been_there_done_that();
+sub expire_been_there_done_that {
+  my $cgi = CGI->new();
+  # Unset the cookie!
+  my $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE,
+    -expires => 'Thu, 01-Jan-1970 00:00:01 GMT');
+  print $cgi->header(-cookie => [$pds_target]);
+}
+
+# Function sets the cookie that specifies that
+# we've been here done that
+# Usage:
+#   set_been_there_done_that($target_url);
+sub set_been_there_done_that {
+  my ($target_url) = @_;
+  my $cgi = CGI->new();
+  # Set the cookie to the current target URL
+  # It expires in 5 minutes
+  my $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE,
+    -expires => '+5m', -value => $target_url);
+  print $cgi->header(-cookie => [$pds_target]);
+}
+
+# Method to get the "been there done that" cookie
+# Usage:
+#   been_there_done_that();
+sub been_there_done_that {
+  # Get the "been there done that" cookie that says
+  # we've tried this and failed.  Get the target URL.
+  my $cgi = CGI->new();
+  return $cgi->cookie(PDS_TARGET_COOKIE);
+}
 
 # Function to encode quotes and ampersands.
 # Usage:
