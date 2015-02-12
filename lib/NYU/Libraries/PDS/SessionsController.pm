@@ -47,7 +47,7 @@ use JSON;
 # NYU Libraries modules
 use NYU::Libraries::Util qw(trim whitelist_institution save_permanent_eshelf_records handle_primo_target_url
                               expire_been_there_done_that set_been_there_done_that been_there_done_that
-                                PDS_TARGET_COOKIE COOKIE_EXPIRATION);
+                                  aleph_identity PDS_TARGET_COOKIE COOKIE_EXPIRATION);
 use NYU::Libraries::PDS::Session;
 
 use base qw(Class::Accessor);
@@ -85,6 +85,16 @@ my $client = sub {
     access_token_method => $conf->{accesss_token_method}
   )->web_server(redirect_uri => $conf->{oauth_callback_url});
   return $oauth2_client;
+};
+
+# Private method to retrieve whether or not there is an aleph identity
+# Usage:
+#   $aleph_identity = $self->$aleph_identity($user);
+my $aleph_identity = sub {
+  my ($self, $user) = @_;
+  my @identities = $user->{'identities'};
+  my $aleph_identity = aleph_identity(@identities);
+  return $aleph_identity;
 };
 
 # Private method to find the current session
@@ -471,7 +481,7 @@ sub sso {
       # If we got the response and this user has an aleph identity, let's log 'em in
       if ($response->is_success) {
         my $user = decode_json($response->decoded_content);
-        if ($self->aleph_identity($user)) {
+        if ($self->$aleph_identity($user)) {
           expire_been_there_done_that();
           # Create the session
           my $session = $self->$create_session($user);
