@@ -232,7 +232,7 @@ my $set_target_url = sub {
   #   set_been_there_done_that($target_url);
   # }
   # $target_url = been_there_done_that() || $target_url;
-  $target_url ||= $self->{'conf'}->{bobcat_url} if $self->{'conf'};
+  $target_url = $self->{'conf'}->{bobcat_url} if $self->{'conf'};
   $target_url ||= DEFAULT_TARGET_URL;
   $self->set('target_url', $target_url);
 };
