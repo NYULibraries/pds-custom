@@ -228,10 +228,10 @@ my $set_target_url = sub {
   # Everytime we create a new sessions controller,
   # redirect to the first target url we tried to login from
   # If we haven't tried already, set the cookie to this url
-  unless (been_there_done_that()) {
-    set_been_there_done_that($target_url);
-  }
-  $target_url = been_there_done_that() || $target_url;
+  # unless (been_there_done_that()) {
+  #   set_been_there_done_that($target_url);
+  # }
+  # $target_url = been_there_done_that() || $target_url;
   $target_url ||= $self->{'conf'}->{bobcat_url} if $self->{'conf'};
   $target_url ||= DEFAULT_TARGET_URL;
   $self->set('target_url', $target_url);
@@ -377,7 +377,6 @@ sub _redirect_to_target {
   my $target_url = $self->target_url;
   # Primo sucks!
   $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
-  print STDERR Dumper($target_url);
   return $self->$redirect($target_url);
 }
 
@@ -504,35 +503,31 @@ sub sso {
 # Destroy the session, handle cookie maintenance and
 # redirect to the Shibboleth local logout
 sub logout {
-  # my $self = shift;
-  # my $cgi = CGI->new();
-  # print $cgi->header(-type=>'text/html', -charset =>'UTF-8');
-  # my $session = $self->$current_session;
+  my $self = shift;
+  my $cgi = CGI->new();
+  print $cgi->header(-type=>'text/html', -charset =>'UTF-8');
+  my $session = $self->$current_session;
   # my $nyu_shibboleth;
-  # if($session) {
-  #   # Logout of ExLibris applications with hack for logging out of Primo due to load balancer issues.
-  #   my @remote_address = split (/,/,$session->remote_address);
-  #   my $bobcat_logout_url = $self->{'conf'}->{'bobcat_logout_url'};
-  #   $nyu_shibboleth = $session->nyu_shibboleth;
-  #   my $session_id = $session->session_id;
-  #   for (my $i=0; $remote_address[$i]; $i++) {
-  #     my @remote_one = split (/;/,$remote_address[$i]);
-  #     # Hack for dealing with the fact that we can't call primo logout from the
-  #     # pds server since they are the same box and the load balancer doesn't like it.
-  #     if ($remote_one[2] eq "primo") {
-  #       my $url = uri_escape($remote_one[0]);
-  #       CallHttpd::call_httpd('GET',"$bobcat_logout_url?bobcat_url=$url&pds_handle=$session_id");
-  #     } else {
-  #       PDSLogout::logout_application($remote_one[0], $session_id, $session->institute, $remote_one[2], , "");
-  #     }
-  #   }
-  #   # Logout
-  #   $self->$destroy_session();
-  # }
-  # my $target_url = ($nyu_shibboleth) ? GLOBAL_NYU_SHIBBOLETH_LOGOUT : $self->target_url;
-  # $target_url = uri_escape($target_url) if $target_url;
-  # my $return = ($self->target_url) ? "return=$target_url" : "";
-  # return $self->$redirect("/Shibboleth.sso/Logout?$return");
+  if($session) {
+    # Logout of ExLibris applications with hack for logging out of Primo due to load balancer issues.
+    my @remote_address = split (/,/,$session->remote_address);
+    my $bobcat_logout_url = $self->{'conf'}->{'bobcat_logout_url'};
+    my $session_id = $session->session_id;
+    for (my $i=0; $remote_address[$i]; $i++) {
+      my @remote_one = split (/;/,$remote_address[$i]);
+      # Hack for dealing with the fact that we can't call primo logout from the
+      # pds server since they are the same box and the load balancer doesn't like it.
+      if ($remote_one[2] eq "primo") {
+        my $url = uri_escape($remote_one[0]);
+        CallHttpd::call_httpd('GET',"$bobcat_logout_url?bobcat_url=$url&pds_handle=$session_id");
+      } else {
+        PDSLogout::logout_application($remote_one[0], $session_id, $session->institute, $remote_one[2], , "");
+      }
+    }
+    # Logout
+    $self->$destroy_session();
+  }
+  return $self->_logout_screen();
 }
 
 # Redirect to ezproxy if authenticated and authorized
