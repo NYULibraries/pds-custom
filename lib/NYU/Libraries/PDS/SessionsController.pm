@@ -45,7 +45,9 @@ use Net::OAuth2::Client;
 use JSON;
 
 # NYU Libraries modules
-use NYU::Libraries::Util qw(trim whitelist_institution save_permanent_eshelf_records handle_primo_target_url PDS_TARGET_COOKIE);
+use NYU::Libraries::Util qw(trim whitelist_institution save_permanent_eshelf_records handle_primo_target_url
+                              expire_been_there_done_that set_been_there_done_that been_there_done_that
+                                PDS_TARGET_COOKIE COOKIE_EXPIRATION);
 use NYU::Libraries::PDS::Session;
 
 use base qw(Class::Accessor);
@@ -66,7 +68,6 @@ use constant EZBORROW_URL_BASE => "https://e-zborrow.relaisd2d.com/service-proxy
 use constant LIBRARY_DOT_NYU_COOKIES => qw(_tsetse_session tsetse_credentials tsetse_handle nyulibrary_opensso_illiad
   _umlaut_session _getit_session _eshelf_session _umbra_session _privileges_guide_session
     _room_reservation_session _room_reservation_session _marli_session xerxessession_);
-use constant COOKIE_EXPIRATION => 'Thu, 01-Jan-1970 00:00:01 GMT';
 
 # Private method to retrieve the OAuth2 server info
 # Usage:
@@ -84,33 +85,6 @@ my $client = sub {
     access_token_method => $conf->{accesss_token_method}
   )->web_server(redirect_uri => $conf->{oauth_callback_url});
   return $oauth2_client;
-};
-
-# Private method expires the cookie that specifies that
-# we've been here done that
-# Usage:
-#   $self->$expire_been_there_done_that();
-my $expire_been_there_done_that = sub {
-  my $self = shift;
-  my $cgi = CGI->new();
-  # Unset the cookie!
-  my $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE,
-    -expires => 'Thu, 01-Jan-1970 00:00:01 GMT');
-  print $cgi->header(-cookie => [$pds_target]);
-};
-
-# Private method sets the cookie that specifies that
-# we've been here done that
-# Usage:
-#   $self->$set_been_there_done_that(target_url);
-my $set_been_there_done_that = sub {
-  my ($self, $target_url) = shift;
-  my $cgi = CGI->new();
-  # Set the cookie to the current target URL
-  # It expires in 5 minutes
-  my $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE,
-    -expires => '+5m', -value => $target_url);
-  print $cgi->header(-cookie => [$pds_target]);
 };
 
 # Private method to find the current session
@@ -241,10 +215,13 @@ my $destroy_session = sub {
 #   $self->$set_target_url($target_url);
 my $set_target_url = sub {
   my($self, $target_url) = @_;
-  unless ($self->_been_there_done_that()) {
-    $self->$set_been_there_done_that($target_url);
+  # Everytime we create a new sessions controller,
+  # redirect to the first target url we tried to login from
+  # If we haven't tried already, set the cookie to this url
+  unless (been_there_done_that()) {
+    set_been_there_done_that($target_url);
   }
-  $target_url = $self->_been_there_done_that();
+  $target_url = been_there_done_that() || $target_url;
   $target_url ||= $self->{'conf'}->{bobcat_url} if $self->{'conf'};
   $target_url ||= DEFAULT_TARGET_URL;
   $self->set('target_url', $target_url);
@@ -339,16 +316,6 @@ sub new {
   return $self;
 }
 
-# Method to get the "been there done that" cookie
-# Usage:
-#   $self->_been_there_done_that();
-sub _been_there_done_that {
-  # Get the "been there done that" cookie that says
-  # we've tried this and failed.  Get the target URL.
-  my $cgi = CGI->new();
-  return $cgi->cookie(PDS_TARGET_COOKIE);
-}
-
 # Returns a rendered HTML login screen for presentation
 # Usage:
 #   my $login_screen = $self->_login_screen();
@@ -397,9 +364,8 @@ sub _redirect_to_ezborrow_unauthorized {
 #   my $redirect_header = $self->_redirect_to_target($session);
 sub _redirect_to_target {
   my ($self, $session) = @_;
-  my $target_url = $self->_been_there_done_that();
+  my $target_url = $self->target_url;
   # Primo sucks!
-  print STDERR Dumper($target_url);
   $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
   print STDERR Dumper($target_url);
   return $self->$redirect($target_url);
@@ -480,6 +446,8 @@ sub _redirect_to_target {
 #   $controller->load_login();
 sub load_login {
   my $self = shift;
+  # Expire the been there cookie since we're explicitly saying LOG ME IN!
+  expire_been_there_done_that();
   # Print the login screen
   return $self->_login_screen();
 }
@@ -492,27 +460,31 @@ sub sso {
   my($self, $auth_code) = @_;
   my $cgi = CGI->new();
 
-  unless ($self->_been_there_done_that()) {
-    # Use the auth code to fetch the access token
-    if (defined($auth_code)) {
-      my $access_token = $self->$client->get_access_token($auth_code);
+  # Use the auth code to fetch the access token
+  if (defined($auth_code)) {
+    my $access_token = $self->$client->get_access_token($auth_code);
 
-      if (defined($access_token)) {
-        # Use the access token to fetch a protected resource
-        my $response = $access_token->get($self->$client->protected_resource_url);
+    if (defined($access_token)) {
+      # Use the access token to fetch a protected resource
+      my $response = $access_token->get($self->$client->protected_resource_url);
 
-        # If we got the response and this user has an aleph identity, let's log 'em in
-        if ($response->is_success) {# && $self->aleph_identity()->exists) {
-          my $user = decode_json($response->decoded_content);
+      # If we got the response and this user has an aleph identity, let's log 'em in
+      if ($response->is_success) {
+        my $user = decode_json($response->decoded_content);
+        if ($self->aleph_identity($user)) {
+          expire_been_there_done_that();
           # Create the session
           my $session = $self->$create_session($user);
           # Redirecet to target
           return $self->_redirect_to_target($session);
-        }
-        else {
+        } else {
           $self->set('error', "Unauthorized");
           return $self->_redirect_to_unauthorized();
         }
+      }
+      else {
+        $self->set('error', "Unauthorized");
+        return $self->_redirect_to_unauthorized();
       }
     }
   }
