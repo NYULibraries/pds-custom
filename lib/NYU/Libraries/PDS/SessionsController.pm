@@ -456,7 +456,7 @@ sub _redirect_to_target {
 sub load_login {
   my $self = shift;
   # Expire the been there cookie since we're explicitly saying LOG ME IN!
-  expire_been_there_done_that();
+  # expire_been_there_done_that();
   # Print the login screen
   return $self->_login_screen();
 }
