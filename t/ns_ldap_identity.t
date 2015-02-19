@@ -30,12 +30,12 @@ isa_ok($identity, qw(NYU::Libraries::PDS::Identities::NsLdap));
 
 # Verify methods
 can_ok($identity, (qw(error exists id email cn givenname sn aleph_identifier
-  role new authenticate set_attributes get_attributes to_h to_xml)));
+  new authenticate set_attributes get_attributes to_h to_xml)));
 
 SKIP: {
   skip(1, 2);
   is($identity->error, "User bind failed. Invalid credentials", "Should have error");
-  
+
   $identity = NYU::Libraries::PDS::Identities::NsLdap->new($conf, "dalton", "FAIL");
 
   is($identity->error, "No record returned for given id.", "Should have error");
