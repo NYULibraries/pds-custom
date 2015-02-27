@@ -383,15 +383,15 @@ sub _redirect_to_target {
 # Returns a redirect header to the cleanup URL
 # Usage:
 #   my $redirect_header = $self->_redirect_to_cleanup($session);
-# sub _redirect_to_cleanup {
-#   my ($self, $session) = @_;
-#   return _redirect_to_target unless $self->cleanup_url;
-#   my $target_url = $self->target_url;
-#   # Primo sucks!
-#   $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
-#   $target_url = uri_escape($target_url);
-#   return $self->$redirect($self->cleanup_url.$target_url);
-# }
+sub _redirect_to_cleanup {
+  my ($self, $session) = @_;
+  return _redirect_to_target unless $self->cleanup_url;
+  my $target_url = $self->target_url;
+  # Primo sucks!
+  $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
+  $target_url = uri_escape($target_url);
+  return $self->$redirect($self->cleanup_url.$target_url);
+}
 
 # Returns a redirect header to the eshelf
 # Usage:
@@ -485,7 +485,7 @@ sub sso {
           # Create the session
           my $session = $self->$create_session($user);
           # Redirecet to target
-          return $self->_redirect_to_target($session);
+          return $self->_redirect_to_cleanup($session);
         } else {
           $self->set('error', "Unauthorized");
           return $self->_redirect_to_unauthorized();
