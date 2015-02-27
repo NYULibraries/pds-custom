@@ -60,7 +60,7 @@ use constant EZBORROW_UNAUTHORIZED_URL => "http://library.nyu.edu/errors/ezborro
 use constant ALUMNI_EZPROXY_URL => "http://library.nyu.edu/alumni/eresources.html";
 use constant DEFAULT_INSTITUTE => "NYU";
 use constant DEFAULT_CALLING_SYSTEM => "primo";
-use constant DEFAULT_TARGET_URL => "http://bobcat.library.nyu.edu";
+use constant DEFAULT_TARGET_URL => "http://bobcat.library.nyu.edu/primo_library/libweb/action/search.do?vid=NYU";
 use constant DEFAULT_FUNCTION => "sso";
 use constant EZBORROW_AUTHORIZED_STATUSES => qw(20 21 22 23 50 51 52 53 54 55 56 57 58 60 61 62 63 65 66 80 81 82);
 use constant EZBORROW_URL_BASE => "https://e-zborrow.relaisd2d.com/service-proxy/";
@@ -227,8 +227,10 @@ my $set_target_url = sub {
   my($self, $target_url) = @_;
   # Everytime we create a new sessions controller,
   # redirect to the first target url we tried to login from
-  $target_url = "http://bobcatdev.library.nyu.edu/primo_library/libweb/action/search.do?vid=NYU";
-  $target_url ||= $self->{'conf'}->{bobcat_url} if $self->{'conf'};
+  if ($target_url =~ /oauth_callback/) {
+    $target_url = "http://bobcatdev.library.nyu.edu/primo_library/libweb/action/search.do?vid=NYU";
+  }
+  $target_url ||= $self->{'conf'}->{default_target_url} if $self->{'conf'};
   $target_url ||= DEFAULT_TARGET_URL;
   $self->set('target_url', $target_url);
 };
