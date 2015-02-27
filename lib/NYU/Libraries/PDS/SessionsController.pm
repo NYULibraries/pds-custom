@@ -227,12 +227,8 @@ my $set_target_url = sub {
   my($self, $target_url) = @_;
   # Everytime we create a new sessions controller,
   # redirect to the first target url we tried to login from
-  # If we haven't tried already, set the cookie to this url
-  # unless (been_there_done_that()) {
-  #   set_been_there_done_that($target_url);
-  # }
-  # $target_url = been_there_done_that() || $target_url;
-  $target_url = $self->{'conf'}->{bobcat_url} if $self->{'conf'};
+  $target_url = "http://bobcatdev.library.nyu.edu/primo_library/libweb/action/search.do?vid=NYU";
+  $target_url ||= $self->{'conf'}->{bobcat_url} if $self->{'conf'};
   $target_url ||= DEFAULT_TARGET_URL;
   $self->set('target_url', $target_url);
 };
