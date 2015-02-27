@@ -60,7 +60,7 @@ is($new_session->to_xml(),
     "<uid>xx10</uid>".
     "<nyuidn>1234567890</nyuidn>".
     "<nyu_shibboleth>true</nyu_shibboleth>".
-    "<verification>d1ba6141299dd5a29abbc0610b6d0fa0</verification>".
+    "<verification>12345</verification>".
     "<entitlement>urn:mace:nyu.edu:entl:its:wikispriv;urn:mace:nyu.edu:entl:its:classes;urn:mace:nyu.edu:entl:its:qualtrics;urn:mace:nyu.edu:entl:lib:eresources;urn:mace:nyu.edu:entl:its:wikispub;urn:mace:nyu.edu:entl:its:lynda;urn:mace:nyu.edu:entl:lib:ideaexchange;urn:mace:nyu.edu:entl:its:files;urn:mace:incommon:entitlement:common:1</entitlement>".
     "<ill_permission>Y</ill_permission>".
     "<college>Division of Libraries</college>".

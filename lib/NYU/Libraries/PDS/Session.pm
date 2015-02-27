@@ -34,51 +34,6 @@ my @attributes = qw(id email institution_code institute barcode bor_status patro
 __PACKAGE__->mk_ro_accessors(@attributes);
 __PACKAGE__->mk_accessors(qw(calling_system target_url));
 
-use constant LOADED_FROM_PLIF => "PLIF LOADED";
-use constant FAMILY_MEMBER_BOR_STATUS => "65";
-
-# Private method returns whether this record was loaded from the PLIF
-my $loaded_from_plif = sub {
-  my $self = shift;
-  return ($self->plif_status eq LOADED_FROM_PLIF);
-};
-
-# Private method returns a boolean indicating whether to encrypt the verification
-# based on some business logic
-# Usage:
-#   $self->$is_encrypt_verification()
-my $is_encrypt_verification = sub {
-  my $self = shift;
-  # If no NetID and the record wasn't loaded from plif, don't encrypt.
-  return ($self->nyu_shibboleth && ($self->$loaded_from_plif))
-  # ????????????
-};
-
-# Private method returns a boolean indicating whether this is an encryption exception
-# Usage:
-#   $self->$encryption_exception()
-my $encryption_exception = sub {
-  my $self = shift;
-  return ($self->patron_status eq FAMILY_MEMBER_BOR_STATUS);
-};
-
-# Private method returns an encrypted verification based on a shared secret
-# Usage:
-#   $self->$encrypt_verification(unencrypted_verification)
-my $encrypt_verification = sub {
-  my($self, $unencrypted_verification) = @_;
-  my $conf = $self->{'conf'};
-  # Don't encrypt if no shared secret provided
-  return $unencrypted_verification unless $conf->{shared_secret};
-  # Don't encrypt if this is an exception.
-  return $unencrypted_verification if $self->$encryption_exception();
-  # Don't encrypt unless the patron meets the encryption business logic.
-  return $unencrypted_verification unless $self->$is_encrypt_verification();
-  my $encrypted_verification =
-    md5_hex($conf->{shared_secret}, $unencrypted_verification);
-  return $encrypted_verification;
-};
-
 # Private initialization method
 # Usage:
 #   $self->$initialize(identities)
@@ -130,10 +85,6 @@ my $initialize = sub {
     $self->set('id', $aleph_identity->{uid});
     # Set institute from institution_code, required by Aleph
     $self->set('institute', $user->{'institution_code'}) if $user->{'institution_code'};
-
-    # Encrypt verification and set as attribute
-    my $encrypted_verification = $self->$encrypt_verification($self->verification);
-    $self->set('verification', $encrypted_verification);
   }
   # Assume we're creating the Session object from an existing PDS session hash
   else {
