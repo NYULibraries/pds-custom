@@ -227,7 +227,7 @@ my $set_target_url = sub {
   my($self, $target_url) = @_;
   # Everytime we create a new sessions controller,
   # redirect to the first target url we tried to login from
-  if ($target_url =~ /oauth_callback/) {
+  if ($target_url && $target_url =~ /oauth_callback/) {
     $target_url = "http://bobcatdev.library.nyu.edu/primo_library/libweb/action/search.do?vid=NYU";
   }
   $target_url ||= $self->{'conf'}->{default_target_url} if $self->{'conf'};
