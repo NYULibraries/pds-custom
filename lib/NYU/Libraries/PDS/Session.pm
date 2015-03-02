@@ -23,14 +23,12 @@ use NYU::Libraries::Util qw(trim xml_encode aleph_identity nyu_shibboleth_identi
 
 use base qw(Class::Accessor);
 # Assumes the same names as the identities
-# Duplicate entries are there for legacy apps which expect old values:
-# => patron_status = bor_status
 # => `institute` is expected by PDS
 # => `expiry_date` is expected by PDS
-my @attributes = qw(id email institution_code institute barcode bor_status patron_status
+my @attributes = qw(id email institution_code institute barcode patron_status
   patron_type name first_name last_name uid nyuidn nyu_shibboleth ns_ldap verification
-    entitlement objectclass ill_permission college_code college plif_status
-      dept_code department major_code major ill_library session_id expiry_date remote_address);
+    entitlement ill_permission college_code college plif_status dept_code department major_code
+      major ill_library session_id expiry_date remote_address);
 __PACKAGE__->mk_ro_accessors(@attributes);
 __PACKAGE__->mk_accessors(qw(calling_system target_url));
 
@@ -91,7 +89,7 @@ my $initialize = sub {
       my %properties = %{$aleph_identity->{properties}};
       $self->set($key, $properties{$key});
     }
-    # Set ID from Aleph Identity
+    # Set ID from Aleph Identity, i.e. your N #
     $self->set('id', $aleph_identity->{uid});
     # Set institute from institution_code, required by Aleph
     $self->set('institute', $user->{'institution_code'}) if $user->{'institution_code'};
