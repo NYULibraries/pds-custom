@@ -36,7 +36,12 @@ __PACKAGE__->mk_accessors(qw(calling_system target_url));
 
 # Private initialization method
 # Usage:
-#   $self->$initialize(identities)
+#   $self->$initialize(@identities)
+# @identities => [
+#   'aleph' => '...',
+#   'nyu_shibboleth' => '...',
+#   'new_school_ldap' => '...'
+# ]
 my $initialize = sub {
   my($self, $user, $conf) = @_;
   # Set configurations
@@ -44,14 +49,17 @@ my $initialize = sub {
 
   # Extra identities from OAuth2 API
   my @identities = $user->{'identities'};
+  # Extract Aleph
   my $aleph_identity = aleph_identity(@identities);
+  # Extract NS LDAP
   my $new_school_ldap_identity = new_school_ldap_identity(@identities);
+  # Extract NYU Shibboleth
   my $nyu_shibboleth_identity = nyu_shibboleth_identity(@identities);
 
   # Create session based on OAuth2 response if we have an aleph identity
   if ($aleph_identity) {
     # Look for the top-level email first,
-    # if it's not set here we'll set it from one of the identities
+    # if it's not set here we'll set it from one of the identities below
     $self->set('email', $user->{'email'});
 
     if ($nyu_shibboleth_identity) {
@@ -59,12 +67,14 @@ my $initialize = sub {
       $self->set('nyu_shibboleth', 'true');
       # Set NYU Shibboleth properties to the session variables
       foreach my $key (keys(%{$nyu_shibboleth_identity->{properties}})) {
+        # And be sure to cast the hash pointer to a hash,
+        # since we're translating from JSON to Perl
         my %properties = %{$nyu_shibboleth_identity->{properties}};
         $self->set($key, $properties{$key});
       }
     }
     # Set New School LDAP properties to the session variables
-    # Unless they're already set
+    # Unless of course they're already set
     if ($new_school_ldap_identity) {
       # Yes this is an new school LDAP session
       $self->set('ns_ldap', 'true');
@@ -75,7 +85,7 @@ my $initialize = sub {
       }
     }
     # Set Aleph properties to the session variables
-    # Unless they're already set
+    # Unless of course they're already set
     foreach my $key (keys(%{$aleph_identity->{properties}})) {
       next if $self->{$key};
       my %properties = %{$aleph_identity->{properties}};
