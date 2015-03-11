@@ -139,7 +139,7 @@ my $is_ezborrow_authorized = sub {
   # Must have a barcode
   return 0 unless $session->barcode;
   # Must be an approved status
-  return (grep { $_ eq $session->bor_status } EZBORROW_AUTHORIZED_STATUSES);
+  return (grep { $_ eq $session->patron_status } EZBORROW_AUTHORIZED_STATUSES);
 };
 
 # Private method to determine if the given session is
@@ -455,8 +455,8 @@ sub load_login {
   return $self->_login_screen();
 }
 
-# Alias this method from OAuth2 callback
 # Single sign on if possible, otherwise return from whence you came
+# Alias this method from OAuth2 callback, and do all passive login stuff from here
 # Usage:
 #   $controller->sso($auth_code);
 sub sso {
@@ -500,7 +500,6 @@ sub logout {
   my $cgi = CGI->new();
   print $cgi->header(-type=>'text/html', -charset =>'UTF-8');
   my $session = $self->$current_session;
-  # my $nyu_shibboleth;
   if($session) {
     # Logout of ExLibris applications with hack for logging out of Primo due to load balancer issues.
     my @remote_address = split (/,/,$session->remote_address);
