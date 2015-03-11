@@ -116,45 +116,45 @@ my $current_session = sub {
 # authorized for EZproxy
 # Usage:
 #   $self->$is_ezproxy_authorized($session)
-# my $is_ezproxy_authorized = sub {
-#   my($self, $session) = @_;
-#   # Not authorized if we're not signed on through NYU shibboleth
-#   return 0 unless $session->nyu_shibboleth;
-#   # Not authorized if we don't have an entitlements
-#   return 0 unless $session->entitlements;
-#   my $entitlements = $session->entitlements;
-#   # Poly students have partial access which actually means full access
-#   return 1 if ($entitlements =~ m/urn:mace:nyu.edu:entl:lib:partialeresources/);
-#   # Everyone else has full access which actually means full access
-#   return 1 if ($entitlements =~ m/urn:mace:nyu.edu:entl:lib:eresources/);
-#   return 0;
-# };
+my $is_ezproxy_authorized = sub {
+  my($self, $session) = @_;
+  # Not authorized if we're not signed on through NYU shibboleth
+  return 0 unless $session->nyu_shibboleth;
+  # Not authorized if we don't have an entitlements
+  return 0 unless $session->entitlement;
+  my $entitlement = $session->entitlement;
+  # Poly students have partial access which actually means full access
+  return 1 if ($entitlement =~ m/urn:mace:nyu.edu:entl:lib:partialeresources/);
+  # Everyone else has full access which actually means full access
+  return 1 if ($entitlement =~ m/urn:mace:nyu.edu:entl:lib:eresources/);
+  return 0;
+};
 
 # Private method to determine if the given session is
 # authorized for EZ Borrow
 # Usage:
 #   $self->$is_ezborrow_authorized($session)
-# my $is_ezborrow_authorized = sub {
-#   my($self, $session) = @_;
-#   # Must have a barcode
-#   return 0 unless $session->barcode;
-#   # Must be an approved status
-#   return (grep { $_ eq $session->bor_status } EZBORROW_AUTHORIZED_STATUSES);
-# };
+my $is_ezborrow_authorized = sub {
+  my($self, $session) = @_;
+  # Must have a barcode
+  return 0 unless $session->barcode;
+  # Must be an approved status
+  return (grep { $_ eq $session->bor_status } EZBORROW_AUTHORIZED_STATUSES);
+};
 
 # Private method to determine if the given session is
 # an alumnus
 # Usage:
 #   $self->$is_alumni($session)
-# my $is_alumni = sub {
-#   my($self, $session) = @_;
-#   # Not alumni if we're not signed on through NYU shibboleth
-#   return 0 unless $session->nyu_shibboleth;
-#   # Not alumni if we don't have an entitlements
-#   return 0 unless $session->entitlements;
-#   my $entitlements = $session->entitlements;
-#   return ($entitlements =~ m/alum/);
-# };
+my $is_alumni = sub {
+  my($self, $session) = @_;
+  # Not alumni if we're not signed on through NYU shibboleth
+  return 0 unless $session->nyu_shibboleth;
+  # Not alumni if we don't have an entitlements
+  return 0 unless $session->entitlement;
+  my $entitlement = $session->entitlement;
+  return ($entitlement =~ m/alum/);
+};
 
 # Private method to save eshelf records
 # Usage:
@@ -394,59 +394,59 @@ sub _redirect_to_cleanup {
 # Returns a redirect header to the eshelf
 # Usage:
 #   my $redirect_header = $self->_redirect_to_eshelf($session);
-# sub _redirect_to_eshelf {
-#   my ($self, $session) = @_;
-#   my $eshelf_url = $self->{'conf'}->{eshelf_url};
-#   return _redirect_to_cleanup unless $eshelf_url;
-#   my $target_url = $self->target_url;
-#   # Primo sucks!
-#   $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
-#   $target_url = uri_escape($target_url);
-#   my $cleanup_url = uri_escape($self->cleanup_url.$target_url);
-#   return $self->$redirect("$eshelf_url/validate?return_url=$cleanup_url");
-# }
+sub _redirect_to_eshelf {
+  my ($self, $session) = @_;
+  my $eshelf_url = $self->{'conf'}->{eshelf_url};
+  return _redirect_to_cleanup unless $eshelf_url;
+  my $target_url = $self->target_url;
+  # Primo sucks!
+  $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
+  $target_url = uri_escape($target_url);
+  my $cleanup_url = uri_escape($self->cleanup_url.$target_url);
+  return $self->$redirect("$eshelf_url/validate?return_url=$cleanup_url");
+}
 
 # Returns a redirect header to the EZProxy URL for the given target url
 # Usage:
 #   my $redirect_header = $self->_redirect_to_ezproxy($target_url);
 # TODO: Set the EZProxy redirect!
-# sub _redirect_to_ezproxy {
-#   my($self, $user, $target_url, $session) = @_;
-#   my $uri = URI->new($target_url);
-#   my $resource_url = uri_escape($uri->query_param('url'));
-#   my $ezproxy_url = $self->{'conf'}->{ezproxy_url};
-#   my $ezproxy_ticket = $self->$ezproxy_ticket($user);
-#   $ezproxy_url .= "/login?ticket=$ezproxy_ticket&user=$user&qurl=$resource_url";
-#   # Go through the cleanup if we have a session.
-#    if ($session) {
-#      $ezproxy_url = uri_escape($ezproxy_url);
-#      # my $eshelf_url = $self->{'conf'}->{eshelf_url};
-#      # return $self->$redirect("$eshelf_url/validate?return_url=$ezproxy_url");
-#      return $self->$redirect($self->cleanup_url.$ezproxy_url);
-#    } else {
-#      return $self->$redirect($ezproxy_url);
-#    }
-# }
-#
-# # Returns a redirect header to the EZProxy URL
-# sub _redirect_to_alumni_ezproxy {
-#   my $self = shift;
-#   return $self->$redirect(ALUMNI_EZPROXY_URL);
-# }
-#
-# # Returns a redirect header to the EZBorrow URL for the given session and query
-# sub _redirect_to_ezborrow {
-#   my($self, $session, $current_url) = @_;
-#   my $uri = URI->new($current_url);
-#   my $query =  $uri->query_param('query');
-#   my $barcode = $session->barcode;
-#   my $ezborrow_url =
-#     EZBORROW_URL_BASE."?command=mkauth&LS=NYU&PI=$barcode&query=".uri_escape($query);
-#   $ezborrow_url = uri_escape($ezborrow_url);
-#   # my $eshelf_url = $self->{'conf'}->{eshelf_url};
-#   # return $self->$redirect("$eshelf_url/validate?return_url=$ezborrow_url");
-#   return $self->$redirect($self->cleanup_url.$ezborrow_url);
-# };
+sub _redirect_to_ezproxy {
+  my($self, $user, $target_url, $session) = @_;
+  my $uri = URI->new($target_url);
+  my $resource_url = uri_escape($uri->query_param('url'));
+  my $ezproxy_url = $self->{'conf'}->{ezproxy_url};
+  my $ezproxy_ticket = $self->$ezproxy_ticket($user);
+  $ezproxy_url .= "/login?ticket=$ezproxy_ticket&user=$user&qurl=$resource_url";
+  # Go through the cleanup if we have a session.
+   if ($session) {
+     $ezproxy_url = uri_escape($ezproxy_url);
+     # my $eshelf_url = $self->{'conf'}->{eshelf_url};
+     # return $self->$redirect("$eshelf_url/validate?return_url=$ezproxy_url");
+     return $self->$redirect($self->cleanup_url.$ezproxy_url);
+   } else {
+     return $self->$redirect($ezproxy_url);
+   }
+}
+
+# Returns a redirect header to the EZProxy URL
+sub _redirect_to_alumni_ezproxy {
+  my $self = shift;
+  return $self->$redirect(ALUMNI_EZPROXY_URL);
+}
+
+# Returns a redirect header to the EZBorrow URL for the given session and query
+sub _redirect_to_ezborrow {
+  my($self, $session, $current_url) = @_;
+  my $uri = URI->new($current_url);
+  my $query =  $uri->query_param('query');
+  my $barcode = $session->barcode;
+  my $ezborrow_url =
+    EZBORROW_URL_BASE."?command=mkauth&LS=NYU&PI=$barcode&query=".uri_escape($query);
+  $ezborrow_url = uri_escape($ezborrow_url);
+  # my $eshelf_url = $self->{'conf'}->{eshelf_url};
+  # return $self->$redirect("$eshelf_url/validate?return_url=$ezborrow_url");
+  return $self->$redirect($self->cleanup_url.$ezborrow_url);
+};
 
 # Display the login screen, unless already signed in
 # Usage:
