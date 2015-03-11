@@ -479,7 +479,6 @@ sub sso {
       if ($response->is_success) {
         my $user = decode_json($response->decoded_content);
         if ($self->$aleph_identity($user)) {
-          expire_been_there_done_that();
           # Create the session
           my $session = $self->$create_session($user);
           # Redirecet to target
