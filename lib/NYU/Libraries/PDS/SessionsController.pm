@@ -420,8 +420,6 @@ sub _redirect_to_ezproxy {
   # Go through the cleanup if we have a session.
    if ($session) {
      $ezproxy_url = uri_escape($ezproxy_url);
-     # my $eshelf_url = $self->{'conf'}->{eshelf_url};
-     # return $self->$redirect("$eshelf_url/validate?return_url=$ezproxy_url");
      return $self->$redirect($self->cleanup_url.$ezproxy_url);
    } else {
      return $self->$redirect($ezproxy_url);
@@ -443,8 +441,6 @@ sub _redirect_to_ezborrow {
   my $ezborrow_url =
     EZBORROW_URL_BASE."?command=mkauth&LS=NYU&PI=$barcode&query=".uri_escape($query);
   $ezborrow_url = uri_escape($ezborrow_url);
-  # my $eshelf_url = $self->{'conf'}->{eshelf_url};
-  # return $self->$redirect("$eshelf_url/validate?return_url=$ezborrow_url");
   return $self->$redirect($self->cleanup_url.$ezborrow_url);
 };
 
@@ -534,66 +530,26 @@ sub logout {
 #   $controller->ezproxy();
 sub ezproxy {
   my $self = shift;
-  # my $cgi = CGI->new();
-  # print $cgi->header(-type=>'text/html', -charset =>'UTF-8');
-  # # First check the current session
-  # if(defined($self->$current_session)) {
-  #   if ($self->$is_ezproxy_authorized($self->$current_session)) {
-  #     # Get the session's user id
-  #     my $uid = $self->$current_session->uid;
-  #     # Redirect to ezproxy
-  #     return $self->_redirect_to_ezproxy($uid, $self->target_url);
-  #   } elsif($self->$is_alumni($self->$current_session)) {
-  #     # Redirect to alumnni EZ proxy
-  #     return $self->_redirect_to_alumni_ezproxy();
-  #   } else {
-  #     # Exit with Unauthorized Error
-  #     $self->set('error', "EZProxy Unauthorized");
-  #     return $self->_redirect_to_ezproxy_unauthorized();
-  #   }
-  # } else {
-  #   my $nyu_shibboleth_controller = $self->$nyu_shibboleth_controller();
-  #   # The Shibboleth controller can go "nuclear" and just exit at this point.
-  #   # It will redirect to the Shibboleth IdP for passive authentication.
-  #   my $nyu_shibboleth_identity = $nyu_shibboleth_controller->create();
-  #   # Do we have an Shibboleth identity? If so, let's check if it can ezproxy
-  #   if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
-  #     # Try to create a PDS session, since we have the opportunity.
-  #     my $aleph_controller = $self->$aleph_controller();
-  #     my $aleph_identity =
-  #       $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
-  #     my $session;
-  #     # Check if the Aleph identity exists
-  #     if ($aleph_identity->exists) {
-  #       # Encrypt the Aleph identity's password
-  #       $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
-  #       $session =
-  #         $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
-  #     }
-  #     # Check if the Shibboleth user is authorized
-  #     # Were duck typing here, having an NYU shibboleth identity
-  #     # quacking like a session
-  #     if ($self->$is_ezproxy_authorized($nyu_shibboleth_identity)) {
-  #       # Get the NYU Shibboleth identity's user id
-  #       my $uid = $nyu_shibboleth_identity->uid;
-  #       # Get the target URL from Shibboleth controller,
-  #       # since it captured it on the previous pass,
-  #       # or just got it from me.
-  #       my $target_url = $nyu_shibboleth_controller->get_target_url();
-  #       # Redirect to EZ proxy
-  #       return $self->_redirect_to_ezproxy($uid, $self->target_url, $session);
-  #     } elsif ($self->$is_alumni($nyu_shibboleth_identity)) {
-  #       # Redirect to alumnni EZ proxy
-  #       return $self->_redirect_to_alumni_ezproxy();
-  #     } else {
-  #       # Exit with Unauthorized Error
-  #       $self->set('error', "EZProxy Unauthorized");
-  #       return $self->_redirect_to_ezproxy_unauthorized();
-  #     }
-  #   }
-  # }
+  my $cgi = CGI->new();
+  print $cgi->header(-type=>'text/html', -charset =>'UTF-8');
+  # First check the current session
+  if(defined($self->$current_session)) {
+    if ($self->$is_ezproxy_authorized($self->$current_session)) {
+      # Get the session's user id
+      my $uid = $self->$current_session->uid;
+      # Redirect to ezproxy
+      return $self->_redirect_to_ezproxy($uid, $self->target_url);
+    } elsif($self->$is_alumni($self->$current_session)) {
+      # Redirect to alumnni EZ proxy
+      return $self->_redirect_to_alumni_ezproxy();
+    } else {
+      # Exit with Unauthorized Error
+      $self->set('error', "EZProxy Unauthorized");
+      return $self->_redirect_to_ezproxy_unauthorized();
+    }
+  }
   # Print the login screen
-  return $self->_login_screen();
+  return $self->load_login();
 }
 
 # Redirect to ezborrow if authenticated and authorized
@@ -603,51 +559,21 @@ sub ezproxy {
 #   $controller->ezborrow();
 sub ezborrow {
   my $self = shift;
-  # my $cgi = CGI->new();
-  # print $cgi->header(-type=>'text/html', -charset =>'UTF-8');
-  # # First check the current session
-  # if(defined($self->$current_session)) {
-  #   if($self->$is_ezborrow_authorized($self->$current_session)) {
-  #     # Redirect to EZ borrow
-  #     return $self->_redirect_to_ezborrow($self->$current_session, uri_unescape($self->current_url));
-  #   } else {
-  #     # Exit with Unauthorized Error
-  #     $self->set('error', "EZBorrow Unauthorized");
-  #     return $self->_redirect_to_ezborrow_unauthorized();
-  #   }
-  # } else {
-  #   my $nyu_shibboleth_controller = $self->$nyu_shibboleth_controller();
-  #   # The Shibboleth controller can go "nuclear" and just exit at this point.
-  #   # It will redirect to the Shibboleth IdP for passive authentication.
-  #   my $nyu_shibboleth_identity = $nyu_shibboleth_controller->create();
-  #   # Do we have an identity? If so, let's get the associated Aleph identity
-  #   if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
-  #     my $aleph_controller = $self->$aleph_controller();
-  #     my $aleph_identity =
-  #       $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
-  #     # Check if the Aleph identity exists
-  #     if ($aleph_identity->exists) {
-  #       # Encrypt the Aleph identity's password
-  #       $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
-  #       my $session =
-  #         $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
-  #       if ($self->$is_ezborrow_authorized($session)) {
-  #         # Redirect to EZ proxy
-  #         return $self->_redirect_to_ezborrow($session, uri_unescape($self->current_url));
-  #       } else {
-  #         # Exit with Unauthorized Error
-  #         $self->set('error', "EZBorrow Unauthorized");
-  #         return $self->_redirect_to_ezborrow_unauthorized();
-  #       }
-  #     } else {
-  #       # Exit with Unauthorized Error
-  #       $self->set('error', "EZBorrow Unauthorized");
-  #       return $self->_redirect_to_ezborrow_unauthorized();
-  #     }
-  #   }
-  # }
+  my $cgi = CGI->new();
+  print $cgi->header(-type=>'text/html', -charset =>'UTF-8');
+  # First check the current session
+  if(defined($self->$current_session)) {
+    if($self->$is_ezborrow_authorized($self->$current_session)) {
+      # Redirect to EZ borrow
+      return $self->_redirect_to_ezborrow($self->$current_session, uri_unescape($self->current_url));
+    } else {
+      # Exit with Unauthorized Error
+      $self->set('error', "EZBorrow Unauthorized");
+      return $self->_redirect_to_ezborrow_unauthorized();
+    }
+  }
   # Print the login screen
-  # return $self->_login_screen();
+  return $self->load_login();
 }
 
 # Return the bor_info as an XML string
