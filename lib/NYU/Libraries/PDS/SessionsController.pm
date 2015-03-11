@@ -46,7 +46,7 @@ use JSON;
 
 # NYU Libraries modules
 use NYU::Libraries::Util qw(trim whitelist_institution save_permanent_eshelf_records handle_primo_target_url
-                              expire_been_there_done_that set_been_there_done_that been_there_done_that
+                                expire_target_url_cookie set_target_url_cookie target_url_cookie
                                   aleph_identity PDS_TARGET_COOKIE COOKIE_EXPIRATION);
 use NYU::Libraries::PDS::Session;
 
@@ -228,7 +228,7 @@ my $set_target_url = sub {
   # Everytime we create a new sessions controller,
   # redirect to the first target url we tried to login from
   if ($target_url =~ /oauth_callback/) {
-    $target_url = "http://bobcatdev.library.nyu.edu/primo_library/libweb/action/search.do?vid=NYU";
+    $target_url = target_url_cookie();
   }
   $target_url ||= $self->{'conf'}->{default_target_url} if $self->{'conf'};
   $target_url ||= DEFAULT_TARGET_URL;
@@ -453,8 +453,8 @@ sub _redirect_to_ezborrow {
 #   $controller->load_login();
 sub load_login {
   my $self = shift;
-  # Expire the been there cookie since we're explicitly saying LOG ME IN!
-  # expire_been_there_done_that();
+  # Set the target url to be the last url before calling login
+  set_target_url_cookie($self->target_url);
   # Print the login screen
   return $self->_login_screen();
 }
