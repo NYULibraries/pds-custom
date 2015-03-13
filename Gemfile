@@ -1,2 +1,8 @@
-source "https://rubygems.org"
-gem "browbeat", git: "git://github.com/NYULibraries/browbeat.git", branch: "gem"
+source 'https://rubygems.org'
+gem 'browbeat', git: 'git://github.com/NYULibraries/browbeat.git', branch: 'gem'
+gem 'pry'
+gem 'figs'
+gem 'phantomjs'
+gem 'poltergeist'
+gem 'capybara'
+gem 'selenium-webdriver'
