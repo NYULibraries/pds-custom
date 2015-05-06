@@ -451,8 +451,8 @@ sub load_login {
   my $self = shift;
   # Set the target url to be the last url before calling login
   set_target_url_cookie($self->target_url);
-  if ($this->session) {
-    $this->_redirect_to_cleanup($this->session)
+  if ($self->$current_session()) {
+    $this->_redirect_to_cleanup($self->$current_session())
   } else {
     # Print the login screen
     return $self->_login_screen();
