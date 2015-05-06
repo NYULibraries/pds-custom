@@ -477,9 +477,8 @@ sub sso {
         if ($self->$aleph_identity($user)) {
           # Create the session
           my $session = $self->$create_session($user);
-          # Redirecet to target
-          # return $self->_redirect_to_cleanup($session);
-          return $self->_redirect_to_target($session);
+          # Redirect to target
+          return $self->_redirect_to_cleanup($session);
         } else {
           $self->set('error', "Unauthorized");
           return $self->_redirect_to_unauthorized();
@@ -492,7 +491,6 @@ sub sso {
     }
   }
   return $self->_redirect_to_target();
-  # return $self->_redirect_to_cleanup();
 }
 
 # Destroy the session, handle cookie maintenance and
