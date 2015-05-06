@@ -494,6 +494,7 @@ sub sso {
       }
     }
   }
+  my $target_url;
   $target_url = handle_primo_target_url($self->{'conf'}, $self->target_url, $self->$current_session);
   $target_url = uri_escape($target_url);
   return $self->$redirect($self->cleanup_url.$target_url);
