@@ -494,7 +494,10 @@ sub sso {
       }
     }
   }
-  return $self->_redirect_to_target();
+  $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
+  $target_url = uri_escape($target_url);
+  return $self->$redirect($self->cleanup_url.$target_url);
+  # return $self->_redirect_to_target();
 }
 
 # Destroy the session, handle cookie maintenance and
