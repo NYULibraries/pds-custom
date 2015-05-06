@@ -451,12 +451,12 @@ sub load_login {
   my $self = shift;
   # Set the target url to be the last url before calling login
   set_target_url_cookie($self->target_url);
-  if ($self->$current_session()) {
-    $self->_redirect_to_cleanup($self->$current_session())
-  } else {
+  # if ($self->$current_session()) {
+  #   $self->_redirect_to_cleanup($self->$current_session())
+  # } else {
     # Print the login screen
     return $self->_login_screen();
-  }
+  # }
 }
 
 # Single sign on if possible, otherwise return from whence you came
@@ -494,10 +494,10 @@ sub sso {
       }
     }
   }
-  my $target_url;
-  $target_url = handle_primo_target_url($self->{'conf'}, $self->target_url, $self->$current_session);
-  $target_url = uri_escape($target_url);
-  return $self->$redirect($self->cleanup_url.$target_url);
+  # my $target_url;
+  # $target_url = handle_primo_target_url($self->{'conf'}, $self->target_url, $self->$current_session);
+  # $target_url = uri_escape($target_url);
+  return $self->$redirect('http://library.nyu.edu');
   # return $self->_redirect_to_target();
 }
 
