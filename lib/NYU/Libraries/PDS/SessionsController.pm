@@ -491,8 +491,8 @@ sub sso {
       }
     }
   }
-  # return $self->_redirect_to_target();
-  return $self->_redirect_to_cleanup();
+  return $self->_redirect_to_target();
+  # return $self->_redirect_to_cleanup();
 }
 
 # Destroy the session, handle cookie maintenance and
