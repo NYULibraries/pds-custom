@@ -453,9 +453,9 @@ sub _redirect_to_ezproxy {
   # Go through the cleanup if we have a session.
    if ($session) {
      $ezproxy_url = uri_escape($ezproxy_url);
-     # my $eshelf_url = $self->{'conf'}->{eshelf_url};
-     # return $self->$redirect("$eshelf_url/validate?return_url=$ezproxy_url");
-     return $self->$redirect($self->cleanup_url.$ezproxy_url);
+     my $eshelf_url = $self->{'conf'}->{eshelf_url};
+     return $self->$redirect("$eshelf_url/validate?return_url=$ezproxy_url");
+    #  return $self->$redirect($self->cleanup_url.$ezproxy_url);
    } else {
      return $self->$redirect($ezproxy_url);
    }
@@ -476,9 +476,9 @@ sub _redirect_to_ezborrow {
   my $ezborrow_url =
     EZBORROW_URL_BASE."?command=mkauth&LS=NYU&PI=$barcode&query=".uri_escape($query);
   $ezborrow_url = uri_escape($ezborrow_url);
-  # my $eshelf_url = $self->{'conf'}->{eshelf_url};
-  # return $self->$redirect("$eshelf_url/validate?return_url=$ezborrow_url");
-  return $self->$redirect($self->cleanup_url.$ezborrow_url);
+  my $eshelf_url = $self->{'conf'}->{eshelf_url};
+  return $self->$redirect("$eshelf_url/validate?return_url=$ezborrow_url");
+  # return $self->$redirect($self->cleanup_url.$ezborrow_url);
 };
 
 # Authenticate against Aleph.
