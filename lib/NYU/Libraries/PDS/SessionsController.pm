@@ -453,9 +453,9 @@ sub _redirect_to_ezproxy {
   # Go through the cleanup if we have a session.
    if ($session) {
      $ezproxy_url = uri_escape($ezproxy_url);
-     # my $eshelf_url = $self->{'conf'}->{eshelf_url};
-     # return $self->$redirect("$eshelf_url/validate?return_url=$ezproxy_url");
-     return $self->$redirect($self->cleanup_url.$ezproxy_url);
+     my $eshelf_url = $self->{'conf'}->{eshelf_url};
+     return $self->$redirect("$eshelf_url/validate?return_url=$ezproxy_url");
+    #  return $self->$redirect($self->cleanup_url.$ezproxy_url);
    } else {
      return $self->$redirect($ezproxy_url);
    }
@@ -476,9 +476,9 @@ sub _redirect_to_ezborrow {
   my $ezborrow_url =
     EZBORROW_URL_BASE."?command=mkauth&LS=NYU&PI=$barcode&query=".uri_escape($query);
   $ezborrow_url = uri_escape($ezborrow_url);
-  # my $eshelf_url = $self->{'conf'}->{eshelf_url};
-  # return $self->$redirect("$eshelf_url/validate?return_url=$ezborrow_url");
-  return $self->$redirect($self->cleanup_url.$ezborrow_url);
+  my $eshelf_url = $self->{'conf'}->{eshelf_url};
+  return $self->$redirect("$eshelf_url/validate?return_url=$ezborrow_url");
+  # return $self->$redirect($self->cleanup_url.$ezborrow_url);
 };
 
 # Authenticate against Aleph.
@@ -576,8 +576,8 @@ sub load_login {
         $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
       # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
       # or just got it from me.
-      # return $nyu_shibboleth_controller->redirect_to_eshelf();
-      return $nyu_shibboleth_controller->redirect_to_cleanup($session);
+      return $nyu_shibboleth_controller->redirect_to_eshelf($session);
+      # return $nyu_shibboleth_controller->redirect_to_cleanup($session);
     } else {
       # Exit with Unauthorized Error
       $self->set('error', "Unauthorized");
@@ -607,8 +607,8 @@ sub sso {
         $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
       # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
       # or just got it from me.
-      # return $nyu_shibboleth_controller->redirect_to_eshelf();
-      return $nyu_shibboleth_controller->redirect_to_cleanup($session);
+      return $nyu_shibboleth_controller->redirect_to_eshelf($session);
+      # return $nyu_shibboleth_controller->redirect_to_cleanup($session);
     }
   }
   return $nyu_shibboleth_controller->redirect_to_target();
@@ -634,8 +634,8 @@ sub authenticate {
   if (defined($identities)) {
     my $session = $self->$create_session(@$identities);
     # Redirect to whence we came (with some processing)
-    # return $self->_redirect_to_eshelf();
-    return $self->_redirect_to_cleanup($session);
+    return $self->_redirect_to_eshelf($session);
+    # return $self->_redirect_to_cleanup($session);
   } else {
     # Redirect to unauthorized page
     return $self->_redirect_to_unauthorized() if ($self->error eq "Unauthorized");
