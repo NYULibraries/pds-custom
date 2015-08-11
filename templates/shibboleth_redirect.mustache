@@ -5,7 +5,12 @@
     <script type="text/javascript">
       // Unescape the HTML entities that mustache escaped
       var target_url = $("<var/>").html("{{target_url}}").text();
-      window.location = "/Shibboleth.sso/Login?isPassive=true&target=" + target_url;
+      // Temporary fix for multiple shibboleths
+      if (window.location.host == "pds.library.nyu.edu") {
+        window.location = "/pds/Shibboleth.sso/Login?isPassive=true&target=" + target_url;
+      } else {
+        window.location = "/Shibboleth.sso/Login?isPassive=true&target=" + target_url;
+      }
     </script>
   </head>
   <body>

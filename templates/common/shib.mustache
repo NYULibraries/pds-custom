@@ -5,5 +5,14 @@
   </a>
 </h2>
 <p>
-  <a href="/Shibboleth.sso/Login?target={{current_url}}" class="btn">Click to Login</a>
+  <a href="/Shibboleth.sso/Login?target={{current_url}}" class="btn" id="shibboleth_cta">Click to Login</a>
 </p>
+<script>
+var shibboleth_url;
+if (window.location.host == "pds.library.nyu.edu") {
+  shibboleth_url = "/pds/Shibboleth.sso/Login?target={{current_url}}";
+} else {
+  shibboleth_url = "/Shibboleth.sso/Login?target={{current_url}}";
+}
+$('#shibboleth_cta').attr('href', shibboleth_url);
+</script>
