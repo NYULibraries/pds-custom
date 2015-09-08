@@ -519,7 +519,7 @@ sub logout {
     # Logout
     $self->$destroy_session();
   }
-  return $self->$redirect($conf->{site}.$conf->{logout_path});
+  return $self->$redirect($self->{'conf'}->{'site'}.$self->{'conf'}->{'logout_path'});
 }
 
 # Redirect to ezproxy if authenticated and authorized
