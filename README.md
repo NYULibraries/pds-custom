@@ -1,13 +1,13 @@
 # NYU PDS Custom Modules
 [![Build Status](http://jenkins1.bobst.nyu.edu/buildStatus/icon?job=PDS Custom)](http://jenkins1.bobst.nyu.edu:8080/job/PDS%20Custom/)
 
-The NYU PDS Custom Libraries are a set of Perl modules, SASS stylesheets, Coffeescripts, Mustache templates and compile scripts
+The NYU PDS Custom Libraries are a set of Perl modules and deploy scripts
 that facilitate customized functionality for NYU's PDS implementation.
 
-They're pretty dope.
+PDS uses OAuth2
 
 ## Testing
-NYU PDS Custom Perl modules uses the [Test Anything Protocol](http://testanything.org/) as the testing framework for its 
+NYU PDS Custom Perl modules uses the [Test Anything Protocol](http://testanything.org/) as the testing framework for its
 continuous integration implementation.
 
 Since Ex Libris bundles its perl version with PDS, we use [perlbrew](http://perlbrew.pl/) to simulate the PDS environment.
@@ -17,7 +17,7 @@ We use `perl v5.8.9` because that's what PDS reports using.
     This is perl, v5.8.9 built for i686-linux
 
 ### Dependencies
-Since most software is built on the shoulders of giants and all good programmers should leverage that which has come before, 
+Since most software is built on the shoulders of giants and all good programmers should leverage that which has come before,
 our libraries have many dependencies which cause the testing environment and the actual PDS environments to differ.
 
 These dependencies, have dependencies of there own, which introduces yet more variation between the environments,
@@ -69,3 +69,27 @@ This list is **incomplete**.
 | `DBI`              |       1.609 |           1.627 |
 | `Unicode::MapUTF8` |        1.11 |            1.11 |
 | `HTML::TagFilter`  |        1.03 |            1.03 |
+| `Net::OAuth2`      |        0.61 |            0.61 |
+| `JSON`             |        2.90 |            2.90 |
+
+#### Troubleshooting
+
+Use the aliases to get to the log directories as the primo user:
+
+```
+~$ logdir
+~$ tail -f pds_server.log
+```
+
+Or, for the apache logs:
+
+```
+~$ apcl
+~$ tail -f error_log_ssl.YYYY-MM-DD
+```
+
+Run perl from the command line to troubleshoot the faulty script:
+
+```
+~$ perl -t ./service_proc/custom_load_sso.pl
+```
