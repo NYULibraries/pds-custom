@@ -1,5 +1,16 @@
 # Change Log
 
+## 2015-09
+This release removes all local templates and implements PDS as an OAuth2 client.
+
+- Removed templates
+
+- Using `Net::OAuth2` to redirect to SSO provider and callback to PDS
+
+- Removed identity controllers
+
+- Removed Shibboleth configurations
+
 ## 2014-01-13
 This release is intended to de-clutter the login screen and make user interactions more intuitive.
 We've trimmed the links and text on the page in the hope that this will help users
