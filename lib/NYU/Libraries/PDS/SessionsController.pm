@@ -82,7 +82,7 @@ my $client = sub {
     authorize_path => $conf->{authorize_path},
     protected_resource_url => $conf->{protected_resource_url},
     access_token_path => $conf->{access_token_path},
-    access_token_method => $conf->{accesss_token_method}
+    access_token_method => $conf->{access_token_method}
   )->web_server(redirect_uri => $conf->{oauth_callback_url});
   return $oauth2_client;
 };
@@ -227,7 +227,7 @@ my $set_target_url = sub {
   my($self, $target_url) = @_;
   # Everytime we create a new sessions controller,
   # redirect to the first target url we tried to login from
-  if ($target_url =~ /oauth_callback/) {
+  if (defined($target_url) && $target_url =~ /oauth_callback/) {
     $target_url = target_url_cookie();
   }
   $target_url ||= $self->{'conf'}->{default_target_url} if $self->{'conf'};
