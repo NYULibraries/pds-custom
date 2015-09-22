@@ -4,7 +4,7 @@
 The NYU PDS Custom Libraries are a set of Perl modules and deploy scripts
 that facilitate customized functionality for NYU's PDS implementation.
 
-PDS uses OAuth2
+PDS uses OAuth2.
 
 ## Testing
 NYU PDS Custom Perl modules uses the [Test Anything Protocol](http://testanything.org/) as the testing framework for its
