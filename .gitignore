@@ -20,17 +20,5 @@ results
 vendor/pds-core
 # Ignore wiki repo
 wiki
-# Ignore SASS cache
-.sass-cache
-# Ignore images from compass extensions
-assets/images/icons-*.png
-assets/images/icons
-assets/images/jquery
-assets/images/glyphicons-*.png
-assets/images/magnifier.png
-assets/images/move.png
-assets/images/nyulibraries
-# Ignore compass css files
-assets/css
-# Ignore dist
-dist
+# Ignore ruby version
+.ruby-version

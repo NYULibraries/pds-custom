@@ -2,6 +2,7 @@
 package NYU::Libraries::PDS::Session;
 use strict;
 use warnings;
+use Data::Dumper;
 
 # Use our bundled Perl modules, e.g. Class::Accessor
 use lib "vendor/lib";
@@ -14,102 +15,89 @@ use PDSSessionUserAttrs;
 use PDSUtil qw(isUsingOracle);
 use PDSParamUtil;
 
+# Hash encryption module for password
+use Digest::MD5 qw(md5_hex md5);
+
 # NYU Libraries modules
-use NYU::Libraries::Util qw(trim xml_encode);
+use NYU::Libraries::Util qw(trim xml_encode aleph_identity nyu_shibboleth_identity new_school_ldap_identity);
 
 use base qw(Class::Accessor);
 # Assumes the same names as the identities
-my @attributes = qw(id email givenname cn sn institute barcode bor_status
-  bor_type name uid verification nyuidn nyu_shibboleth ns_ldap
-    entitlements objectclass ill_permission college_code college_name
-      dept_code dept_name major_code major ill_library session_id expiry_date remote_address);
+# => `institute` is expected by PDS
+# => `expiry_date` is expected by PDS
+my @attributes = qw(id email institution_code institute barcode bor_status patron_status
+  patron_type name first_name last_name uid nyuidn nyu_shibboleth ns_ldap verification
+    entitlement objectclass ill_permission college_code college plif_status
+      dept_code department major_code major ill_library session_id expiry_date remote_address);
 __PACKAGE__->mk_ro_accessors(@attributes);
 __PACKAGE__->mk_accessors(qw(calling_system target_url));
-use constant NYU_BOR_STATUSES => qw(03 04 05 06 07 50 52 53 51 54 55 56 57 58 59 60 61 62 
-  63 64 65 66 67 68 69 70 72 74 76 77);
-use constant NYUAD_BOR_STATUSES => qw(80 81 82);
-use constant NYUSH_BOR_STATUSES => qw(20 21 22 23);
-use constant CU_BOR_STATUSES => qw(10 11 12 15 16 17 18 20);
-use constant NS_BOR_STATUSES => qw(30 31 32 33 34 35 36 37 38 40 41 42 43);
-use constant NYSID_BOR_STATUSES => qw(90 95 96 97);
-use constant HSL_ILL_LIBRARY => qw(ILL_MED);
-use constant DEFAULT_INSTITUTE => "NYU";
-
-# Private method returns an institution string for the session's bor status
-# Usage:
-#   $self->$institution_for_bor_status()
-my $institute_for_bor_status = sub {
-  my $self = shift;
-  if(grep { $_ eq $self->bor_status} NYU_BOR_STATUSES) {
-    return "NYU";
-  } elsif(grep { $_ eq $self->bor_status} NYUAD_BOR_STATUSES){
-    return "NYUAD";
-  } elsif(grep { $_ eq $self->bor_status} NYUSH_BOR_STATUSES){
-    return "NYUSH";
-  } elsif(grep { $_ eq $self->bor_status} CU_BOR_STATUSES){
-    return "CU";
-  } elsif(grep { $_ eq $self->bor_status} NS_BOR_STATUSES){
-    return "NS";
-  } elsif(grep { $_ eq $self->bor_status} NYSID_BOR_STATUSES){
-    return "NYSID";
-  }
-  return undef;
-};
-
-# Private method returns an institution string for the session's ILL library
-# Usage:
-#   $self->$institute_for_ill_library()
-my $institute_for_ill_library = sub {
-  my $self = shift;
-  if(grep { $_ eq $self->ill_library} HSL_ILL_LIBRARY) {
-    return "HSL";
-  }
-  return undef;
-};
 
 # Private initialization method
 # Usage:
-#   $self->$initialize(identities)
+#   $self->$initialize(@identities)
+# @identities => [
+#   'aleph' => '...',
+#   'nyu_shibboleth' => '...',
+#   'new_school_ldap' => '...'
+# ]
 my $initialize = sub {
-  my($self, @identities) = @_;
-  foreach my $identity (@identities) {
-    # Order matters
-    if(ref($identity) eq "NYU::Libraries::PDS::Identities::NyuShibboleth") {
-      my $identity_hash = $identity->to_h();
+  my($self, $user, $conf) = @_;
+  # Set configurations
+  $self->set('conf', $conf);
+
+  # Extra identities from OAuth2 API
+  my @identities = $user->{'identities'};
+  # Extract Aleph
+  my $aleph_identity = aleph_identity(@identities);
+  # Extract NS LDAP
+  my $new_school_ldap_identity = new_school_ldap_identity(@identities);
+  # Extract NYU Shibboleth
+  my $nyu_shibboleth_identity = nyu_shibboleth_identity(@identities);
+
+  # Create session based on OAuth2 response if we have an aleph identity
+  if ($aleph_identity) {
+    # Look for the top-level email first,
+    # if it's not set here we'll set it from one of the identities below
+    $self->set('email', $user->{'email'});
+
+    if ($nyu_shibboleth_identity) {
+      # Yes this is an nyu_shibboleth session
       $self->set('nyu_shibboleth', 'true');
-      foreach my $attribute (keys %$identity_hash) {
-        # Skip ID attribute
-        next if $attribute eq "id";
-        $self->set($attribute, $identity_hash->{$attribute});
+      # Set NYU Shibboleth properties to the session variables
+      foreach my $key (keys(%{$nyu_shibboleth_identity->{properties}})) {
+        # And be sure to cast the hash pointer to a hash,
+        # since we're translating from JSON to Perl
+        my %properties = %{$nyu_shibboleth_identity->{properties}};
+        $self->set($key, $properties{$key});
       }
-    } elsif(ref($identity) eq "NYU::Libraries::PDS::Identities::NsLdap") {
-      my $identity_hash = $identity->to_h();
+    }
+    # Set New School LDAP properties to the session variables
+    # Unless of course they're already set
+    if ($new_school_ldap_identity) {
+      # Yes this is an new school LDAP session
       $self->set('ns_ldap', 'true');
-      foreach my $attribute (keys %$identity_hash) {
-        # Skip ID attribute
-        next if $attribute eq "id";
-        $self->set($attribute, $identity_hash->{$attribute});
+      foreach my $key (keys(%{$new_school_ldap_identity->{properties}})) {
+        next if $self->{$key};
+        my %properties = %{$new_school_ldap_identity->{properties}};
+        $self->set($key, $properties{$key});
       }
-    } elsif(ref($identity) eq "NYU::Libraries::PDS::Identities::Aleph") {
-      my $identity_hash = $identity->to_h();
-      # Set ID, override if it was already set
-      $self->set('id', $identity->id);
-      foreach my $attribute (keys %$identity_hash) {
-        # Skip ID attribute
-        next if $attribute eq "id";
-        # Don't override attribute if it was previously set
-        next if $self->{$attribute};
-        $self->set($attribute, $identity_hash->{$attribute});
-      }
-      # Try to get institute from ILL library first, since it's more specific
-      $self->set('institute', $self->$institute_for_ill_library($self->ill_library));
-      $self->set('institute', $self->$institute_for_bor_status($self->bor_status)) unless $self->institute;
-      $self->set('institute', DEFAULT_INSTITUTE) unless $self->institute;
-    } else {
-      # Assume we're creating the Session object from an existing PDS session hash
-      foreach my $attribute (keys %$identity) {
-        $self->set("$attribute", $identity->{$attribute});
-      }
+    }
+    # Set Aleph properties to the session variables
+    # Unless of course they're already set
+    foreach my $key (keys(%{$aleph_identity->{properties}})) {
+      next if $self->{$key};
+      my %properties = %{$aleph_identity->{properties}};
+      $self->set($key, $properties{$key});
+    }
+    # Set ID from Aleph Identity, i.e. your N #
+    $self->set('id', $aleph_identity->{uid});
+    # Set institute from institution_code, required by Aleph
+    $self->set('institute', $user->{'institution_code'}) if $user->{'institution_code'};
+  }
+  # Assume we're creating the Session object from an existing PDS session hash
+  else {
+    foreach my $attribute (keys %$user) {
+      $self->set("$attribute", $user->{$attribute});
     }
   }
   # Return self
@@ -118,7 +106,7 @@ my $initialize = sub {
 
 # Returns an new PDS Session based on the given identities
 # Usage:
-#   NYU::Libraries::PDS::Session->new(identities)
+#   NYU::Libraries::PDS::Session->new(user, conf)
 sub new {
   my($proto, @args) = @_;
   my($class) = ref $proto || $proto;
@@ -253,7 +241,7 @@ sub destroy {
 #     <major_code>MAJOR_CODE</major_code>
 #     <major>Major</major>
 #   </session>
-# 
+#
 # In the future, this should specify identities
 #   <session>
 #     <!-- PDS Session Information -->
@@ -316,10 +304,10 @@ sub to_xml {
   foreach my $attribute (@attributes) {
     $xml .= "<$attribute>".xml_encode(trim($self->{$attribute}))."</$attribute>" if $self->{$attribute};
   }
-  if($self->{'entitlements'}) {
-    my $entitlements = $self->{'entitlements'};
-    $entitlements =~ s/;/<\/value><value>/g;
-    my $edupersonentitlements = "<value>$entitlements</value>";
+  if($self->{'entitlement'}) {
+    my $entitlement = $self->{'entitlement'};
+    $entitlement =~ s/;/<\/value><value>/g;
+    my $edupersonentitlements = "<value>$entitlement</value>";
     $xml .= "<edupersonentitlement>$edupersonentitlements</edupersonentitlement>";
   }
   $xml .= "</$root>";
