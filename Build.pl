@@ -19,11 +19,9 @@ my $builder = Module::Build->new(
       'DBI' => '1.627',
       'Unicode::MapUTF8' => '1.11',
       'HTML::TagFilter' => '1.03',
-      # LDAP Prereqs
-      'Net::LDAP' => '0.56',
-      'IO::Socket::SSL' => '1.951',
-      # Mustache Templates
-      'Template::Mustache' => '0.5.1'
+      # OAuth2 Prereqs
+      'Net::OAuth2' => '0.61',
+      'JSON' => '2.90'
     }
 );
 
