@@ -441,13 +441,7 @@ sub _redirect_to_ezborrow {
   my $ezborrow_url =
     EZBORROW_URL_BASE."?command=mkauth&LS=NYU&PI=$barcode&query=".uri_escape($query);
   $ezborrow_url = uri_escape($ezborrow_url);
-<<<<<<< HEAD
   return $self->$redirect($self->cleanup_url.$ezborrow_url);
-=======
-  my $eshelf_url = $self->{'conf'}->{eshelf_url};
-  return $self->$redirect("$eshelf_url/validate?return_url=$ezborrow_url");
-  # return $self->$redirect($self->cleanup_url.$ezborrow_url);
->>>>>>> development
 };
 
 # Display the login screen, unless already signed in
@@ -455,35 +449,8 @@ sub _redirect_to_ezborrow {
 #   $controller->load_login();
 sub load_login {
   my $self = shift;
-<<<<<<< HEAD
   # Set the target url to be the last url before calling login
   set_target_url_cookie($self->target_url);
-=======
-  my $nyu_shibboleth_controller = $self->$nyu_shibboleth_controller();
-  # The Shibboleth controller can go "nuclear" and just exit at this point.
-  # It will redirect to the Shibboleth IdP for passive authentication.
-  my $nyu_shibboleth_identity = $nyu_shibboleth_controller->create();
-  # Do we have an identity? If so, let's get the associated Aleph identity
-  if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
-    my $aleph_controller = $self->$aleph_controller();
-    my $aleph_identity = $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
-    # Check if the Aleph identity exists
-    if ($aleph_identity->exists) {
-      # Encrypt the Aleph identity's password
-      $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
-      my $session =
-        $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
-      # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
-      # or just got it from me.
-      return $nyu_shibboleth_controller->redirect_to_eshelf($session);
-      # return $nyu_shibboleth_controller->redirect_to_cleanup($session);
-    } else {
-      # Exit with Unauthorized Error
-      $self->set('error', "Unauthorized");
-      return $self->_redirect_to_unauthorized();
-    }
-  }
->>>>>>> development
   # Print the login screen
   return $self->_login_screen();
 }
@@ -493,7 +460,6 @@ sub load_login {
 # Usage:
 #   $controller->sso($auth_code);
 sub sso {
-<<<<<<< HEAD
   my($self, $auth_code) = @_;
   my $cgi = CGI->new();
 
@@ -522,60 +488,6 @@ sub sso {
         $self->set('error', "Unauthorized");
         return $self->_redirect_to_unauthorized();
       }
-=======
-  my $self = shift;
-  my $nyu_shibboleth_controller = $self->$nyu_shibboleth_controller();
-  my $nyu_shibboleth_identity = $nyu_shibboleth_controller->create();
-  if (defined($nyu_shibboleth_identity) && $nyu_shibboleth_identity->exists) {
-    my $aleph_controller = $self->$aleph_controller();
-    my $aleph_identity =
-      $aleph_controller->get($nyu_shibboleth_identity->aleph_identifier);
-    # Check if the Aleph identity exists
-    if ($aleph_identity->exists) {
-      # Encrypt the Aleph identity's password
-      $aleph_identity = $self->$encrypt_aleph_identity($aleph_identity);
-      my $session =
-        $self->$create_session($nyu_shibboleth_identity, $aleph_identity);
-      # Delegate redirect to Shibboleth controller, since it captured it on the previous pass,
-      # or just got it from me.
-      return $nyu_shibboleth_controller->redirect_to_eshelf($session);
-      # return $nyu_shibboleth_controller->redirect_to_cleanup($session);
-    }
-  }
-  return $nyu_shibboleth_controller->redirect_to_target();
-}
-
-# Authenticate based on the given id and password
-# Usage:
-#   $controller->authenticate();
-sub authenticate {
-  my($self, $id, $password) = @_;
-  my $identities;
-  # If we're New School, do New School LDAP first.
-  # Otherwise, do Aleph first
-  if($self->institute eq "NS") {
-    $identities = $self->_authenticate_ns_ldap($id, $password);
-    $identities = $self->_authenticate_aleph($id, $password) unless defined($identities);
-  } else {
-    $identities = $self->_authenticate_aleph($id, $password);
-    $identities = $self->_authenticate_ns_ldap($id, $password) unless defined($identities);
-  }
-  # If we got some identities, create a session and redirect to the target URL
-  # Otherwise, present the login screen or redirect to unauthorized
-  if (defined($identities)) {
-    my $session = $self->$create_session(@$identities);
-    # Redirect to whence we came (with some processing)
-    return $self->_redirect_to_eshelf($session);
-    # return $self->_redirect_to_cleanup($session);
-  } else {
-    # Redirect to unauthorized page
-    return $self->_redirect_to_unauthorized() if ($self->error eq "Unauthorized");
-    # Let people know that BobCat is down.
-    if ($self->error eq "Authentication error: Couldn't get a session id") {
-      $self->set('error', "We're sorry for the inconvenience, but BobCat login services are down at the moment.");
-    } else {
-      $self->set('error', "There seems to have been a problem logging in. Please check your credentials.");
->>>>>>> development
     }
   }
   return $self->_redirect_to_target();
@@ -607,7 +519,7 @@ sub logout {
     # Logout
     $self->$destroy_session();
   }
-  return $self->_logout_screen();
+  return $self->$redirect($self->{'conf'}->{'site'}.$self->{'conf'}->{'logout_path'});
 }
 
 # Redirect to ezproxy if authenticated and authorized
