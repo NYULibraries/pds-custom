@@ -196,30 +196,6 @@ my $create_session = sub {
   return $session;
 };
 
-# Private method to destroy the session
-# Usage:
-#   $self->$destroy_session()
-my $destroy_session = sub {
-  my $self = shift;
-  # Get the current session
-  my $session = $self->$current_session();
-  # Destroy it
-  $session->destroy();
-  # Expire the session cookie
-  my $pds_handle = CGI::Cookie->new(-name=>'PDS_HANDLE',
-    -expires => COOKIE_EXPIRATION, -value=>'', -domain=>'.library.nyu.edu');
-  my $cgi = CGI->new();
-  print $cgi->header(-cookie=>[$pds_handle]);
-  foreach my $library_cookie_name (LIBRARY_DOT_NYU_COOKIES) {
-    if($cgi->cookie($library_cookie_name)) {
-      my $library_cookie = CGI::Cookie->new(-name=>$library_cookie_name,
-        -expires => COOKIE_EXPIRATION, -value=>'',
-          -domain=>'.library.nyu.edu');
-      print $cgi->header(-cookie=>[$library_cookie]);
-    }
-  }
-};
-
 # Private method to set the target URL
 # Usage:
 #   $self->$set_target_url($target_url);
@@ -324,23 +300,13 @@ sub new {
   return $self;
 }
 
-# Returns a rendered HTML login screen for presentation
+# Redirects to the external Oauth2 login screen
 # Usage:
 #   my $login_screen = $self->_login_screen();
 sub _login_screen {
   my $self = shift;
   # Present Login Screen
   return $self->$redirect($self->$client->authorize());
-}
-
-# Returns a rendered HTML logout screen for presentation
-# Usage:
-#   my $login_screen = $self->_logout_screen();
-sub _logout_screen {
-  my $self = shift;
-  my $conf = $self->{'conf'};
-  # Present Login Screen
-  return $self->$redirect($conf->{site}.$conf->{logout_path});
 }
 
 # Returns a redirect header to the unauthorized message URL
@@ -493,32 +459,10 @@ sub sso {
   return $self->_redirect_to_target();
 }
 
-# Destroy the session, handle cookie maintenance and
-# redirect to the Shibboleth local logout
+# Redirect to the SSO logout
 sub logout {
   my $self = shift;
   my $cgi = CGI->new();
-  print $cgi->header(-type=>'text/html', -charset =>'UTF-8');
-  my $session = $self->$current_session;
-  if($session) {
-    # Logout of ExLibris applications with hack for logging out of Primo due to load balancer issues.
-    my @remote_address = split (/,/,$session->remote_address);
-    my $bobcat_logout_url = $self->{'conf'}->{'bobcat_logout_url'};
-    my $session_id = $session->session_id;
-    for (my $i=0; $remote_address[$i]; $i++) {
-      my @remote_one = split (/;/,$remote_address[$i]);
-      # Hack for dealing with the fact that we can't call primo logout from the
-      # pds server since they are the same box and the load balancer doesn't like it.
-      if ($remote_one[2] eq "primo") {
-        my $url = uri_escape($remote_one[0]);
-        CallHttpd::call_httpd('GET',"$bobcat_logout_url?bobcat_url=$url&pds_handle=$session_id");
-      } else {
-        PDSLogout::logout_application($remote_one[0], $session_id, $session->institute, $remote_one[2], , "");
-      }
-    }
-    # Logout
-    $self->$destroy_session();
-  }
   return $self->$redirect($self->{'conf'}->{'site'}.$self->{'conf'}->{'logout_path'});
 }
 
