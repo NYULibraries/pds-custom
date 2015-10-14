@@ -2,6 +2,7 @@
 package NYU::Libraries::PDS::Session;
 use strict;
 use warnings;
+# Use for debugging
 use Data::Dumper;
 
 # Use our bundled Perl modules, e.g. Class::Accessor
