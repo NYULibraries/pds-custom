@@ -52,8 +52,6 @@ is($controller->error, undef, "Error should be undefined");
 is(defined($controller->error), '', "Error should be undefined");
 
 $controller = NYU::Libraries::PDS::SessionsController->new($conf, "NYU", "primo", "http://example.com");
-# Test logout screen
-like($controller->_logout_screen(), NYU_LOGOUT, "Should be a logout screen.");
 
 # When there is no session just redirect to the target url
 like($controller->sso(), '/Location: http:\/\/example.com/', "Should redirect to target url");
