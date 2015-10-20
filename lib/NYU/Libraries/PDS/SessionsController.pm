@@ -64,10 +64,6 @@ use constant DEFAULT_TARGET_URL => "http://bobcat.library.nyu.edu/primo_library/
 use constant DEFAULT_FUNCTION => "sso";
 use constant EZBORROW_AUTHORIZED_STATUSES => qw(20 21 22 23 50 51 52 53 54 55 56 57 58 60 61 62 63 65 66 80 81 82);
 use constant EZBORROW_URL_BASE => "https://e-zborrow.relaisd2d.com/service-proxy/";
-# library dot nyu cookies to delete on logout
-use constant LIBRARY_DOT_NYU_COOKIES => qw(_tsetse_session tsetse_credentials tsetse_handle nyulibrary_opensso_illiad
-  _umlaut_session _getit_session _eshelf_session _umbra_session _privileges_guide_session
-    _room_reservation_session _room_reservation_session _marli_session xerxessession_);
 
 # Private method to retrieve the OAuth2 server info
 # Usage:
@@ -156,19 +152,6 @@ my $is_alumni = sub {
   return ($entitlement =~ m/alum/);
 };
 
-# Private method to save eshelf records
-# Usage:
-#   $self->$tsetse($session_id)
-my $tsetse = sub {
-  my ($self, $session_id) = @_;
-  my $conf = $self->{'conf'};
-  my $cgi = CGI->new;
-  my $tsetse_handle = $cgi->cookie('tsetse_handle');
-  my $tsetse_credentials = $cgi->cookie('tsetse_credentials');
-  my $eshelf_success = save_permanent_eshelf_records($conf, $session_id,
-    $tsetse_handle, $tsetse_credentials);
-};
-
 # Private method to create a session
 # Usage:
 #   $self->$create_session($identity1, $identity2)
@@ -188,8 +171,6 @@ my $create_session = sub {
       -value=>$session->session_id, -domain=>'.library.nyu.edu');
     my $cgi = CGI->new();
     print $cgi->header(-cookie=>[$pds_handle]);
-    # Save the eshelf records
-    $self->$tsetse($session->session_id);
   } else {
     $session->{session_id} = "0123456789"
   }
