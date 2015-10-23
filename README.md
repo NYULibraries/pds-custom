@@ -72,24 +72,4 @@ This list is **incomplete**.
 | `Net::OAuth2`      |        0.61 |            0.61 |
 | `JSON`             |        2.90 |            2.90 |
 
-#### Troubleshooting
-
-Use the aliases to get to the log directories as the primo user:
-
-```
-~$ logdir
-~$ tail -f pds_server.log
-```
-
-Or, for the apache logs:
-
-```
-~$ apcl
-~$ tail -f error_log_ssl.YYYY-MM-DD
-```
-
-Run perl from the command line to troubleshoot the faulty script:
-
-```
-~$ perl -t ./service_proc/custom_load_sso.pl
-```
+## [Troubleshooting](https://github.com/NYULibraries/pds/wiki/Troubleshooting)
