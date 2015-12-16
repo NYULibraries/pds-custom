@@ -62,7 +62,7 @@ use constant DEFAULT_INSTITUTE => "NYU";
 use constant DEFAULT_CALLING_SYSTEM => "primo";
 use constant DEFAULT_TARGET_URL => "http://bobcat.library.nyu.edu/primo_library/libweb/action/search.do?vid=NYU";
 use constant DEFAULT_FUNCTION => "sso";
-use constant EZBORROW_AUTHORIZED_STATUSES => qw(20 21 22 23 50 51 52 53 54 55 56 57 58 60 61 62 63 65 66 80 81 82);
+use constant EZBORROW_AUTHORIZED_STATUSES => qw(20 21 22 23 50 51 52 53 54 55 56 57 58 60 61 62 63 65 66 80 81 82 30 31 32 33 34 35 36 37 38 39 40 41);
 use constant EZBORROW_URL_BASE => "https://e-zborrow.relaisd2d.com/service-proxy/";
 
 # Private method to retrieve the OAuth2 server info
@@ -384,9 +384,10 @@ sub _redirect_to_ezborrow {
   my($self, $session, $current_url) = @_;
   my $uri = URI->new($current_url);
   my $query =  $uri->query_param('query');
+  my $ls = $uri->query_param('ls') || 'NYU';
   my $barcode = $session->barcode;
   my $ezborrow_url =
-    EZBORROW_URL_BASE."?command=mkauth&LS=NYU&PI=$barcode&query=".uri_escape($query);
+    EZBORROW_URL_BASE."?command=mkauth&LS=$ls&PI=$barcode&query=".uri_escape($query);
   $ezborrow_url = uri_escape($ezborrow_url);
   return $self->$redirect($self->cleanup_url.$ezborrow_url);
 };
