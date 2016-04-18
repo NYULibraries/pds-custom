@@ -54,9 +54,9 @@ use base qw(Class::Accessor);
 __PACKAGE__->mk_accessors(qw(institute calling_system target_url current_url cleanup_url session_id error));
 
 # Default constants
-use constant UNAUTHORIZED_URL => "https://library.nyu.edu/errors/pds-library-nyu-edu/unauthorized";
-use constant EZPROXY_UNAUTHORIZED_URL => "https://library.nyu.edu/errors/ezproxy-library-nyu-edu/unauthorized";
-use constant EZBORROW_UNAUTHORIZED_URL => "https://library.nyu.edu/errors/ezborrow-library-nyu-edu/unauthorized";
+use constant UNAUTHORIZED_URL => "http://library.nyu.edu/errors/pds-library-nyu-edu/unauthorized";
+use constant EZPROXY_UNAUTHORIZED_URL => "http://library.nyu.edu/errors/ezproxy-library-nyu-edu/unauthorized";
+use constant EZBORROW_UNAUTHORIZED_URL => "http://library.nyu.edu/errors/ezborrow-library-nyu-edu/unauthorized";
 use constant ALUMNI_EZPROXY_URL => "http://library.nyu.edu/alumni/eresources.html";
 use constant DEFAULT_INSTITUTE => "NYU";
 use constant DEFAULT_CALLING_SYSTEM => "primo";
