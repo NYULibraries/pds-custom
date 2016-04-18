@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-gem 'browbeat', git: 'git://github.com/NYULibraries/browbeat.git', branch: 'gem'
+gem 'browbeat', git: 'git://github.com/NYULibraries/browbeat_old.git', branch: 'gem'
 gem 'pry'
 gem 'figs'
 gem 'phantomjs'

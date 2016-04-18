@@ -42,13 +42,13 @@ Then(/^I should be redirected to "(.*?)"$/) do |url|
 end
 
 Then(/^I should be redirected to the EZProxy access denied page$/) do
-  expect(page.current_url).to match "http://library.nyu.edu/errors/ezproxy-library-nyu-edu/login.html"
+  expect(page.current_url).to match "https://beta.library.nyu.edu/errors/ezproxy-library-nyu-edu/unauthorized"
   expect(page).to have_content "EZProxy Login"
   expect(page).to have_content "We're sorry, but you are not authorized to access this content."
 end
 
 Then(/^I should be redirected to the EZBorrow access denied page$/) do
-  expect(page.current_url).to match "http://library.nyu.edu/errors/ezborrow-library-nyu-edu/login.html"
+  expect(page.current_url).to match "https://beta.library.nyu.edu/errors/ezborrow-library-nyu-edu/unauthorized"
   expect(page).to have_content "EZBorrow access is available to all NYU faculty, staff and students enrolled in degree or diploma programs."
   expect(page).to have_content "We're sorry, but you are not authorized to access this content."
 end
