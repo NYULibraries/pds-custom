@@ -57,7 +57,7 @@ __PACKAGE__->mk_accessors(qw(institute calling_system target_url current_url cle
 use constant UNAUTHORIZED_URL => "http://library.nyu.edu/errors/pds-library-nyu-edu/unauthorized";
 use constant EZPROXY_UNAUTHORIZED_URL => "http://library.nyu.edu/errors/ezproxy-library-nyu-edu/unauthorized";
 use constant EZBORROW_UNAUTHORIZED_URL => "http://library.nyu.edu/errors/ezborrow-library-nyu-edu/unauthorized";
-use constant ALUMNI_EZPROXY_URL => "http://library.nyu.edu/alumni/eresources.html";
+use constant ALUMNI_EZPROXY_URL => "http://library.nyu.edu/about/visiting/visitor-access-to-nyu-libraries/alumni/";
 use constant DEFAULT_INSTITUTE => "NYU";
 use constant DEFAULT_CALLING_SYSTEM => "primo";
 use constant DEFAULT_TARGET_URL => "http://bobcat.library.nyu.edu/primo_library/libweb/action/search.do?vid=NYU";
