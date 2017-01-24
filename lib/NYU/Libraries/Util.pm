@@ -189,4 +189,20 @@ sub handle_primo_target_url {
   return $target_url;
 };
 
+# Private method to deal with Aleph needing pds_handle appended to the return url
+# Usage:
+#   $aleph_target_url = $self->handle_aleph_target_url($target_url)
+sub handle_aleph_target_url {
+  my($conf, $target_url, $session) = @_;
+  if($session) {
+    my $session_id = $session->session_id;
+    # my $aleph_url = $confg->{aleph_url};
+    if($target_url =~ /alephstage.library.nyu.edu/) {
+      $target_url = $target_url."&pds_handle=".$session_id;
+    }
+  }
+  return $target_url;
+}
+# &pds_handle=$session_id"
+
 1;
