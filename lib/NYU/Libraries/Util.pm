@@ -196,7 +196,7 @@ sub handle_aleph_target_url {
   my($conf, $target_url, $session) = @_;
   if($session) {
     my $session_id = $session->session_id;
-    my $aleph_url = "https://alephstage.library.nyu.edu"; #$confg->{aleph_url};
+    my $aleph_url = $confg->{aleph_url};
     $aleph_url =~ s/http(s)?:\/\///;
     if($target_url =~ /$aleph_url/) {
       $target_url = $target_url."&pds_handle=".$session_id;
