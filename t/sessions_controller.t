@@ -9,8 +9,8 @@ use NYU::Libraries::Util qw(parse_conf);
 # JSON functions
 use JSON qw(decode_json);
 
-use constant NYU_LOGIN => '/Location: https://login.library.nyu.edu/';
-use constant NYU_LOGOUT => '/Location: https://login.library.nyu.edu/logout/';
+use constant NYU_LOGIN => '/Location: https://(dev.)?login.library.nyu.edu/';
+use constant NYU_LOGOUT => '/Location: https://(dev.)?login.library.nyu.edu/logout/';
 
 # Verify module can be included via "use" pragma
 BEGIN { use_ok('NYU::Libraries::PDS::SessionsController') };

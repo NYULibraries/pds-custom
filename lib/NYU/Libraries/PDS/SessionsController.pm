@@ -46,7 +46,7 @@ use JSON;
 
 # NYU Libraries modules
 use NYU::Libraries::Util qw(trim whitelist_institution save_permanent_eshelf_records handle_primo_target_url
-                                expire_target_url_cookie set_target_url_cookie target_url_cookie
+                                handle_aleph_target_url expire_target_url_cookie set_target_url_cookie target_url_cookie
                                   aleph_identity PDS_TARGET_COOKIE COOKIE_EXPIRATION);
 use NYU::Libraries::PDS::Session;
 
@@ -322,6 +322,7 @@ sub _redirect_to_target {
   my $target_url = $self->target_url;
   # Primo sucks!
   $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
+  $target_url = handle_aleph_target_url($self->{'conf'}, $target_url, $session);
   return $self->$redirect($target_url);
 }
 
@@ -334,6 +335,8 @@ sub _redirect_to_cleanup {
   my $target_url = $self->target_url;
   # Primo sucks!
   $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
+  # Aleph
+  $target_url = handle_aleph_target_url($self->{'conf'}, $target_url, $session);
   $target_url = uri_escape($target_url);
   return $self->$redirect($self->cleanup_url.$target_url);
 }

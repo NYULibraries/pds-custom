@@ -18,7 +18,7 @@ use PDSUtil;
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(trim xml_encode parse_conf fix_target_url
-  save_permanent_eshelf_records whitelist_institution handle_primo_target_url
+  save_permanent_eshelf_records whitelist_institution handle_primo_target_url handle_aleph_target_url
     expire_target_url_cookie set_target_url_cookie target_url_cookie
       aleph_identity nyu_shibboleth_identity new_school_ldap_identity PDS_TARGET_COOKIE COOKIE_EXPIRATION);
 
@@ -188,5 +188,21 @@ sub handle_primo_target_url {
   }
   return $target_url;
 };
+
+# Private method to deal with Aleph needing pds_handle appended to the return url
+# Usage:
+#   $aleph_target_url = $self->handle_aleph_target_url($target_url)
+sub handle_aleph_target_url {
+  my($conf, $target_url, $session) = @_;
+  if($session) {
+    my $session_id = $session->session_id;
+    my $aleph_url = $conf->{aleph_url};
+    $aleph_url =~ s/http(s)?:\/\///;
+    if($target_url =~ /$aleph_url/) {
+      $target_url = $target_url."&pds_handle=".$session_id;
+    }
+  }
+  return $target_url;
+}
 
 1;
