@@ -364,7 +364,16 @@ sub _redirect_to_ezproxy {
   my($self, $user, $target_url, $session) = @_;
   my $uri = URI->new($target_url);
   my $resource_url = uri_escape($uri->query_param('url'));
+
+  my $path = $uri->path;
+  my @ezproxy_paths = ( "ezproxy","ezproxydev","proxy","proxydev" );
   my $ezproxy_url = $self->{'conf'}->{ezproxy_url};
+  foreach my $ezproxy_path (@ezproxy_paths) {
+    if ($path =~ /^\/?$ezproxy_path$/) {
+      $ezproxy_url = "https://".$ezproxy_path.".library.nyu.edu";
+    }
+  }
+
   my $ezproxy_ticket = $self->$ezproxy_ticket($user);
   $ezproxy_url .= "/login?ticket=$ezproxy_ticket&user=$user&qurl=$resource_url";
   # Go through the cleanup if we have a session.
