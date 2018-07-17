@@ -365,10 +365,15 @@ sub _redirect_to_ezproxy {
   my $uri = URI->new($target_url);
   my $resource_url = uri_escape($uri->query_param('url'));
 
+  # redirect various paths to corresponding subdomains
+  # needed to connect multiple proxy endpoints to same PDS instance
+  # whitelist of paths/subdomains is hardcoded since couldn't work an array in config
   my $path = $uri->path;
   my @ezproxy_paths = ( "ezproxy","ezproxydev","proxy","proxydev" );
+  # default to configured url
   my $ezproxy_url = $self->{'conf'}->{ezproxy_url};
   foreach my $ezproxy_path (@ezproxy_paths) {
+    # check each path as a regex against current path: if successful, set url
     if ($path =~ /^\/?$ezproxy_path$/) {
       $ezproxy_url = "https://".$ezproxy_path.".library.nyu.edu";
     }
