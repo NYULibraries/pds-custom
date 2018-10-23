@@ -9,7 +9,7 @@ PDS uses OAuth2.
 NYU PDS Custom Perl modules uses the [Test Anything Protocol](http://testanything.org/) as the testing framework for its
 continuous integration implementation.
 
-Since Ex Libris bundles its perl version with PDS, we use [Docker](/NYULibraries/pds-custom/blob/development/Dockerfile) to simulate the PDS environment.
+Since Ex Libris bundles its perl version with PDS, we use [Docker](Dockerfile) to simulate the PDS environment.
 We use `perl v5.8.9` because that's what PDS reports using.
 
     primo@primo1(p4_1):~/p4_1/primom$perl -v
