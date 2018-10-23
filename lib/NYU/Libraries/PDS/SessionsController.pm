@@ -293,7 +293,7 @@ sub sso {
           # Create the session
           my $session = $self->$create_session($user);
           # Redirect to target
-          return $self->_redirect_to_cleanup($session);
+          return $self->_redirect_to_target($session);
         } else {
           $self->set('error', "Unauthorized");
           return $self->_redirect_to_unauthorized();
