@@ -1,8 +1,8 @@
 # Controller for managing the PDS session flow.
 #
 # A SessionsController instance has the following methods
-#   login:
-#     Renders the appropriate login screen unless the user is single signed on.
+#   load_login:
+#     Redirects to the login application
 #   sso:
 #     Redirects to the given url unless the user is single signed on
 #   bor_info:
@@ -47,7 +47,7 @@ use NYU::Libraries::Util qw(trim whitelist_institution save_permanent_eshelf_rec
 use NYU::Libraries::PDS::Session;
 
 use base qw(Class::Accessor);
-__PACKAGE__->mk_accessors(qw(institute calling_system target_url current_url cleanup_url session_id error));
+__PACKAGE__->mk_accessors(qw(institute calling_system target_url current_url session_id error));
 
 # Default constants
 use constant UNAUTHORIZED_URL => "http://library.nyu.edu/errors/pds-library-nyu-edu/unauthorized";
@@ -158,18 +158,6 @@ my $set_current_url = sub {
   $self->set('current_url', uri_escape($current_url));
 };
 
-# Private method to set the cleanup URL
-# Usage:
-#   $self->$set_cleanup_url();
-my $set_cleanup_url = sub {
-  my $self = shift;
-  my $conf = $self->{'conf'};
-  my $base = $conf->{bobcat_url};
-  if($base) {
-    my $cleanup_url ||= "$base/primo_library/libweb/custom/cleanup.jsp?url=";
-    $self->set('cleanup_url', $cleanup_url);
-  }
-};
 
 # Private method to redirect
 # Usage:
@@ -196,8 +184,6 @@ my $initialize = sub {
   $self->$set_target_url($target_url);
   # Set current_url
   $self->$set_current_url($current_url);
-  # Set cleanup_url
-  $self->$set_cleanup_url();
   # Set session_id
   $self->set('session_id', $session_id) if $session_id;
 };
@@ -242,21 +228,6 @@ sub _redirect_to_target {
   $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
   $target_url = handle_aleph_target_url($self->{'conf'}, $target_url, $session);
   return $self->$redirect($target_url);
-}
-
-# Returns a redirect header to the cleanup URL
-# Usage:
-#   my $redirect_header = $self->_redirect_to_cleanup($session);
-sub _redirect_to_cleanup {
-  my ($self, $session) = @_;
-  return _redirect_to_target unless $self->cleanup_url;
-  my $target_url = $self->target_url;
-  # Primo sucks!
-  $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
-  # Aleph
-  $target_url = handle_aleph_target_url($self->{'conf'}, $target_url, $session);
-  $target_url = uri_escape($target_url);
-  return $self->$redirect($self->cleanup_url.$target_url);
 }
 
 # Display the login screen, unless already signed in

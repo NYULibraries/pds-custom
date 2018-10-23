@@ -34,7 +34,7 @@ isa_ok($controller, qw(Class::Accessor));
 isa_ok($controller, qw(NYU::Libraries::PDS::SessionsController));
 
 # Verify methods
-can_ok($controller, (qw(institute calling_system target_url current_url cleanup_url session_id error)));
+can_ok($controller, (qw(institute calling_system target_url current_url session_id error)));
 
 # The following tests will only pass if the CI environment variable is set.
 if($ENV{'CI'}) {
