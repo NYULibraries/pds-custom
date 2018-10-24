@@ -1,12 +1,8 @@
 # Controller for managing the PDS session flow.
 #
 # A SessionsController instance has the following methods
-#   login:
-#     Renders the appropriate login screen unless the user is single signed on.
-#   ezproxy:
-#     Renders the appropriate login screen unless the user is authorized for ezproxy.
-#   ezborrow:
-#     Renders the appropriate login screen unless the user is authorized for ezborrow.
+#   load_login:
+#     Redirects to the login application
 #   sso:
 #     Redirects to the given url unless the user is single signed on
 #   bor_info:
@@ -51,19 +47,14 @@ use NYU::Libraries::Util qw(trim whitelist_institution save_permanent_eshelf_rec
 use NYU::Libraries::PDS::Session;
 
 use base qw(Class::Accessor);
-__PACKAGE__->mk_accessors(qw(institute calling_system target_url current_url cleanup_url session_id error));
+__PACKAGE__->mk_accessors(qw(institute calling_system target_url current_url session_id error));
 
 # Default constants
 use constant UNAUTHORIZED_URL => "http://library.nyu.edu/errors/pds-library-nyu-edu/unauthorized";
-use constant EZPROXY_UNAUTHORIZED_URL => "http://library.nyu.edu/errors/ezproxy-library-nyu-edu/unauthorized";
-use constant EZBORROW_UNAUTHORIZED_URL => "http://library.nyu.edu/errors/ezborrow-library-nyu-edu/unauthorized";
-use constant ALUMNI_EZPROXY_URL => "http://library.nyu.edu/about/visiting/visitor-access-to-nyu-libraries/alumni/";
 use constant DEFAULT_INSTITUTE => "NYU";
 use constant DEFAULT_CALLING_SYSTEM => "primo";
 use constant DEFAULT_TARGET_URL => "http://bobcat.library.nyu.edu/primo_library/libweb/action/search.do?vid=NYU";
 use constant DEFAULT_FUNCTION => "sso";
-use constant EZBORROW_AUTHORIZED_STATUSES => qw(20 21 22 23 50 51 52 53 54 55 56 57 58 60 61 62 63 65 66 80 81 82 30 31 32 33 34 35 36 37 38 39 40 41);
-use constant EZBORROW_URL_BASE => "https://e-zborrow.relaisd2d.com/service-proxy/";
 
 # Private method to retrieve the OAuth2 server info
 # Usage:
@@ -108,49 +99,6 @@ my $current_session = sub {
   return $self->{'current_session'};
 };
 
-# Private method to determine if the given session is
-# authorized for EZproxy
-# Usage:
-#   $self->$is_ezproxy_authorized($session)
-my $is_ezproxy_authorized = sub {
-  my($self, $session) = @_;
-  # Not authorized if we're not signed on through NYU shibboleth
-  return 0 unless $session->nyu_shibboleth;
-  # Not authorized if we don't have an entitlements
-  return 0 unless $session->entitlement;
-  my $entitlement = $session->entitlement;
-  # Poly students have partial access which actually means full access
-  return 1 if ($entitlement =~ m/urn:mace:nyu.edu:entl:lib:partialeresources/);
-  # Everyone else has full access which actually means full access
-  return 1 if ($entitlement =~ m/urn:mace:nyu.edu:entl:lib:eresources/);
-  return 0;
-};
-
-# Private method to determine if the given session is
-# authorized for EZ Borrow
-# Usage:
-#   $self->$is_ezborrow_authorized($session)
-my $is_ezborrow_authorized = sub {
-  my($self, $session) = @_;
-  # Must have a barcode
-  return 0 unless $session->barcode;
-  # Must be an approved status
-  return (grep { $_ eq $session->patron_status } EZBORROW_AUTHORIZED_STATUSES);
-};
-
-# Private method to determine if the given session is
-# an alumnus
-# Usage:
-#   $self->$is_alumni($session)
-my $is_alumni = sub {
-  my($self, $session) = @_;
-  # Not alumni if we're not signed on through NYU shibboleth
-  return 0 unless $session->nyu_shibboleth;
-  # Not alumni if we don't have an entitlements
-  return 0 unless $session->entitlement;
-  my $entitlement = $session->entitlement;
-  return ($entitlement =~ m/alum/);
-};
 
 # Private method to create a session
 # Usage:
@@ -210,32 +158,6 @@ my $set_current_url = sub {
   $self->set('current_url', uri_escape($current_url));
 };
 
-# Private method to set the cleanup URL
-# Usage:
-#   $self->$set_cleanup_url();
-my $set_cleanup_url = sub {
-  my $self = shift;
-  my $conf = $self->{'conf'};
-  my $base = $conf->{bobcat_url};
-  if($base) {
-    my $cleanup_url ||= "$base/primo_library/libweb/custom/cleanup.jsp?url=";
-    $self->set('cleanup_url', $cleanup_url);
-  }
-};
-
-# Private method to get the EZProxy ticket
-# Usage:
-#   $self->$ezproxy_ticket($user, $groups);
-my $ezproxy_ticket = sub {
-  my ($self, $user, $groups) = @_;
-  $groups ||= "Default";
-  my $ezproxy_secret = $self->{'conf'}->{ezproxy_secret};
-  return undef unless $user && $groups && $ezproxy_secret;
-  my $packet = '$u'.time();
-  $packet .= '$g'.$groups;
-  my $ezproxy_ticket = md5_hex($ezproxy_secret.$user.$packet).$packet;
-  return ($ezproxy_ticket) ? CGI::escape($ezproxy_ticket) : undef;
-};
 
 # Private method to redirect
 # Usage:
@@ -262,8 +184,6 @@ my $initialize = sub {
   $self->$set_target_url($target_url);
   # Set current_url
   $self->$set_current_url($current_url);
-  # Set cleanup_url
-  $self->$set_cleanup_url();
   # Set session_id
   $self->set('session_id', $session_id) if $session_id;
 };
@@ -298,22 +218,6 @@ sub _redirect_to_unauthorized {
   return $self->$redirect(UNAUTHORIZED_URL);
 }
 
-# Returns a redirect header to the EZProxy unauthorized message URL
-# Usage:
-#   my $redirect_header = $self->_redirect_to_ezproxy_unauthorized();
-sub _redirect_to_ezproxy_unauthorized {
-  my $self = shift;
-  return $self->$redirect(EZPROXY_UNAUTHORIZED_URL);
-}
-
-# Returns a redirect header to the EZ Borrow unauthorized message URL
-# Usage:
-#   my $redirect_header = $self->_redirect_to_ezborrow_unauthorized();
-sub _redirect_to_ezborrow_unauthorized {
-  my $self = shift;
-  return $self->$redirect(EZBORROW_UNAUTHORIZED_URL);
-}
-
 # Returns a redirect header to the target URL
 # Usage:
 #   my $redirect_header = $self->_redirect_to_target($session);
@@ -325,89 +229,6 @@ sub _redirect_to_target {
   $target_url = handle_aleph_target_url($self->{'conf'}, $target_url, $session);
   return $self->$redirect($target_url);
 }
-
-# Returns a redirect header to the cleanup URL
-# Usage:
-#   my $redirect_header = $self->_redirect_to_cleanup($session);
-sub _redirect_to_cleanup {
-  my ($self, $session) = @_;
-  return _redirect_to_target unless $self->cleanup_url;
-  my $target_url = $self->target_url;
-  # Primo sucks!
-  $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
-  # Aleph
-  $target_url = handle_aleph_target_url($self->{'conf'}, $target_url, $session);
-  $target_url = uri_escape($target_url);
-  return $self->$redirect($self->cleanup_url.$target_url);
-}
-
-# Returns a redirect header to the eshelf
-# Usage:
-#   my $redirect_header = $self->_redirect_to_eshelf($session);
-sub _redirect_to_eshelf {
-  my ($self, $session) = @_;
-  my $eshelf_url = $self->{'conf'}->{eshelf_url};
-  return _redirect_to_cleanup unless $eshelf_url;
-  my $target_url = $self->target_url;
-  # Primo sucks!
-  $target_url = handle_primo_target_url($self->{'conf'}, $target_url, $session);
-  $target_url = uri_escape($target_url);
-  my $cleanup_url = uri_escape($self->cleanup_url.$target_url);
-  return $self->$redirect("$eshelf_url/validate?return_url=$cleanup_url");
-}
-
-# Returns a redirect header to the EZProxy URL for the given target url
-# Usage:
-#   my $redirect_header = $self->_redirect_to_ezproxy($target_url);
-# TODO: Set the EZProxy redirect!
-sub _redirect_to_ezproxy {
-  my($self, $user, $target_url, $session) = @_;
-  my $uri = URI->new($target_url);
-  my $resource_url = uri_escape($uri->query_param('url'));
-
-  # redirect various paths to corresponding subdomains
-  # needed to connect multiple proxy endpoints to same PDS instance
-  # whitelist of paths/subdomains is hardcoded since couldn't work an array in config
-  my $path = $uri->path;
-  my @ezproxy_paths = ( "ezproxy","ezproxydev","proxy","proxydev" );
-  # default to configured url
-  my $ezproxy_url = $self->{'conf'}->{ezproxy_url};
-  foreach my $ezproxy_path (@ezproxy_paths) {
-    # check each path as a regex against current path: if successful, set url
-    if ($path =~ /^\/?$ezproxy_path$/) {
-      $ezproxy_url = "https://".$ezproxy_path.".library.nyu.edu";
-    }
-  }
-
-  my $ezproxy_ticket = $self->$ezproxy_ticket($user);
-  $ezproxy_url .= "/login?ticket=$ezproxy_ticket&user=$user&qurl=$resource_url";
-  # Go through the cleanup if we have a session.
-   if ($session) {
-     $ezproxy_url = uri_escape($ezproxy_url);
-     return $self->$redirect($self->cleanup_url.$ezproxy_url);
-   } else {
-     return $self->$redirect($ezproxy_url);
-   }
-}
-
-# Returns a redirect header to the EZProxy URL
-sub _redirect_to_alumni_ezproxy {
-  my $self = shift;
-  return $self->$redirect(ALUMNI_EZPROXY_URL);
-}
-
-# Returns a redirect header to the EZBorrow URL for the given session and query
-sub _redirect_to_ezborrow {
-  my($self, $session, $current_url) = @_;
-  my $uri = URI->new($current_url);
-  my $query =  $uri->query_param('query');
-  my $ls = $uri->query_param('ls') || 'NYU';
-  my $barcode = $session->barcode;
-  my $ezborrow_url =
-    EZBORROW_URL_BASE."?command=mkauth&LS=$ls&PI=$barcode&query=".uri_escape($query);
-  $ezborrow_url = uri_escape($ezborrow_url);
-  return $self->$redirect($self->cleanup_url.$ezborrow_url);
-};
 
 # Display the login screen, unless already signed in
 # Usage:
@@ -443,7 +264,7 @@ sub sso {
           # Create the session
           my $session = $self->$create_session($user);
           # Redirect to target
-          return $self->_redirect_to_cleanup($session);
+          return $self->_redirect_to_target($session);
         } else {
           $self->set('error', "Unauthorized");
           return $self->_redirect_to_unauthorized();
@@ -463,59 +284,6 @@ sub logout {
   my $self = shift;
   my $cgi = CGI->new();
   return $self->$redirect($self->{'conf'}->{'site'}.$self->{'conf'}->{'logout_path'});
-}
-
-# Redirect to ezproxy if authenticated and authorized
-# Otherwise, present unauthorized screen if unauthorized
-# or login screen in not logged in
-# Usage:
-#   $controller->ezproxy();
-sub ezproxy {
-  my $self = shift;
-  my $cgi = CGI->new();
-  print $cgi->header(-type=>'text/html', -charset =>'UTF-8');
-  # First check the current session
-  if(defined($self->$current_session)) {
-    if ($self->$is_ezproxy_authorized($self->$current_session)) {
-      # Get the session's user id
-      my $uid = $self->$current_session->uid;
-      # Redirect to ezproxy
-      return $self->_redirect_to_ezproxy($uid, $self->target_url);
-    } elsif($self->$is_alumni($self->$current_session)) {
-      # Redirect to alumnni EZ proxy
-      return $self->_redirect_to_alumni_ezproxy();
-    } else {
-      # Exit with Unauthorized Error
-      $self->set('error', "EZProxy Unauthorized");
-      return $self->_redirect_to_ezproxy_unauthorized();
-    }
-  }
-  # Print the login screen
-  return $self->load_login();
-}
-
-# Redirect to ezborrow if authenticated and authorized
-# Otherwise, present unauthorized screen if unauthorized
-# or login screen in not logged in
-# Usage:
-#   $controller->ezborrow();
-sub ezborrow {
-  my $self = shift;
-  my $cgi = CGI->new();
-  print $cgi->header(-type=>'text/html', -charset =>'UTF-8');
-  # First check the current session
-  if(defined($self->$current_session)) {
-    if($self->$is_ezborrow_authorized($self->$current_session)) {
-      # Redirect to EZ borrow
-      return $self->_redirect_to_ezborrow($self->$current_session, uri_unescape($self->current_url));
-    } else {
-      # Exit with Unauthorized Error
-      $self->set('error', "EZBorrow Unauthorized");
-      return $self->_redirect_to_ezborrow_unauthorized();
-    }
-  }
-  # Print the login screen
-  return $self->load_login();
 }
 
 # Return the bor_info as an XML string

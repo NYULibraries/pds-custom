@@ -1,5 +1,16 @@
 # Change Log
 
+## 2018-10
+This release pares down what the PDS custom library does. We no longer need it to bear so much responsibility.
+
+- Removed EZProxy implementation, now handled by Shibboleth
+
+- Removed EZAlumni implementation, now handled by Shibboleth
+
+- Removed EZBorrow implementation, now handled by Login
+
+- Removed redirect to cleanup script, no longer necessary with Primo NUI
+
 ## 2015-09
 This release removes all local templates and implements PDS as an OAuth2 client.
 
