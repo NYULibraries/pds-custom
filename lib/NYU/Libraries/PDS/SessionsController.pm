@@ -292,7 +292,13 @@ sub logout {
 sub bor_info {
   my $self = shift;
   my $cgi = CGI->new();
-  print $cgi->header(-type=>'text/xml', -charset =>'UTF-8');
+  print $cgi -> header(
+    -type=>'text/xml', -charset =>'UTF-8',
+    -access_control_allow_origin => '*',
+    -access_control_allow_headers => 'content-type,X-Requested-With',
+    -access_control_allow_methods => 'GET,POST,OPTIONS',
+    -access_control_allow_credentials => 'true',
+  ); 
   if ($self->session_id) {
     my $session = $self->$current_session();
     if ($session) {
