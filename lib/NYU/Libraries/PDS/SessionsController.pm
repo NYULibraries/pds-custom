@@ -292,13 +292,18 @@ sub logout {
 sub bor_info {
   my $self = shift;
   my $cgi = CGI->new();
-  print $cgi -> header(
-    -type=>'text/xml', -charset =>'UTF-8',
-    -access_control_allow_origin => '*',
-    -access_control_allow_headers => 'content-type,X-Requested-With',
-    -access_control_allow_methods => 'GET,POST,OPTIONS',
-    -access_control_allow_credentials => 'true',
-  ); 
+  my $origin = $ENV{'HTTP_ORIGIN'};
+  if ( $origin ~~ ['http://bobcat.library.nyu.edu', 'http://bobcatdev.library.nyu.edu'] ) {
+    print $cgi -> header(
+      -type=>'text/xml', -charset =>'UTF-8',
+      -access_control_allow_origin => $origin,
+      -access_control_allow_headers => 'content-type,X-Requested-With',
+      -access_control_allow_methods => 'GET,POST,OPTIONS',
+      -access_control_allow_credentials => 'true',
+    ); 
+  } else {
+    print $cgi -> header(-type=>'text/xml', -charset =>'UTF-8');
+  }
   if ($self->session_id) {
     my $session = $self->$current_session();
     if ($session) {
