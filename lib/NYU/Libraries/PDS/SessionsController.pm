@@ -294,7 +294,7 @@ sub bor_info {
   my $cgi = CGI->new();
   my $origin = $ENV{'HTTP_ORIGIN'};
   my @whitelisted_origins = ['http://bobcat.library.nyu.edu', 'http://bobcatdev.library.nyu.edu'];
-  if ( grep { $_ eq $origin } @whitelisted_origins ) {
+  if ( grep($origin, @whitelisted_origins) ) {
     print $cgi -> header(
       -type=>'text/xml', -charset =>'UTF-8',
       -access_control_allow_origin => $origin,
