@@ -294,8 +294,7 @@ sub bor_info {
   my $cgi = CGI->new();
   my $origin = $ENV{'HTTP_ORIGIN'};
   my @whitelisted_origins = ['http://bobcat.library.nyu.edu', 'http://bobcatdev.library.nyu.edu'];
-  # if ( grep( /^$origin$/, @whitelisted_origins )  ) {
-  # if ($origin eq 'http://bobcatdev.library.nyu.edu') {
+  if ( grep { $_ eq $origin } @whitelisted_origins ) {
     print $cgi -> header(
       -type=>'text/xml', -charset =>'UTF-8',
       -access_control_allow_origin => $origin,
@@ -303,9 +302,9 @@ sub bor_info {
       -access_control_allow_methods => 'GET,POST,OPTIONS',
       -access_control_allow_credentials => 'true',
     ); 
-  # } else {
-  #   print $cgi -> header(-type=>'text/xml', -charset =>'UTF-8');
-  # }
+  } else {
+    print $cgi -> header(-type=>'text/xml', -charset =>'UTF-8');
+  }
   if ($self->session_id) {
     my $session = $self->$current_session();
     if ($session) {
