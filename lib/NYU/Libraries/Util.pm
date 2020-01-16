@@ -180,6 +180,7 @@ sub handle_primo_target_url {
   if($session) {
     my $session_id = $session->session_id;
     my $bobcat_url = $conf->{bobcat_url};
+    $bobcat_url =~ s/http(s)?:\/\///;
     if($target_url =~ /$bobcat_url/) {
       if($target_url !~ /\/goto\/logon\//) {
         $target_url = $PDSUtil::server_httpsd."/goto/logon/$target_url&pds_handle=$session_id";
