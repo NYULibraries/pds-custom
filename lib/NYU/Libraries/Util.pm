@@ -89,8 +89,8 @@ sub set_target_url_cookie {
   # Set the cookie to the current target URL
   # It expires in 5 minutes
   my $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE,
-    -expires => '+5m', -value => $test_target);
-  print $cgi->header(-cookie => [$target_url]);
+    -expires => '+5m', -value => $target_url);
+  print $cgi->header(-cookie => [$pds_target]);
 }
 
 # Method to get the "target url" cookie
