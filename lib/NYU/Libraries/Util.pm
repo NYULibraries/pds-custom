@@ -83,9 +83,8 @@ sub set_target_url_cookie {
   my ($target_url) = @_;
   my $cgi = CGI->new();
   # Force this URL to be HTTPS
-  $target_url =~ s/^http/https/;
+  $target_url =~ s/^http:/https:/;
   $target_url =~ s/:80//;
-  # my $test_target = "https://library.nyu.edu?url=$target_url";
   # Set the cookie to the current target URL
   # It expires in 5 minutes
   my $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE,
