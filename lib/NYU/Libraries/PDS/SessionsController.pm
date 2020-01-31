@@ -53,7 +53,7 @@ __PACKAGE__->mk_accessors(qw(institute calling_system target_url current_url ses
 use constant UNAUTHORIZED_URL => "http://library.nyu.edu/errors/pds-library-nyu-edu/unauthorized";
 use constant DEFAULT_INSTITUTE => "NYU";
 use constant DEFAULT_CALLING_SYSTEM => "primo";
-use constant DEFAULT_TARGET_URL => "https://bobcatdev.library.nyu.edu/primo-explore/search?vid=NYU";
+use constant DEFAULT_TARGET_URL => "https://bobcat.library.nyu.edu/primo-explore/search?vid=NYU";
 use constant DEFAULT_FUNCTION => "sso";
 
 # Private method to retrieve the OAuth2 server info
