@@ -82,6 +82,9 @@ sub expire_target_url_cookie {
 sub set_target_url_cookie {
   my ($target_url) = @_;
   my $cgi = CGI->new();
+  # Force this URL to be HTTPS
+  $target_url =~ s/^http:/https:/;
+  $target_url =~ s/:80//;
   # Set the cookie to the current target URL
   # It expires in 5 minutes
   my $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE,
@@ -180,7 +183,8 @@ sub handle_primo_target_url {
   if($session) {
     my $session_id = $session->session_id;
     my $bobcat_url = $conf->{bobcat_url};
-    if($target_url =~ /$bobcat_url(:[0-9]+)?\/primo_library\/libweb/) {
+    $bobcat_url =~ s/http(s)?:\/\///;
+    if($target_url =~ /$bobcat_url/) {
       if($target_url !~ /\/goto\/logon\//) {
         $target_url = $PDSUtil::server_httpsd."/goto/logon/$target_url&pds_handle=$session_id";
       }
