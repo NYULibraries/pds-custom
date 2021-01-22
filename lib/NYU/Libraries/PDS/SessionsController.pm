@@ -293,7 +293,7 @@ sub bor_info {
   my $self = shift;
   my $cgi = CGI->new();
   my $origin = $ENV{'HTTP_ORIGIN'};
-  my @whitelisted_origins = ['http://localhost:8004', 'http://bobcat.library.nyu.edu', 'https://bobcat.library.nyu.edu', 'http://bobcatdev.library.nyu.edu', 'https://bobcatdev.library.nyu.edu'];
+  my @whitelisted_origins = ['http://bobcat.library.nyu.edu', 'https://bobcat.library.nyu.edu', 'http://bobcatdev.library.nyu.edu', 'https://bobcatdev.library.nyu.edu'];
   if ( grep($origin, @whitelisted_origins) ) {
     print $cgi -> header(
       -type=>'text/xml', -charset =>'UTF-8',
