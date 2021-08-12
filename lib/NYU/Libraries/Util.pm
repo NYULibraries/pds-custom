@@ -84,7 +84,8 @@ sub set_target_url_cookie {
   my $cgi = CGI->new();
   # Force this URL to be HTTPS
   $target_url =~ s/^http:/https:/;
-  $target_url =~ s/:80//;
+  # Strip port 80 from URL
+  $target_url =~ s/:80(?!\d)//;
   # Set the cookie to the current target URL
   # It expires in 5 minutes
   my $pds_target = CGI::Cookie->new(-name => PDS_TARGET_COOKIE,
